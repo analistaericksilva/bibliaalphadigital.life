@@ -69,12 +69,15 @@ const Reader = () => {
   const [verses, setVerses] = useState<Verse[]>([]);
   const [loading, setLoading] = useState(true);
   const [noteVerses, setNoteVerses] = useState<Set<number>>(new Set());
+  const [inlineNotes, setInlineNotes] = useState<Map<number, InlineNote>>(new Map());
+  const [expandedNotes, setExpandedNotes] = useState<Set<number>>(new Set());
   const verseRefs = useRef<Record<number, HTMLElement | null>>({});
 
   const book = bibleBooks.find((b) => b.id === currentBook);
 
   const fetchVerses = async (bookId: string, chapter: number) => {
     setLoading(true);
+    setExpandedNotes(new Set());
     const [versesRes, notesRes] = await Promise.all([
       supabase
         .from("bible_verses")
@@ -84,9 +87,10 @@ const Reader = () => {
         .order("verse_number"),
       supabase
         .from("study_notes")
-        .select("verse_start")
+        .select("verse_start, title, content")
         .eq("book_id", bookId)
-        .eq("chapter", chapter),
+        .eq("chapter", chapter)
+        .order("verse_start"),
     ]);
 
     if (versesRes.data && !versesRes.error) {
@@ -97,6 +101,11 @@ const Reader = () => {
 
     if (notesRes.data) {
       setNoteVerses(new Set(notesRes.data.map((n: any) => n.verse_start)));
+      const notesMap = new Map<number, InlineNote>();
+      notesRes.data.forEach((n: any) => {
+        notesMap.set(n.verse_start, { verse_start: n.verse_start, title: n.title, content: n.content });
+      });
+      setInlineNotes(notesMap);
     }
     setLoading(false);
   };
