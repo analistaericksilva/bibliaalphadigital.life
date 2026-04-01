@@ -212,6 +212,7 @@ const Reader = () => {
         onToggleFavorites={() => openUserPanel("favorites")}
         onToggleGoTo={() => openUserPanel("goto")}
         onToggleMap={() => setShowMap(!showMap)}
+        onShare={handleShareChapter}
       />
 
       {/* Navigation zones */}
