@@ -12,6 +12,7 @@ interface ReaderHeaderProps {
   onToggleHistory?: () => void;
   onToggleFavorites?: () => void;
   onToggleGoTo?: () => void;
+  onToggleMap?: () => void;
 }
 
 const ReaderHeader = ({
