@@ -260,6 +260,17 @@ const Reader = () => {
       {/* Reader content */}
       <main className="max-w-3xl mx-auto px-6 md:px-12 pt-32 pb-48">
         <div className="bg-paper page-shadow rounded p-8 md:p-16 mb-8 animate-fade-in">
+          {/* Back button */}
+          {navHistory.length > 0 && (
+            <button
+              onClick={goBack}
+              className="flex items-center gap-1.5 text-[10px] tracking-[0.2em] font-sans text-primary hover:text-primary/80 transition-colors mb-4"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              VOLTAR AO TEXTO ANTERIOR
+            </button>
+          )}
+
           <div className="text-center mb-12">
             <p className="text-[9px] tracking-[0.4em] text-muted-foreground font-sans mb-2">
               {book?.testament === "old" ? "ANTIGO TESTAMENTO" : "NOVO TESTAMENTO"}
