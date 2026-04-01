@@ -1,9 +1,8 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { bibleBooks } from "@/data/bibleBooks";
 import { X, MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -41,28 +40,17 @@ interface BibleMapPanelProps {
   onNavigate: (bookId: string, chapter: number, verse?: number) => void;
 }
 
-function FitBounds({ places }: { places: BiblePlace[] }) {
-  const map = useMap();
-  useEffect(() => {
-    if (places.length > 0) {
-      const bounds = L.latLngBounds(places.map((p) => [p.lat, p.lon]));
-      map.fitBounds(bounds, { padding: [30, 30], maxZoom: 10 });
-    } else {
-      map.setView([31.5, 35.2], 7);
-    }
-  }, [places, map]);
-  return null;
-}
-
 const getBookName = (bookId: string) => bibleBooks.find((b) => b.id === bookId)?.name || bookId;
 
 const BibleMapPanel = ({ open, onClose, bookId, chapter, onNavigate }: BibleMapPanelProps) => {
   const [allPlaces, setAllPlaces] = useState<BiblePlace[]>([]);
   const [loading, setLoading] = useState(false);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<L.Map | null>(null);
 
   useEffect(() => {
     if (!open) return;
-    const fetch = async () => {
+    const fetchData = async () => {
       setLoading(true);
       const { data } = await supabase
         .from("bible_places")
@@ -71,7 +59,7 @@ const BibleMapPanel = ({ open, onClose, bookId, chapter, onNavigate }: BibleMapP
       if (data) setAllPlaces(data as unknown as BiblePlace[]);
       setLoading(false);
     };
-    fetch();
+    fetchData();
   }, [open]);
 
   const filteredPlaces = useMemo(() => {
@@ -79,6 +67,72 @@ const BibleMapPanel = ({ open, onClose, bookId, chapter, onNavigate }: BibleMapP
       p.refs.some((r) => r.b === bookId && r.c === chapter)
     );
   }, [allPlaces, bookId, chapter]);
+
+  // Initialize / update map
+  useEffect(() => {
+    if (!open || loading || filteredPlaces.length === 0 || !mapContainerRef.current) return;
+
+    // Clean up previous map
+    if (mapRef.current) {
+      mapRef.current.remove();
+      mapRef.current = null;
+    }
+
+    const map = L.map(mapContainerRef.current).setView([31.5, 35.2], 7);
+    mapRef.current = map;
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+    }).addTo(map);
+
+    const bounds = L.latLngBounds(filteredPlaces.map((p) => [p.lat, p.lon]));
+
+    filteredPlaces.forEach((place) => {
+      const chapterRefs = place.refs.filter((r) => r.b === bookId && r.c === chapter);
+      const refsHtml = chapterRefs
+        .map(
+          (r) =>
+            `<button class="text-xs text-blue-600 hover:underline block" data-book="${r.b}" data-chapter="${r.c}" data-verse="${r.v}">${getBookName(r.b)} ${r.c}:${r.v}</button>`
+        )
+        .join("");
+
+      const popup = L.popup().setContent(
+        `<div class="font-sans text-sm min-w-[150px]">
+          <p class="font-bold">${place.name}</p>
+          <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-1">${place.place_type}</p>
+          <div class="space-y-0.5 popup-refs">${refsHtml}</div>
+        </div>`
+      );
+
+      const marker = L.marker([place.lat, place.lon], { icon: goldIcon }).addTo(map);
+      marker.bindPopup(popup);
+
+      marker.on("popupopen", () => {
+        const container = marker.getPopup()?.getElement();
+        if (container) {
+          container.querySelectorAll(".popup-refs button").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const b = btn.getAttribute("data-book")!;
+              const c = Number(btn.getAttribute("data-chapter"));
+              const v = Number(btn.getAttribute("data-verse"));
+              onNavigate(b, c, v);
+              onClose();
+            });
+          });
+        }
+      });
+    });
+
+    map.fitBounds(bounds, { padding: [30, 30], maxZoom: 10 });
+
+    // Force resize after panel animation
+    setTimeout(() => map.invalidateSize(), 300);
+
+    return () => {
+      map.remove();
+      mapRef.current = null;
+    };
+  }, [open, loading, filteredPlaces, bookId, chapter, onNavigate, onClose]);
 
   if (!open) return null;
 
@@ -113,52 +167,15 @@ const BibleMapPanel = ({ open, onClose, bookId, chapter, onNavigate }: BibleMapP
                   </p>
                 </div>
               ) : (
-                <MapContainer
-                  center={[31.5, 35.2]}
-                  zoom={7}
-                  style={{ height: "100%", width: "100%" }}
-                  className="z-0"
-                >
-                  <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  />
-                  <FitBounds places={filteredPlaces} />
-                  {filteredPlaces.map((place) => (
-                    <Marker key={place.id} position={[place.lat, place.lon]} icon={goldIcon}>
-                      <Popup>
-                        <div className="font-sans text-sm min-w-[150px]">
-                          <p className="font-bold text-foreground">{place.name}</p>
-                          <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">
-                            {place.place_type}
-                          </p>
-                          <div className="space-y-0.5">
-                            {place.refs
-                              .filter((r) => r.b === bookId && r.c === chapter)
-                              .map((r, i) => (
-                                <button
-                                  key={i}
-                                  onClick={() => {
-                                    onNavigate(r.b, r.c, r.v);
-                                    onClose();
-                                  }}
-                                  className="block text-xs text-primary hover:underline"
-                                >
-                                  {getBookName(r.b)} {r.c}:{r.v}
-                                </button>
-                              ))}
-                          </div>
-                        </div>
-                      </Popup>
-                    </Marker>
-                  ))}
-                </MapContainer>
+                <div ref={mapContainerRef} style={{ height: "100%", width: "100%" }} />
               )}
-              <div className="absolute bottom-4 left-4 bg-background/90 backdrop-blur-sm rounded px-3 py-2 border border-border z-[1000]">
-                <p className="text-[10px] font-sans text-muted-foreground">
-                  {filteredPlaces.length} {filteredPlaces.length === 1 ? "local" : "locais"} encontrados
-                </p>
-              </div>
+              {filteredPlaces.length > 0 && (
+                <div className="absolute bottom-4 left-4 bg-background/90 backdrop-blur-sm rounded px-3 py-2 border border-border z-[1000]">
+                  <p className="text-[10px] font-sans text-muted-foreground">
+                    {filteredPlaces.length} {filteredPlaces.length === 1 ? "local" : "locais"} encontrados
+                  </p>
+                </div>
+              )}
             </>
           )}
         </div>
