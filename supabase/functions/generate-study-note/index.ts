@@ -102,7 +102,7 @@ Instruções gerais:
         messages: [
           { role: 'user', content: prompt }
         ],
-        max_tokens: 1200,
+        max_tokens: 1500,
         temperature: 0.7,
       }),
     })
