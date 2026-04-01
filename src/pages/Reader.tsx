@@ -9,6 +9,7 @@ import SearchPanel from "@/components/SearchPanel";
 import StudyNotesPanel from "@/components/StudyNotesPanel";
 import DictionaryPanel from "@/components/DictionaryPanel";
 import UserPanel from "@/components/UserPanel";
+import BibleMapPanel from "@/components/BibleMapPanel";
 import VerseActionMenu from "@/components/VerseActionMenu";
 import { useUserAnnotations } from "@/hooks/useUserAnnotations";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
