@@ -104,10 +104,22 @@ Instruções:
     }
 
     const aiData = await response.json()
-    const note = aiData.choices?.[0]?.message?.content || ''
+    const rawContent = aiData.choices?.[0]?.message?.content || ''
+
+    // Try to parse structured JSON from AI response
+    let sections = null
+    try {
+      // Extract JSON from response (handle possible markdown wrapping)
+      const jsonMatch = rawContent.match(/\{[\s\S]*\}/)
+      if (jsonMatch) {
+        sections = JSON.parse(jsonMatch[0])
+      }
+    } catch (e) {
+      console.error('Failed to parse AI JSON, returning raw:', e)
+    }
 
     return new Response(
-      JSON.stringify({ note }),
+      JSON.stringify({ note: rawContent, sections }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
