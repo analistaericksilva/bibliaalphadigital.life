@@ -210,7 +210,7 @@ const StudyNotesPanel = ({ open, onClose, bookId, chapter, selectedVerse, onNavi
               </div>
             )}
 
-            {/* AI Study Note Generator */}
+            {/* AI Study Note (Matthew Henry + Strong) */}
             {!loading && selectedVerse && (
               <div className="space-y-3">
                 <div className="flex items-center gap-2 mb-2">
@@ -219,7 +219,12 @@ const StudyNotesPanel = ({ open, onClose, bookId, chapter, selectedVerse, onNavi
                     NOTA EXPLICATIVA
                   </span>
                 </div>
-                {aiNotes[selectedVerse] ? (
+                {aiLoading === selectedVerse ? (
+                  <div className="bg-paper rounded p-4 border border-border flex items-center gap-2 text-sm text-muted-foreground font-sans">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Gerando nota explicativa...
+                  </div>
+                ) : aiNotes[selectedVerse] ? (
                   <div className="bg-paper rounded p-4 border border-border">
                     <p className="text-sm font-serif leading-relaxed text-foreground/90 whitespace-pre-line">
                       {aiNotes[selectedVerse]}
@@ -231,19 +236,9 @@ const StudyNotesPanel = ({ open, onClose, bookId, chapter, selectedVerse, onNavi
                     size="sm"
                     className="w-full text-xs font-sans"
                     onClick={() => generateAiNote(selectedVerse)}
-                    disabled={aiLoading === selectedVerse}
                   >
-                    {aiLoading === selectedVerse ? (
-                      <>
-                        <Loader2 className="w-3 h-3 mr-2 animate-spin" />
-                        Gerando nota...
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="w-3 h-3 mr-2" />
-                        Gerar nota explicativa
-                      </>
-                    )}
+                    <Sparkles className="w-3 h-3 mr-2" />
+                    Gerar nota explicativa
                   </Button>
                 )}
               </div>
