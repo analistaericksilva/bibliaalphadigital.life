@@ -13,6 +13,7 @@ interface ReaderHeaderProps {
   onToggleFavorites?: () => void;
   onToggleGoTo?: () => void;
   onToggleMap?: () => void;
+  onShare?: () => void;
 }
 
 const ReaderHeader = ({
