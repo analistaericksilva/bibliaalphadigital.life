@@ -34,6 +34,9 @@ const ReaderHeader = ({ onToggleSearch, onToggleBookSelector }: ReaderHeaderProp
         <Button variant="ghost" size="icon" onClick={onToggleSearch} title="Buscar">
           <Search className="w-4 h-4" />
         </Button>
+        <Button variant="ghost" size="icon" onClick={() => navigate("/planos")} title="Planos de Leitura">
+          <Calendar className="w-4 h-4" />
+        </Button>
         {isAdmin && (
           <Button variant="ghost" size="icon" onClick={() => navigate("/admin")} title="Administração">
             <Shield className="w-4 h-4" />
