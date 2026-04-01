@@ -1,15 +1,17 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Book, Search, Settings, Shield, LogOut, Calendar } from "lucide-react";
+import { Book, Search, Shield, LogOut, Calendar, BookOpen, BookText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoSrc from "@/assets/star-of-david-logo.png";
 
 interface ReaderHeaderProps {
   onToggleSearch: () => void;
   onToggleBookSelector: () => void;
+  onToggleNotes?: () => void;
+  onToggleDictionary?: () => void;
 }
 
-const ReaderHeader = ({ onToggleSearch, onToggleBookSelector }: ReaderHeaderProps) => {
+const ReaderHeader = ({ onToggleSearch, onToggleBookSelector, onToggleNotes, onToggleDictionary }: ReaderHeaderProps) => {
   const { isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -34,6 +36,16 @@ const ReaderHeader = ({ onToggleSearch, onToggleBookSelector }: ReaderHeaderProp
         <Button variant="ghost" size="icon" onClick={onToggleSearch} title="Buscar">
           <Search className="w-4 h-4" />
         </Button>
+        {onToggleNotes && (
+          <Button variant="ghost" size="icon" onClick={onToggleNotes} title="Notas de Estudo">
+            <BookOpen className="w-4 h-4" />
+          </Button>
+        )}
+        {onToggleDictionary && (
+          <Button variant="ghost" size="icon" onClick={onToggleDictionary} title="Dicionário Bíblico">
+            <BookText className="w-4 h-4" />
+          </Button>
+        )}
         <Button variant="ghost" size="icon" onClick={() => navigate("/planos")} title="Planos de Leitura">
           <Calendar className="w-4 h-4" />
         </Button>
