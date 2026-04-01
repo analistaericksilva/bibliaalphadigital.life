@@ -41,6 +41,36 @@ export type Database = {
         }
         Relationships: []
       }
+      bible_places: {
+        Row: {
+          created_at: string
+          id: string
+          lat: number
+          lon: number
+          name: string
+          place_type: string
+          refs: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lat: number
+          lon: number
+          name: string
+          place_type?: string
+          refs?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lat?: number
+          lon?: number
+          name?: string
+          place_type?: string
+          refs?: Json
+        }
+        Relationships: []
+      }
       bible_verses: {
         Row: {
           book_id: string
