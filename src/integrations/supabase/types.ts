@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      bible_cross_references: {
+        Row: {
+          book_id: string
+          chapter: number
+          created_at: string
+          id: string
+          refs: string
+          verse: number
+        }
+        Insert: {
+          book_id: string
+          chapter: number
+          created_at?: string
+          id?: string
+          refs: string
+          verse: number
+        }
+        Update: {
+          book_id?: string
+          chapter?: number
+          created_at?: string
+          id?: string
+          refs?: string
+          verse?: number
+        }
+        Relationships: []
+      }
       bible_dictionary: {
         Row: {
           created_at: string
