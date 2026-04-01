@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      bible_dictionary: {
+        Row: {
+          created_at: string
+          definition: string
+          hebrew_greek: string | null
+          id: string
+          references_list: Json | null
+          term: string
+        }
+        Insert: {
+          created_at?: string
+          definition: string
+          hebrew_greek?: string | null
+          id?: string
+          references_list?: Json | null
+          term: string
+        }
+        Update: {
+          created_at?: string
+          definition?: string
+          hebrew_greek?: string | null
+          id?: string
+          references_list?: Json | null
+          term?: string
+        }
+        Relationships: []
+      }
       bible_verses: {
         Row: {
           book_id: string
@@ -139,6 +166,45 @@ export type Database = {
           name?: string
           total_days?: number
           type?: string
+        }
+        Relationships: []
+      }
+      study_notes: {
+        Row: {
+          book_id: string
+          chapter: number
+          content: string
+          created_at: string
+          id: string
+          note_type: string
+          source: string | null
+          title: string | null
+          verse_end: number | null
+          verse_start: number
+        }
+        Insert: {
+          book_id: string
+          chapter: number
+          content: string
+          created_at?: string
+          id?: string
+          note_type?: string
+          source?: string | null
+          title?: string | null
+          verse_end?: number | null
+          verse_start: number
+        }
+        Update: {
+          book_id?: string
+          chapter?: number
+          content?: string
+          created_at?: string
+          id?: string
+          note_type?: string
+          source?: string | null
+          title?: string | null
+          verse_end?: number | null
+          verse_start?: number
         }
         Relationships: []
       }
