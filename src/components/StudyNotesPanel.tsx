@@ -92,11 +92,6 @@ const StudyNotesPanel = ({ open, onClose, bookId, chapter, selectedVerse }: Stud
                     )}
                   </div>
                   <p className="text-sm font-serif leading-relaxed text-foreground/90">{note.content}</p>
-                  {note.source && (
-                    <p className="text-[10px] font-sans text-muted-foreground mt-2 italic">
-                      Fonte: {note.source}
-                    </p>
-                  )}
                 </div>
               ))}
           </div>
