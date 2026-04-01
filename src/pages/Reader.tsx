@@ -14,6 +14,12 @@ interface Verse {
   text: string;
 }
 
+interface InlineNote {
+  verse_start: number;
+  title: string | null;
+  content: string;
+}
+
 // Patterns that indicate God speaking in OT
 const godSpeechPatterns = [
   /^Disse (?:mais )?(?:o )?(?:Senhor|Deus|SENHOR|Jeová)/i,
@@ -63,12 +69,15 @@ const Reader = () => {
   const [verses, setVerses] = useState<Verse[]>([]);
   const [loading, setLoading] = useState(true);
   const [noteVerses, setNoteVerses] = useState<Set<number>>(new Set());
+  const [inlineNotes, setInlineNotes] = useState<Map<number, InlineNote>>(new Map());
+  const [expandedNotes, setExpandedNotes] = useState<Set<number>>(new Set());
   const verseRefs = useRef<Record<number, HTMLElement | null>>({});
 
   const book = bibleBooks.find((b) => b.id === currentBook);
 
   const fetchVerses = async (bookId: string, chapter: number) => {
     setLoading(true);
+    setExpandedNotes(new Set());
     const [versesRes, notesRes] = await Promise.all([
       supabase
         .from("bible_verses")
@@ -78,9 +87,10 @@ const Reader = () => {
         .order("verse_number"),
       supabase
         .from("study_notes")
-        .select("verse_start")
+        .select("verse_start, title, content")
         .eq("book_id", bookId)
-        .eq("chapter", chapter),
+        .eq("chapter", chapter)
+        .order("verse_start"),
     ]);
 
     if (versesRes.data && !versesRes.error) {
@@ -91,6 +101,11 @@ const Reader = () => {
 
     if (notesRes.data) {
       setNoteVerses(new Set(notesRes.data.map((n: any) => n.verse_start)));
+      const notesMap = new Map<number, InlineNote>();
+      notesRes.data.forEach((n: any) => {
+        notesMap.set(n.verse_start, { verse_start: n.verse_start, title: n.title, content: n.content });
+      });
+      setInlineNotes(notesMap);
     }
     setLoading(false);
   };
@@ -130,8 +145,12 @@ const Reader = () => {
 
   const handleVerseClick = (verseNum: number) => {
     if (noteVerses.has(verseNum)) {
-      setSelectedVerse(verseNum);
-      setShowNotes(true);
+      setExpandedNotes(prev => {
+        const next = new Set(prev);
+        if (next.has(verseNum)) next.delete(verseNum);
+        else next.add(verseNum);
+        return next;
+      });
     }
   };
 
@@ -199,16 +218,25 @@ const Reader = () => {
                 const speechClass = getSpeechClass(v.text, currentBook);
                 const hasNote = noteVerses.has(v.verse);
                 return (
-                  <span
-                    key={v.verse}
-                    ref={(el) => { verseRefs.current[v.verse] = el; }}
-                    className={`${hasNote ? "cursor-pointer hover:bg-primary/5 rounded px-0.5" : ""}`}
-                    onClick={hasNote ? () => handleVerseClick(v.verse) : undefined}
-                  >
-                    <sup className={`verse-number ${hasNote ? "!text-primary !font-bold" : ""}`}>
-                      {v.verse}
-                    </sup>
-                    <span className={speechClass}>{v.text}</span>{" "}
+                  <span key={v.verse}>
+                    <span
+                      ref={(el) => { verseRefs.current[v.verse] = el; }}
+                      className={`${hasNote ? "cursor-pointer hover:bg-primary/5 rounded px-0.5" : ""}`}
+                      onClick={hasNote ? () => handleVerseClick(v.verse) : undefined}
+                    >
+                      <sup className={`verse-number ${hasNote ? "!text-primary !font-bold" : ""}`}>
+                        {v.verse}
+                      </sup>
+                      <span className={speechClass}>{v.text}</span>{" "}
+                    </span>
+                    {hasNote && expandedNotes.has(v.verse) && inlineNotes.has(v.verse) && (
+                      <span className="block my-2 mx-1 px-3 py-2 bg-primary/5 border-l-2 border-primary rounded-r text-xs font-sans text-foreground/80 leading-relaxed animate-fade-in">
+                        {inlineNotes.get(v.verse)!.title && (
+                          <span className="font-semibold text-primary mr-1">{inlineNotes.get(v.verse)!.title}:</span>
+                        )}
+                        {inlineNotes.get(v.verse)!.content}
+                      </span>
+                    )}
                   </span>
                 );
               })}
