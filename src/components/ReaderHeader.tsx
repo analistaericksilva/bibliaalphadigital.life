@@ -81,6 +81,11 @@ const ReaderHeader = ({
             <MapPin className="w-4 h-4" />
           </Button>
         )}
+        {onShare && (
+          <Button variant="ghost" size="icon" onClick={onShare} title="Compartilhar Capítulo">
+            <Share2 className="w-4 h-4" />
+          </Button>
+        )}
         <Button variant="ghost" size="icon" onClick={() => navigate("/prefacio")} title="Prefácio">
           <FileText className="w-4 h-4" />
         </Button>
