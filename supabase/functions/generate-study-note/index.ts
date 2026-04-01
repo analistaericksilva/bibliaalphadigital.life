@@ -57,7 +57,7 @@ Deno.serve(async (req) => {
       )
     }
 
-    const prompt = `Você é um teólogo evangélico protestante experiente. Gere uma nota explicativa concisa e edificante para o versículo abaixo, no estilo de Matthew Henry (devocional e prático) combinado com insights teológicos de Augustus Hopkins Strong (teologia sistemática reformada).
+    const prompt = `Você é um teólogo evangélico experiente. Gere notas de estudo para o versículo abaixo, organizadas em seções claramente separadas.
 
 Livro: ${bookName}
 Capítulo: ${chapter}
@@ -67,14 +67,22 @@ Texto: "${verseText}"
 Contexto (versículos ao redor):
 ${contextText}
 
-Instruções:
+Formato obrigatório (use exatamente estes títulos de seção):
+
+**📖 Matthew Henry**
+Escreva uma nota devocional e prática no estilo característico de Matthew Henry. Inclua aplicação espiritual para a vida cristã. Cite como se fosse do Comentário Bíblico de Matthew Henry. 2-3 parágrafos.
+
+**📚 Augustus H. Strong**
+Escreva uma nota teológica sistemática no estilo de Augustus Hopkins Strong (Teologia Sistemática). Aborde aspectos doutrinários e teológicos relevantes do versículo. 1-2 parágrafos.
+
+**🔥 Nota Pentecostal**
+Uma breve nota (2-3 frases) com perspectiva pentecostal/carismática sobre o versículo. Cite a fonte (ex: "Bíblia de Estudo Pentecostal", "Comentário Pentecostal do NT").
+
+Instruções gerais:
 - Escreva em português brasileiro
-- Máximo 3 parágrafos curtos
-- Inclua aplicação prática para a vida cristã
-- Mencione conexões teológicas relevantes quando apropriado
-- Não cite fontes, não mencione Matthew Henry nem Strong
+- Não repita o texto do versículo
 - Tom reverente mas acessível
-- Não repita o texto do versículo, apenas explique e aplique`
+- Cada seção deve ser claramente identificada com o título em negrito`
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
