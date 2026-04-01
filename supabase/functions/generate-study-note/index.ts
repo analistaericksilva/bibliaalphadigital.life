@@ -76,7 +76,7 @@ Instruções:
 - Tom reverente mas acessível
 - Não repita o texto do versículo, apenas explique e aplique`
 
-    const response = await fetch('https://lovable-ai.lovable.dev/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${LOVABLE_API_KEY}`,
