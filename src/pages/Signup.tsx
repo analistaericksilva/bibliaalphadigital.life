@@ -38,7 +38,7 @@ const Signup = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="w-full max-w-sm mx-auto px-6 text-center animate-fade-in">
-          <img src={logoSrc} alt="Bíblia Alpha" className="w-16 h-16 mx-auto mb-6" width={64} height={64} />
+          <img src={logoSrc} alt="Bíblia Alpha" className="w-24 h-24 mx-auto mb-6 drop-shadow-lg" width={96} height={96} />
           <h2 className="text-lg tracking-[0.2em] font-sans mb-4 text-foreground">SOLICITAÇÃO ENVIADA</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
             Sua solicitação de acesso foi enviada. Aguarde a aprovação do administrador para acessar a plataforma.
@@ -56,11 +56,14 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-sm mx-auto px-6 animate-fade-in">
-        <div className="text-center mb-12">
-          <img src={logoSrc} alt="Bíblia Alpha" className="w-16 h-16 mx-auto mb-6" width={64} height={64} />
-          <h1 className="text-4xl tracking-[0.3em] font-light font-sans text-foreground">
-            SOLICITAR ACESSO
+        <div className="text-center mb-16">
+          <img src={logoSrc} alt="Bíblia Alpha" className="w-24 h-24 mx-auto mb-8 drop-shadow-lg" width={96} height={96} />
+          <h1 className="text-4xl tracking-[0.4em] font-serif font-medium text-foreground">
+            SOLICITAR
           </h1>
+          <p className="text-xl tracking-[0.6em] font-sans font-light text-primary mt-2">
+            ACESSO
+          </p>
         </div>
 
         <form onSubmit={handleSignup} className="space-y-4">

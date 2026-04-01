@@ -16,10 +16,15 @@ const ReaderHeader = ({ onToggleSearch, onToggleBookSelector }: ReaderHeaderProp
   return (
     <header className="fixed top-0 left-0 w-full h-16 bg-background/95 backdrop-blur-sm border-b border-border z-50 flex items-center justify-between px-4 md:px-8">
       <div className="flex items-center gap-3">
-        <img src={logoSrc} alt="Bíblia Alpha" className="w-8 h-8" width={32} height={32} />
-        <span className="text-sm tracking-[0.3em] font-sans font-light text-foreground hidden sm:inline">
-          BÍBLIA ALPHA
-        </span>
+        <img src={logoSrc} alt="Bíblia Alpha" className="w-10 h-10 drop-shadow" width={40} height={40} />
+        <div className="hidden sm:block">
+          <span className="text-base tracking-[0.3em] font-serif font-medium text-foreground">
+            BÍBLIA
+          </span>
+          <span className="text-xs tracking-[0.4em] font-sans font-light text-primary ml-2">
+            ALPHA
+          </span>
+        </div>
       </div>
 
       <div className="flex items-center gap-1">
