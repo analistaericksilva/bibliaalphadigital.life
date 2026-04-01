@@ -12,7 +12,7 @@ import UserPanel from "@/components/UserPanel";
 import BibleMapPanel from "@/components/BibleMapPanel";
 import VerseActionMenu from "@/components/VerseActionMenu";
 import { useUserAnnotations } from "@/hooks/useUserAnnotations";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, ArrowLeft } from "lucide-react";
 
 interface Verse {
   verse: number;
