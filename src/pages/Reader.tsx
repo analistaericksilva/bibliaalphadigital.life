@@ -78,6 +78,7 @@ const Reader = () => {
   const [verses, setVerses] = useState<Verse[]>([]);
   const [loading, setLoading] = useState(true);
   const [noteVerses, setNoteVerses] = useState<Set<number>>(new Set());
+  const [crossRefVerses, setCrossRefVerses] = useState<Set<number>>(new Set());
   const [actionMenu, setActionMenu] = useState<{ verse: number; x: number; y: number } | null>(null);
   const verseRefs = useRef<Record<number, HTMLElement | null>>({});
 
