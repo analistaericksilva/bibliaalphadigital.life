@@ -152,8 +152,7 @@ const Reader = () => {
       <SearchPanel
         open={showSearch}
         onClose={() => setShowSearch(false)}
-        verses={verses}
-        onVerseClick={() => {}}
+        onNavigate={goToChapter}
       />
     </div>
   );
