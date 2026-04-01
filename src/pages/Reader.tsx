@@ -218,16 +218,25 @@ const Reader = () => {
                 const speechClass = getSpeechClass(v.text, currentBook);
                 const hasNote = noteVerses.has(v.verse);
                 return (
-                  <span
-                    key={v.verse}
-                    ref={(el) => { verseRefs.current[v.verse] = el; }}
-                    className={`${hasNote ? "cursor-pointer hover:bg-primary/5 rounded px-0.5" : ""}`}
-                    onClick={hasNote ? () => handleVerseClick(v.verse) : undefined}
-                  >
-                    <sup className={`verse-number ${hasNote ? "!text-primary !font-bold" : ""}`}>
-                      {v.verse}
-                    </sup>
-                    <span className={speechClass}>{v.text}</span>{" "}
+                  <span key={v.verse}>
+                    <span
+                      ref={(el) => { verseRefs.current[v.verse] = el; }}
+                      className={`${hasNote ? "cursor-pointer hover:bg-primary/5 rounded px-0.5" : ""}`}
+                      onClick={hasNote ? () => handleVerseClick(v.verse) : undefined}
+                    >
+                      <sup className={`verse-number ${hasNote ? "!text-primary !font-bold" : ""}`}>
+                        {v.verse}
+                      </sup>
+                      <span className={speechClass}>{v.text}</span>{" "}
+                    </span>
+                    {hasNote && expandedNotes.has(v.verse) && inlineNotes.has(v.verse) && (
+                      <span className="block my-2 mx-1 px-3 py-2 bg-primary/5 border-l-2 border-primary rounded-r text-xs font-sans text-foreground/80 leading-relaxed animate-fade-in">
+                        {inlineNotes.get(v.verse)!.title && (
+                          <span className="font-semibold text-primary mr-1">{inlineNotes.get(v.verse)!.title}:</span>
+                        )}
+                        {inlineNotes.get(v.verse)!.content}
+                      </span>
+                    )}
                   </span>
                 );
               })}
