@@ -81,8 +81,9 @@ const BibleMapPanel = ({ open, onClose, bookId, chapter, onNavigate }: BibleMapP
     const map = L.map(mapContainerRef.current).setView([31.5, 35.2], 7);
     mapRef.current = map;
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+      subdomains: "abcd",
     }).addTo(map);
 
     const bounds = L.latLngBounds(filteredPlaces.map((p) => [p.lat, p.lon]));
