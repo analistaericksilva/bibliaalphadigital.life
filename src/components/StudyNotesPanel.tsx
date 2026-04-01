@@ -120,6 +120,11 @@ const StudyNotesPanel = ({ open, onClose, bookId, chapter, selectedVerse, onNavi
       setNotes((notesRes.data as StudyNote[]) || []);
       setCrossRefs((refsRes.data as CrossRef[]) || []);
       setLoading(false);
+
+      // Auto-generate AI note for selected verse if not already generated
+      if (selectedVerse && !aiNotes[selectedVerse]) {
+        generateAiNote(selectedVerse);
+      }
     };
     fetchData();
   }, [open, bookId, chapter, selectedVerse]);
