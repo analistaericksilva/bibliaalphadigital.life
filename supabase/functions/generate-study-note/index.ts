@@ -78,11 +78,18 @@ Escreva uma nota teológica sistemática no estilo de Augustus Hopkins Strong (T
 **🔥 Nota Pentecostal**
 Uma breve nota (2-3 frases) com perspectiva pentecostal/carismática sobre o versículo. Sem citar fontes.
 
+**🙏 Devocional Diário**
+Um breve devocional pessoal baseado no versículo. Máximo 5 linhas. Inclua uma reflexão espiritual que toque o coração do leitor.
+
+**�✏️ Aplicação Pessoal**
+Uma aplicação prática e direta para o dia a dia do cristão. Máximo 3 linhas. Comece com um verbo de ação (ex: "Procure...", "Dedique...", "Lembre-se...").
+
 Instruções gerais:
 - Escreva em português brasileiro
 - Não repita o texto do versículo
 - Tom reverente mas acessível
-- Cada seção deve ser claramente identificada com o título em negrito`
+- Cada seção deve ser claramente identificada com o título em negrito
+- IMPORTANTE: Devocional + Aplicação juntos não devem exceder 7 linhas no total`
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
