@@ -378,6 +378,14 @@ const Reader = () => {
         onNavigate={goToChapter}
         defaultTab={userPanelTab}
       />
+
+      <BibleMapPanel
+        open={showMap}
+        onClose={() => setShowMap(false)}
+        bookId={currentBook}
+        chapter={currentChapter}
+        onNavigate={goToChapter}
+      />
     </div>
   );
 };
