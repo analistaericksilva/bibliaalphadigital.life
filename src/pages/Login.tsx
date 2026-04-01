@@ -29,11 +29,14 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-sm mx-auto px-6 animate-fade-in">
-        <div className="text-center mb-12">
-          <img src={logoSrc} alt="Bíblia Alpha" className="w-16 h-16 mx-auto mb-6" width={64} height={64} />
-          <h1 className="text-4xl tracking-[0.3em] font-light font-sans text-foreground">
-            BÍBLIA ALPHA
+        <div className="text-center mb-16">
+          <img src={logoSrc} alt="Bíblia Alpha" className="w-28 h-28 mx-auto mb-8 drop-shadow-lg" width={112} height={112} />
+          <h1 className="text-5xl tracking-[0.4em] font-serif font-medium text-foreground leading-tight">
+            BÍBLIA
           </h1>
+          <p className="text-2xl tracking-[0.6em] font-sans font-light text-primary mt-2">
+            ALPHA
+          </p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-4">
