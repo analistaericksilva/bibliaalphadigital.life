@@ -74,6 +74,99 @@ export type Database = {
         }
         Relationships: []
       }
+      favorites: {
+        Row: {
+          book_id: string
+          chapter: number
+          created_at: string
+          id: string
+          label: string | null
+          user_id: string
+          verse: number
+        }
+        Insert: {
+          book_id: string
+          chapter: number
+          created_at?: string
+          id?: string
+          label?: string | null
+          user_id: string
+          verse: number
+        }
+        Update: {
+          book_id?: string
+          chapter?: number
+          created_at?: string
+          id?: string
+          label?: string | null
+          user_id?: string
+          verse?: number
+        }
+        Relationships: []
+      }
+      highlights: {
+        Row: {
+          book_id: string
+          chapter: number
+          color: string
+          created_at: string
+          id: string
+          user_id: string
+          verse: number
+        }
+        Insert: {
+          book_id: string
+          chapter: number
+          color?: string
+          created_at?: string
+          id?: string
+          user_id: string
+          verse: number
+        }
+        Update: {
+          book_id?: string
+          chapter?: number
+          color?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          verse?: number
+        }
+        Relationships: []
+      }
+      personal_notes: {
+        Row: {
+          book_id: string
+          chapter: number
+          content: string
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+          verse: number
+        }
+        Insert: {
+          book_id: string
+          chapter: number
+          content: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+          verse: number
+        }
+        Update: {
+          book_id?: string
+          chapter?: number
+          content?: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+          verse?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -100,6 +193,30 @@ export type Database = {
           id?: string
           status?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reading_history: {
+        Row: {
+          book_id: string
+          chapter: number
+          id: string
+          read_at: string
+          user_id: string
+        }
+        Insert: {
+          book_id: string
+          chapter: number
+          id?: string
+          read_at?: string
+          user_id: string
+        }
+        Update: {
+          book_id?: string
+          chapter?: number
+          id?: string
+          read_at?: string
           user_id?: string
         }
         Relationships: []
