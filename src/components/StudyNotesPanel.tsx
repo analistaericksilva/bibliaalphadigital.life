@@ -21,14 +21,6 @@ interface CrossRef {
   refs: string;
 }
 
-interface AiSections {
-  matthewHenry?: string;
-  strong?: string;
-  pentecostal?: string;
-  devocional?: string;
-  aplicacao?: string;
-}
-
 interface StudyNotesPanelProps {
   open: boolean;
   onClose: () => void;
@@ -83,20 +75,23 @@ function renderClickableRefs(
   });
 }
 
-const SECTION_CONFIG = [
-  { key: "matthewHenry", label: "MATTHEW HENRY", subtitle: "Comentário Devocional" },
-  { key: "strong", label: "AUGUSTUS H. STRONG", subtitle: "Teologia Sistemática" },
-  { key: "pentecostal", label: "NOTA PENTECOSTAL", subtitle: "Perspectiva Carismática" },
-  { key: "devocional", label: "DEVOCIONAL DIÁRIO", subtitle: "Reflexão Espiritual" },
-  { key: "aplicacao", label: "APLICAÇÃO PESSOAL", subtitle: "Vida Prática" },
-] as const;
+// Group notes by source/type for display
+const SOURCE_LABELS: Record<string, { label: string; subtitle: string }> = {
+  "matthew_henry": { label: "MATTHEW HENRY", subtitle: "Comentário Devocional" },
+  "strong": { label: "AUGUSTUS H. STRONG", subtitle: "Teologia Sistemática" },
+  "pentecostal": { label: "NOTA PENTECOSTAL", subtitle: "Perspectiva Carismática" },
+  "devocional": { label: "DEVOCIONAL DIÁRIO", subtitle: "Reflexão Espiritual" },
+  "aplicacao": { label: "APLICAÇÃO PESSOAL", subtitle: "Vida Prática" },
+  "wesley": { label: "JOHN WESLEY", subtitle: "Sermões" },
+  "spurgeon": { label: "C. H. SPURGEON", subtitle: "Sermões Graciosos" },
+  "enciclopedia": { label: "ENCICLOPÉDIA BÍBLICA", subtitle: "Referência" },
+  "commentary": { label: "NOTA DE ESTUDO", subtitle: "Comentário" },
+};
 
 const StudyNotesPanel = ({ open, onClose, bookId, chapter, selectedVerse, onNavigate }: StudyNotesPanelProps) => {
   const [notes, setNotes] = useState<StudyNote[]>([]);
   const [crossRefs, setCrossRefs] = useState<CrossRef[]>([]);
   const [loading, setLoading] = useState(false);
-  const [aiSections, setAiSections] = useState<Record<number, AiSections>>({});
-  const [aiLoading, setAiLoading] = useState<number | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -118,19 +113,23 @@ const StudyNotesPanel = ({ open, onClose, bookId, chapter, selectedVerse, onNavi
         .order("verse");
 
       if (selectedVerse) {
-        notesQuery = notesQuery.eq("verse_start", selectedVerse);
+        notesQuery = notesQuery.lte("verse_start", selectedVerse);
         refsQuery = refsQuery.eq("verse", selectedVerse);
       }
 
       const [notesRes, refsRes] = await Promise.all([notesQuery, refsQuery]);
 
-      setNotes((notesRes.data as StudyNote[]) || []);
+      // Filter notes that cover the selected verse
+      let filteredNotes = (notesRes.data as StudyNote[]) || [];
+      if (selectedVerse) {
+        filteredNotes = filteredNotes.filter(
+          (n) => n.verse_start <= selectedVerse && (n.verse_end ? n.verse_end >= selectedVerse : n.verse_start === selectedVerse)
+        );
+      }
+
+      setNotes(filteredNotes);
       setCrossRefs((refsRes.data as CrossRef[]) || []);
       setLoading(false);
-
-      if (selectedVerse && !aiSections[selectedVerse]) {
-        generateAiNote(selectedVerse);
-      }
     };
     fetchData();
   }, [open, bookId, chapter, selectedVerse]);
@@ -142,38 +141,17 @@ const StudyNotesPanel = ({ open, onClose, bookId, chapter, selectedVerse, onNavi
     }
   }, [onNavigate, onClose]);
 
-  const generateAiNote = useCallback(async (verse: number) => {
-    const book = bibleBooks.find((b) => b.id === bookId);
-    if (!book) return;
-
-    setAiLoading(verse);
-    try {
-      const { data, error } = await supabase.functions.invoke("generate-study-note", {
-        body: { bookId, bookName: book.name, chapter, verse },
-      });
-      if (!error && data?.sections) {
-        setAiSections((prev) => ({ ...prev, [verse]: data.sections }));
-      } else if (!error && data?.note) {
-        // Fallback: try to parse from raw note
-        try {
-          const jsonMatch = data.note.match(/\{[\s\S]*\}/);
-          if (jsonMatch) {
-            setAiSections((prev) => ({ ...prev, [verse]: JSON.parse(jsonMatch[0]) }));
-          }
-        } catch {
-          // Can't parse, ignore
-        }
-      }
-    } catch (err) {
-      console.error("Error generating AI note:", err);
-    } finally {
-      setAiLoading(null);
-    }
-  }, [bookId, chapter]);
-
   if (!open) return null;
 
-  const currentSections = selectedVerse ? aiSections[selectedVerse] : null;
+  // Group notes by note_type/source
+  const groupedNotes: Record<string, StudyNote[]> = {};
+  notes.forEach((note) => {
+    const key = note.note_type || "commentary";
+    if (!groupedNotes[key]) groupedNotes[key] = [];
+    groupedNotes[key].push(note);
+  });
+
+  const hasContent = notes.length > 0 || crossRefs.length > 0;
 
   return (
     <>
@@ -199,38 +177,48 @@ const StudyNotesPanel = ({ open, onClose, bookId, chapter, selectedVerse, onNavi
               </div>
             )}
 
-            {!loading && notes.length === 0 && crossRefs.length === 0 && !currentSections && aiLoading === null && (
+            {!loading && !hasContent && (
               <p className="text-sm text-muted-foreground text-center py-16 font-sans">
                 Nenhuma nota ou referência disponível para este {selectedVerse ? "versículo" : "capítulo"}.
               </p>
             )}
 
-            {/* AI Loading */}
-            {aiLoading === selectedVerse && (
-              <div className="rounded-lg border border-border bg-card p-5 flex items-center gap-3">
-                <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                <span className="text-sm text-muted-foreground font-sans">Gerando notas de estudo...</span>
-              </div>
-            )}
-
-            {/* AI Sections — each as a separate card */}
-            {!loading && currentSections && SECTION_CONFIG.map(({ key, label, subtitle }) => {
-              const content = currentSections[key as keyof AiSections];
-              if (!content) return null;
+            {/* Notes grouped by source/type */}
+            {!loading && Object.entries(groupedNotes).map(([type, typeNotes]) => {
+              const config = SOURCE_LABELS[type] || { label: type.toUpperCase(), subtitle: "" };
               return (
-                <div key={key} className="rounded-lg border border-border bg-card overflow-hidden">
+                <div key={type} className="rounded-lg border border-border bg-card overflow-hidden">
                   <div className="px-5 pt-4 pb-2 border-b border-border/50 bg-muted/30">
                     <h3 className="text-[10px] tracking-[0.25em] font-sans font-bold text-foreground uppercase">
-                      {label}
+                      {config.label}
                     </h3>
-                    <p className="text-[10px] font-sans text-muted-foreground mt-0.5">
-                      {subtitle}
-                    </p>
+                    {config.subtitle && (
+                      <p className="text-[10px] font-sans text-muted-foreground mt-0.5">
+                        {config.subtitle}
+                      </p>
+                    )}
                   </div>
-                  <div className="px-5 py-4">
-                    <p className="text-[13px] font-serif leading-[1.8] text-foreground/90 whitespace-pre-line">
-                      {content}
-                    </p>
+                  <div className="px-5 py-4 space-y-4">
+                    {typeNotes.map((note) => (
+                      <div key={note.id}>
+                        {(typeNotes.length > 1 || note.title) && (
+                          <div className="flex items-center gap-2 mb-1.5">
+                            <span className="text-[10px] font-sans font-semibold text-primary tracking-wider">
+                              v. {note.verse_start}
+                              {note.verse_end ? `–${note.verse_end}` : ""}
+                            </span>
+                            {note.title && (
+                              <span className="text-xs font-sans font-semibold text-foreground">
+                                {note.title}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        <p className="text-[13px] font-serif leading-[1.8] text-foreground/90 whitespace-pre-line">
+                          {note.content}
+                        </p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               );
@@ -263,50 +251,6 @@ const StudyNotesPanel = ({ open, onClose, bookId, chapter, selectedVerse, onNavi
                   ))}
                 </div>
               </div>
-            )}
-
-            {/* Study Notes from DB */}
-            {!loading && notes.length > 0 && (
-              <div className="rounded-lg border border-border bg-card overflow-hidden">
-                <div className="px-5 pt-4 pb-2 border-b border-border/50 bg-muted/30">
-                  <div className="flex items-center gap-2">
-                    <BookOpen className="w-3.5 h-3.5 text-primary" />
-                    <h3 className="text-[10px] tracking-[0.25em] font-sans font-bold text-foreground uppercase">
-                      Notas de Estudo
-                    </h3>
-                  </div>
-                </div>
-                <div className="px-5 py-4 space-y-4">
-                  {notes.map((note) => (
-                    <div key={note.id}>
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <span className="text-[10px] font-sans font-semibold text-primary tracking-wider">
-                          v. {note.verse_start}
-                          {note.verse_end ? `–${note.verse_end}` : ""}
-                        </span>
-                        {note.title && (
-                          <span className="text-xs font-sans font-semibold text-foreground">
-                            {note.title}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[13px] font-serif leading-[1.8] text-foreground/90">{note.content}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Generate button fallback */}
-            {!loading && selectedVerse && !currentSections && aiLoading !== selectedVerse && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full text-xs font-sans"
-                onClick={() => generateAiNote(selectedVerse)}
-              >
-                Gerar notas de estudo
-              </Button>
             )}
           </div>
         </ScrollArea>
