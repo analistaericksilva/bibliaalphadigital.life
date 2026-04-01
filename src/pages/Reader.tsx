@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { bibleBooks } from "@/data/bibleBooks";
 import { supabase } from "@/integrations/supabase/client";
 import ReaderHeader from "@/components/ReaderHeader";
@@ -12,8 +13,9 @@ interface Verse {
 }
 
 const Reader = () => {
-  const [currentBook, setCurrentBook] = useState("gn");
-  const [currentChapter, setCurrentChapter] = useState(1);
+  const [searchParams] = useSearchParams();
+  const [currentBook, setCurrentBook] = useState(searchParams.get("book") || "gn");
+  const [currentChapter, setCurrentChapter] = useState(Number(searchParams.get("chapter")) || 1);
   const [showBooks, setShowBooks] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [verses, setVerses] = useState<Verse[]>([]);

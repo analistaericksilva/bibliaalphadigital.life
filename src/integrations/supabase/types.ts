@@ -77,6 +77,103 @@ export type Database = {
         }
         Relationships: []
       }
+      reading_plan_days: {
+        Row: {
+          created_at: string
+          day_number: number
+          devotional_text: string | null
+          id: string
+          plan_id: string
+          readings: Json
+          title: string | null
+        }
+        Insert: {
+          created_at?: string
+          day_number: number
+          devotional_text?: string | null
+          id?: string
+          plan_id: string
+          readings?: Json
+          title?: string | null
+        }
+        Update: {
+          created_at?: string
+          day_number?: number
+          devotional_text?: string | null
+          id?: string
+          plan_id?: string
+          readings?: Json
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reading_plan_days_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "reading_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reading_plans: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          total_days: number
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          total_days: number
+          type?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          total_days?: number
+          type?: string
+        }
+        Relationships: []
+      }
+      user_plan_progress: {
+        Row: {
+          completed_at: string
+          day_number: number
+          id: string
+          plan_id: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          day_number: number
+          id?: string
+          plan_id: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          day_number?: number
+          id?: string
+          plan_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_plan_progress_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "reading_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string

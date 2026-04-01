@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import ReadingPlans from "./pages/ReadingPlans";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/planos" element={<ReadingPlans />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

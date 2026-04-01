@@ -1,6 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Book, Search, Settings, Shield, LogOut } from "lucide-react";
+import { Book, Search, Settings, Shield, LogOut, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoSrc from "@/assets/star-of-david-logo.png";
 
@@ -33,6 +33,9 @@ const ReaderHeader = ({ onToggleSearch, onToggleBookSelector }: ReaderHeaderProp
         </Button>
         <Button variant="ghost" size="icon" onClick={onToggleSearch} title="Buscar">
           <Search className="w-4 h-4" />
+        </Button>
+        <Button variant="ghost" size="icon" onClick={() => navigate("/planos")} title="Planos de Leitura">
+          <Calendar className="w-4 h-4" />
         </Button>
         {isAdmin && (
           <Button variant="ghost" size="icon" onClick={() => navigate("/admin")} title="Administração">
