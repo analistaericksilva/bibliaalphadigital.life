@@ -206,15 +206,43 @@ const StudyNotesPanel = ({ open, onClose, bookId, chapter, selectedVerse, onNavi
       setNotes(filteredNotes);
       setConcordanceRefs((concRes.data as StudyNote[]) || []);
 
-      // Fetch Strong's entries — search for terms that might relate
-      // We'll show Strong entries if they exist (they're in bible_dictionary)
+      // Fetch Strong's entries based on verse text keywords
       if (selectedVerse) {
-        const { data: strongData } = await supabase
-          .from("bible_dictionary")
-          .select("*")
-          .not("hebrew_greek", "is", null)
-          .limit(10);
-        setStrongEntries((strongData as DictEntry[]) || []);
+        // First get the verse text
+        const { data: verseData } = await supabase
+          .from("bible_verses")
+          .select("text")
+          .eq("book_id", bookId)
+          .eq("chapter", chapter)
+          .eq("verse_number", selectedVerse)
+          .single();
+
+        if (verseData?.text) {
+          // Extract meaningful words (4+ chars, no common words)
+          const stopWords = new Set(["para", "como", "pela", "pelo", "dele", "dela", "deus", "senhor", "sobre", "disse", "todos", "toda", "este", "esta", "isso", "aqui", "mais", "seus", "suas", "eles", "elas", "foram", "será", "está", "tinha", "fazer", "onde", "qual", "quem", "quando", "porque", "porém", "então", "também", "depois", "antes", "entre", "ainda", "muito", "outro", "outra", "cada", "mesmo", "mesma", "nosso", "vosso", "terra", "casa", "pois", "assim", "seria", "pode", "podem", "havia", "estas", "estes", "outros", "outras", "tudo", "nada"]);
+          const words = verseData.text
+            .replace(/[^\wÀ-ú]/g, " ")
+            .split(/\s+/)
+            .filter((w: string) => w.length >= 4 && !stopWords.has(w.toLowerCase()))
+            .map((w: string) => w.toLowerCase())
+            .slice(0, 6); // Top 6 keywords
+
+          if (words.length > 0) {
+            // Search dictionary for terms matching any keyword
+            const orFilter = words.map((w: string) => `term.ilike.%${w}%`).join(",");
+            const { data: strongData } = await supabase
+              .from("bible_dictionary")
+              .select("*")
+              .not("hebrew_greek", "is", null)
+              .or(orFilter)
+              .limit(8);
+            setStrongEntries((strongData as DictEntry[]) || []);
+          } else {
+            setStrongEntries([]);
+          }
+        } else {
+          setStrongEntries([]);
+        }
       } else {
         setStrongEntries([]);
       }
