@@ -389,6 +389,7 @@ const Reader = () => {
         bookId={currentBook}
         chapter={currentChapter}
         selectedVerse={selectedVerse}
+        onNavigate={goToChapter}
       />
 
       <DictionaryPanel
