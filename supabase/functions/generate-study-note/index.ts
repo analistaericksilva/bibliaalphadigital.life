@@ -76,7 +76,7 @@ Escreva uma nota devocional e prática no estilo característico de Matthew Henr
 Escreva uma nota teológica sistemática no estilo de Augustus Hopkins Strong (Teologia Sistemática). Aborde aspectos doutrinários e teológicos relevantes do versículo. 1-2 parágrafos.
 
 **🔥 Nota Pentecostal**
-Uma breve nota (2-3 frases) com perspectiva pentecostal/carismática sobre o versículo. Cite a fonte (ex: "Bíblia de Estudo Pentecostal", "Comentário Pentecostal do NT").
+Uma breve nota (2-3 frases) com perspectiva pentecostal/carismática sobre o versículo. Sem citar fontes.
 
 Instruções gerais:
 - Escreva em português brasileiro
