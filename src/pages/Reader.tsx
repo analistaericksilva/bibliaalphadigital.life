@@ -261,8 +261,13 @@ const Reader = () => {
         <ChevronRight className="w-8 h-8" />
       </div>
 
-      {/* Reader content */}
+      {/* Daily verse + Reader content */}
       <main className="max-w-3xl mx-auto px-6 md:px-12 pt-32 pb-48">
+        {/* Daily Verse */}
+        <div className="mb-8 animate-fade-in">
+          <DailyVerse />
+        </div>
+
         <div className="bg-paper page-shadow rounded p-8 md:p-16 mb-8 animate-fade-in">
           {/* Back button */}
           {navHistory.length > 0 && (
