@@ -31,6 +31,8 @@ interface ReaderSidebarProps {
   onToggleMap?: () => void;
   onShare?: () => void;
   onToggleCompare?: () => void;
+  onToggleLexicon?: () => void;
+  onTogglePeople?: () => void;
 }
 
 const ReaderSidebar = ({
