@@ -1,0 +1,35 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#FFFFFF"/>
+
+  <!-- Linha decorativa superior -->
+  <rect x="0" y="0" width="1200" height="4" fill="#b8972e"/>
+  <!-- Linha decorativa inferior -->
+  <rect x="0" y="626" width="1200" height="4" fill="#b8972e"/>
+
+  <!-- Estrela de Davi -->
+  <g transform="translate(340, 315)">
+    <polygon points="0,-72 62,36 -62,36" fill="none" stroke="#b8972e" stroke-width="6"/>
+    <polygon points="0,72 62,-36 -62,-36" fill="none" stroke="#b8972e" stroke-width="6"/>
+  </g>
+
+  <!-- Linha divisória vertical dourada -->
+  <rect x="480" y="120" width="1.5" height="390" fill="#b8972e" opacity="0.4"/>
+
+  <!-- BÍBLIA -->
+  <text x="620" y="260" font-family="Georgia, serif" font-size="96" font-weight="400" fill="#1a1a1a" letter-spacing="28">BÍBLIA</text>
+  <!-- ALPHA -->
+  <text x="638" y="340" font-family="Georgia, serif" font-size="52" font-weight="400" fill="#b8972e" letter-spacing="32">ALPHA</text>
+
+  <!-- Linha decorativa -->
+  <rect x="620" y="360" width="430" height="1.5" fill="#b8972e" opacity="0.5"/>
+
+  <!-- Subtítulo -->
+  <text x="620" y="400" font-family="Georgia, serif" font-size="22" fill="#555555" letter-spacing="3">Estudo Bíblico Completo</text>
+
+  <!-- Descrição -->
+  <text x="620" y="440" font-family="Georgia, serif" font-size="17" fill="#888888">Notas de Matthew Henry · Dicionário Bíblico</text>
+  <text x="620" y="465" font-family="Georgia, serif" font-size="17" fill="#888888">Grifos e Anotações Pessoais</text>
+
+  <!-- URL -->
+  <text x="600" y="570" text-anchor="middle" font-family="Georgia, serif" font-size="18" fill="#b8972e" letter-spacing="2">bibliaalpha.com</text>
+</svg>
