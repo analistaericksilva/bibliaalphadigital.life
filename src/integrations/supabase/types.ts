@@ -224,6 +224,51 @@ export type Database = {
         }
         Relationships: []
       }
+      interlinear_words: {
+        Row: {
+          book_id: string
+          chapter: number
+          created_at: string
+          english: string | null
+          grammar: string | null
+          id: string
+          language: string
+          original_word: string
+          strongs_number: string | null
+          transliteration: string | null
+          verse: number
+          word_num: number
+        }
+        Insert: {
+          book_id: string
+          chapter: number
+          created_at?: string
+          english?: string | null
+          grammar?: string | null
+          id?: string
+          language?: string
+          original_word: string
+          strongs_number?: string | null
+          transliteration?: string | null
+          verse: number
+          word_num: number
+        }
+        Update: {
+          book_id?: string
+          chapter?: number
+          created_at?: string
+          english?: string | null
+          grammar?: string | null
+          id?: string
+          language?: string
+          original_word?: string
+          strongs_number?: string | null
+          transliteration?: string | null
+          verse?: number
+          word_num?: number
+        }
+        Relationships: []
+      }
       personal_notes: {
         Row: {
           book_id: string
