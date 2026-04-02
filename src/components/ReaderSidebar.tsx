@@ -64,6 +64,8 @@ const ReaderSidebar = ({
   const studyItems = [
     onToggleNotes ? { title: "Notas de Estudo", icon: BookOpen, onClick: onToggleNotes } : null,
     onToggleDictionary ? { title: "Dicionário Bíblico", icon: BookText, onClick: onToggleDictionary } : null,
+    onToggleLexicon ? { title: "Léxico Strong's", icon: Languages, onClick: onToggleLexicon } : null,
+    onTogglePeople ? { title: "Nomes Bíblicos", icon: Users, onClick: onTogglePeople } : null,
     onToggleMap ? { title: "Mapa Bíblico", icon: MapPin, onClick: onToggleMap } : null,
   ].filter(Boolean) as { title: string; icon: any; onClick: () => void }[];
 
