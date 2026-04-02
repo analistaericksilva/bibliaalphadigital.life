@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Book, Search, Shield, LogOut, Calendar, BookOpen, BookText,
   FileText, Clock, Heart, Navigation, MapPin, Share2, ArrowLeftRight,
-  ChevronLeft, ChevronRight,
+  ChevronLeft, ChevronRight, Languages, Users,
 } from "lucide-react";
 import logoSrc from "@/assets/star-of-david-logo.png";
 import {
@@ -31,6 +31,8 @@ interface ReaderSidebarProps {
   onToggleMap?: () => void;
   onShare?: () => void;
   onToggleCompare?: () => void;
+  onToggleLexicon?: () => void;
+  onTogglePeople?: () => void;
 }
 
 const ReaderSidebar = ({
@@ -44,6 +46,8 @@ const ReaderSidebar = ({
   onToggleMap,
   onShare,
   onToggleCompare,
+  onToggleLexicon,
+  onTogglePeople,
 }: ReaderSidebarProps) => {
   const { isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
@@ -60,6 +64,8 @@ const ReaderSidebar = ({
   const studyItems = [
     onToggleNotes ? { title: "Notas de Estudo", icon: BookOpen, onClick: onToggleNotes } : null,
     onToggleDictionary ? { title: "Dicionário Bíblico", icon: BookText, onClick: onToggleDictionary } : null,
+    onToggleLexicon ? { title: "Léxico Strong's", icon: Languages, onClick: onToggleLexicon } : null,
+    onTogglePeople ? { title: "Nomes Bíblicos", icon: Users, onClick: onTogglePeople } : null,
     onToggleMap ? { title: "Mapa Bíblico", icon: MapPin, onClick: onToggleMap } : null,
   ].filter(Boolean) as { title: string; icon: any; onClick: () => void }[];
 

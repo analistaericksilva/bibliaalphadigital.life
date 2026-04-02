@@ -13,6 +13,8 @@ import UserPanel from "@/components/UserPanel";
 import BibleMapPanel from "@/components/BibleMapPanel";
 import VerseActionMenu from "@/components/VerseActionMenu";
 import VersionComparePanel from "@/components/VersionComparePanel";
+import LexiconPanel from "@/components/LexiconPanel";
+import PeoplePanel from "@/components/PeoplePanel";
 import DailyVerse from "@/components/DailyVerse";
 import { useUserAnnotations } from "@/hooks/useUserAnnotations";
 import { ChevronLeft, ChevronRight, Loader2, ArrowLeft, Menu } from "lucide-react";
@@ -77,6 +79,8 @@ const Reader = () => {
   const [showUserPanel, setShowUserPanel] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const [showCompare, setShowCompare] = useState(false);
+  const [showLexicon, setShowLexicon] = useState(false);
+  const [showPeople, setShowPeople] = useState(false);
   const [userPanelTab, setUserPanelTab] = useState("history");
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
   const [verses, setVerses] = useState<Verse[]>([]);
@@ -215,6 +219,8 @@ const Reader = () => {
           onToggleMap={() => setShowMap(!showMap)}
           onShare={handleShareChapter}
           onToggleCompare={() => setShowCompare(!showCompare)}
+          onToggleLexicon={() => setShowLexicon(!showLexicon)}
+          onTogglePeople={() => setShowPeople(!showPeople)}
         />
 
         <div className="flex-1 flex flex-col min-w-0">
@@ -386,6 +392,8 @@ const Reader = () => {
       <UserPanel open={showUserPanel} onClose={() => setShowUserPanel(false)} onNavigate={goToChapter} defaultTab={userPanelTab} />
       <BibleMapPanel open={showMap} onClose={() => setShowMap(false)} bookId={currentBook} chapter={currentChapter} onNavigate={goToChapter} />
       <VersionComparePanel open={showCompare} onClose={() => setShowCompare(false)} bookId={currentBook} chapter={currentChapter} selectedVerse={selectedVerse} />
+      <LexiconPanel open={showLexicon} onClose={() => setShowLexicon(false)} />
+      <PeoplePanel open={showPeople} onClose={() => setShowPeople(false)} />
     </SidebarProvider>
   );
 };

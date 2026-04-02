@@ -68,6 +68,39 @@ export type Database = {
         }
         Relationships: []
       }
+      bible_people: {
+        Row: {
+          created_at: string
+          description: string | null
+          family_info: string | null
+          id: string
+          name: string
+          person_type: string | null
+          references_list: Json | null
+          strongs_number: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          family_info?: string | null
+          id?: string
+          name: string
+          person_type?: string | null
+          references_list?: Json | null
+          strongs_number?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          family_info?: string | null
+          id?: string
+          name?: string
+          person_type?: string | null
+          references_list?: Json | null
+          strongs_number?: string | null
+        }
+        Relationships: []
+      }
       bible_places: {
         Row: {
           created_at: string
@@ -340,6 +373,42 @@ export type Database = {
           name?: string
           total_days?: number
           type?: string
+        }
+        Relationships: []
+      }
+      strongs_lexicon: {
+        Row: {
+          created_at: string
+          definition: string | null
+          gloss: string | null
+          id: string
+          language: string
+          morphology: string | null
+          original_word: string | null
+          strongs_number: string
+          transliteration: string | null
+        }
+        Insert: {
+          created_at?: string
+          definition?: string | null
+          gloss?: string | null
+          id?: string
+          language: string
+          morphology?: string | null
+          original_word?: string | null
+          strongs_number: string
+          transliteration?: string | null
+        }
+        Update: {
+          created_at?: string
+          definition?: string | null
+          gloss?: string | null
+          id?: string
+          language?: string
+          morphology?: string | null
+          original_word?: string | null
+          strongs_number?: string
+          transliteration?: string | null
         }
         Relationships: []
       }
