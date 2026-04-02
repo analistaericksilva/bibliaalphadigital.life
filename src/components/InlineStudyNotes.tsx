@@ -64,7 +64,7 @@ function renderContentWithRefs(
       const ch = parseInt(match[2], 10);
       const vs = parseInt(match[3], 10);
       parts.push(
-        <button key={`r${match.index}`} className="text-primary hover:underline cursor-pointer" onClick={() => onNav(bookId, ch, vs)}>
+        <button key={`r${match.index}`} className="text-primary hover:underline cursor-pointer font-semibold" onClick={() => onNav(bookId, ch, vs)}>
           {match[0]}
         </button>
       );
@@ -99,7 +99,7 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
   };
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchData = async () => {
       setLoading(true);
       const [notesRes, concRes, dictRes] = await Promise.all([
         supabase
@@ -131,7 +131,6 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
       setNotes(filtered);
       setConcordance((concRes.data as StudyNote[]) || []);
 
-      // Filter dict entries matching this verse
       const idToAbbrev: Record<string, string> = {};
       bibleBooks.forEach((b) => { idToAbbrev[b.id] = b.abbrev; });
       const allDict = (dictRes.data as DictEntry[]) || [];
@@ -145,7 +144,7 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
       setDictEntries(matched);
       setLoading(false);
     };
-    fetch();
+    fetchData();
   }, [bookId, chapter, verse]);
 
   const handleNav = useCallback(
@@ -160,16 +159,11 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
 
   if (loading) {
     return (
-      <div className="py-3 px-4 flex items-center gap-2 text-muted-foreground">
-        <Loader2 className="w-3 h-3 animate-spin" />
-        <span className="text-xs font-sans">Carregando notas…</span>
+      <div className="py-4 px-5 flex items-center gap-2 text-muted-foreground">
+        <Loader2 className="w-4 h-4 animate-spin" />
+        <span className="text-sm font-sans">Carregando notas…</span>
       </div>
     );
-  }
-
-  if (!hasContent && activeTab === "notes") {
-    // Still show interlinear tab even if no notes
-    // Fall through to the main render
   }
 
   // Group notes by type
@@ -181,30 +175,34 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
   });
 
   return (
-    <div className="my-3 mx-1 rounded-lg border border-primary/20 bg-card/80 backdrop-blur-sm shadow-md overflow-hidden animate-fade-in">
+    <div className="my-4 mx-1 rounded-xl border border-primary/20 bg-card shadow-lg overflow-hidden animate-fade-in">
       {/* Header with tabs */}
-      <div className="flex items-center justify-between px-4 py-2 bg-primary/5 border-b border-primary/10">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between px-5 py-3 bg-primary/5 border-b border-primary/10">
+        <div className="flex items-center gap-4">
           <button
             onClick={() => setActiveTab("notes")}
-            className={`flex items-center gap-1 text-[10px] tracking-[0.15em] font-sans font-bold uppercase transition-colors ${
-              activeTab === "notes" ? "text-primary" : "text-muted-foreground hover:text-foreground"
+            className={`flex items-center gap-1.5 text-xs tracking-wider font-sans font-bold uppercase transition-colors pb-0.5 ${
+              activeTab === "notes"
+                ? "text-primary border-b-2 border-primary"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            <BookOpen className="w-3 h-3" />
+            <BookOpen className="w-3.5 h-3.5" />
             Notas
           </button>
           <button
             onClick={() => setActiveTab("interlinear")}
-            className={`flex items-center gap-1 text-[10px] tracking-[0.15em] font-sans font-bold uppercase transition-colors ${
-              activeTab === "interlinear" ? "text-primary" : "text-muted-foreground hover:text-foreground"
+            className={`flex items-center gap-1.5 text-xs tracking-wider font-sans font-bold uppercase transition-colors pb-0.5 ${
+              activeTab === "interlinear"
+                ? "text-primary border-b-2 border-primary"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            <Languages className="w-3 h-3" />
+            <Languages className="w-3.5 h-3.5" />
             Interlinear
           </button>
         </div>
-        <button onClick={onClose} className="text-muted-foreground hover:text-foreground text-xs px-1">
+        <button onClick={onClose} className="text-muted-foreground hover:text-foreground text-sm px-2 py-1 rounded hover:bg-muted/50 transition-colors">
           ✕
         </button>
       </div>
@@ -219,114 +217,116 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
         />
       )}
 
-      {/* Notes tab */}
+      {/* Notes tab - empty state */}
       {activeTab === "notes" && !hasContent && (
-        <div className="py-3 px-4">
-          <p className="text-xs text-muted-foreground font-sans italic">Sem notas de estudo para este versículo.</p>
+        <div className="py-6 px-5">
+          <p className="text-sm text-muted-foreground font-sans italic">Sem notas de estudo para este versículo.</p>
         </div>
       )}
 
+      {/* Notes tab - content */}
       {activeTab === "notes" && hasContent && (
-
-      <div className="divide-y divide-border/50">
-        {/* Dictionary / Original Words */}
-        {dictEntries.length > 0 && (
-          <div>
-            <button
-              onClick={() => toggleSection("dict")}
-              className="w-full flex items-center gap-2 px-4 py-2 hover:bg-muted/30 transition-colors"
-            >
-              <Languages className="w-3 h-3 text-primary" />
-              <span className="text-[10px] tracking-[0.15em] font-sans font-bold uppercase flex-1 text-left">
-                Palavras Originais
-              </span>
-              {expandedSections.has("dict") ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-            </button>
-            {expandedSections.has("dict") && (
-              <div className="px-4 pb-4 space-y-3">
-                {dictEntries.map((entry) => (
-                  <div key={entry.id} className="text-sm p-2 rounded bg-muted/30">
-                    <span className="font-serif font-bold text-primary text-base">{entry.term}</span>
-                    {entry.hebrew_greek && (
-                      <span className="text-xs font-mono text-muted-foreground ml-2">{entry.hebrew_greek}</span>
-                    )}
-                    <p className="text-sm font-serif leading-relaxed text-foreground/90 mt-1">{entry.definition}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Study notes by type */}
-        {Object.entries(grouped).map(([type, typeNotes]) => (
-          <div key={type}>
-            <button
-              onClick={() => toggleSection(type)}
-              className="w-full flex items-center gap-2 px-4 py-2 hover:bg-muted/30 transition-colors"
-            >
-              <BookOpen className="w-3 h-3 text-primary" />
-              <span className="text-[10px] tracking-[0.15em] font-sans font-bold uppercase flex-1 text-left">
-                {SOURCE_LABELS[type] || type}
-              </span>
-              {expandedSections.has(type) ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-            </button>
-            {expandedSections.has(type) && (
-              <div className="px-4 pb-4 space-y-3">
-                {typeNotes.map((note) => (
-                  <div key={note.id} className="p-2 rounded bg-muted/30">
-                    {note.title && (
-                      <p className="text-xs font-sans font-semibold text-foreground mb-1">{note.title}</p>
-                    )}
-                    <div className="text-sm font-serif leading-[1.8] text-foreground/90 whitespace-pre-line">
-                      {renderContentWithRefs(note.content, onNavigate ? handleNav : undefined)}
+        <div className="divide-y divide-border/40">
+          {/* Dictionary / Original Words */}
+          {dictEntries.length > 0 && (
+            <div>
+              <button
+                onClick={() => toggleSection("dict")}
+                className="w-full flex items-center gap-2.5 px-5 py-3 hover:bg-muted/30 transition-colors"
+              >
+                <Languages className="w-4 h-4 text-primary" />
+                <span className="text-xs tracking-wider font-sans font-bold uppercase flex-1 text-left text-foreground">
+                  Palavras Originais
+                </span>
+                {expandedSections.has("dict") ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+              </button>
+              {expandedSections.has("dict") && (
+                <div className="px-5 pb-5 space-y-3">
+                  {dictEntries.map((entry) => (
+                    <div key={entry.id} className="p-4 rounded-lg bg-muted/30 border border-border/30">
+                      <div className="flex items-baseline gap-2 mb-2">
+                        <span className="font-serif font-bold text-primary text-lg">{entry.term}</span>
+                        {entry.hebrew_greek && (
+                          <span className="text-sm font-mono text-muted-foreground">{entry.hebrew_greek}</span>
+                        )}
+                      </div>
+                      <p className="text-base font-serif leading-[1.9] text-foreground/90">{entry.definition}</p>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
-        {/* Concordance */}
-        {concordance.length > 0 && (
-          <div>
-            <button
-              onClick={() => toggleSection("conc")}
-              className="w-full flex items-center gap-2 px-4 py-2 hover:bg-muted/30 transition-colors"
-            >
-              <Link2 className="w-3 h-3 text-primary" />
-              <span className="text-[10px] tracking-[0.15em] font-sans font-bold uppercase flex-1 text-left">
-                Referências Cruzadas
-              </span>
-              {expandedSections.has("conc") ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-            </button>
-            {expandedSections.has("conc") && (
-              <div className="px-4 pb-4">
-                {concordance.map((ref) => (
-                  <div key={ref.id} className="flex flex-wrap gap-1.5">
-                    {ref.content.split(";").map((r, i) => {
-                      const parsed = parseReference(r.trim());
-                      if (parsed && onNavigate) {
-                        return (
-                          <button
-                            key={i}
-                            className="text-primary hover:underline bg-primary/10 rounded px-2 py-1 text-xs font-sans"
-                            onClick={() => handleNav(parsed.bookId, parsed.chapter, parsed.verse)}
-                          >
-                            {r.trim()}
-                          </button>
-                        );
-                      }
-                      return <span key={i} className="text-muted-foreground text-xs px-1">{r.trim()}</span>;
-                    })}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+          {/* Study notes by type */}
+          {Object.entries(grouped).map(([type, typeNotes]) => (
+            <div key={type}>
+              <button
+                onClick={() => toggleSection(type)}
+                className="w-full flex items-center gap-2.5 px-5 py-3 hover:bg-muted/30 transition-colors"
+              >
+                <BookOpen className="w-4 h-4 text-primary" />
+                <span className="text-xs tracking-wider font-sans font-bold uppercase flex-1 text-left text-foreground">
+                  {SOURCE_LABELS[type] || type}
+                </span>
+                {expandedSections.has(type) ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+              </button>
+              {expandedSections.has(type) && (
+                <div className="px-5 pb-5 space-y-4">
+                  {typeNotes.map((note) => (
+                    <div key={note.id} className="p-4 rounded-lg bg-muted/30 border border-border/30">
+                      {note.title && (
+                        <p className="text-sm font-sans font-bold text-foreground mb-2">{note.title}</p>
+                      )}
+                      <div className="text-base font-serif leading-[2] text-foreground/90 whitespace-pre-line">
+                        {renderContentWithRefs(note.content, onNavigate ? handleNav : undefined)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+
+          {/* Concordance / Cross References */}
+          {concordance.length > 0 && (
+            <div>
+              <button
+                onClick={() => toggleSection("conc")}
+                className="w-full flex items-center gap-2.5 px-5 py-3 hover:bg-muted/30 transition-colors"
+              >
+                <Link2 className="w-4 h-4 text-primary" />
+                <span className="text-xs tracking-wider font-sans font-bold uppercase flex-1 text-left text-foreground">
+                  Referências Cruzadas
+                </span>
+                {expandedSections.has("conc") ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+              </button>
+              {expandedSections.has("conc") && (
+                <div className="px-5 pb-5">
+                  {concordance.map((ref) => (
+                    <div key={ref.id} className="flex flex-wrap gap-2">
+                      {ref.content.split(";").map((r, i) => {
+                        const parsed = parseReference(r.trim());
+                        if (parsed && onNavigate) {
+                          return (
+                            <button
+                              key={i}
+                              className="text-primary hover:text-primary/80 bg-primary/10 hover:bg-primary/20 rounded-lg px-3 py-1.5 text-sm font-sans font-medium transition-colors"
+                              onClick={() => handleNav(parsed.bookId, parsed.chapter, parsed.verse)}
+                            >
+                              {r.trim()}
+                            </button>
+                          );
+                        }
+                        return <span key={i} className="text-muted-foreground text-sm px-2 py-1">{r.trim()}</span>;
+                      })}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

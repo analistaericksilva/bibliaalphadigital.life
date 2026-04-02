@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Languages, ChevronDown, ChevronUp, X } from "lucide-react";
+import { Loader2, Languages } from "lucide-react";
 
 interface InterlinearWord {
   word_num: number;
@@ -27,7 +27,7 @@ const InterlinearView = ({ bookId, chapter, verse, onClose }: InterlinearViewPro
   const [lexiconLoading, setLexiconLoading] = useState(false);
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchData = async () => {
       setLoading(true);
       const { data } = await supabase
         .from("interlinear_words")
@@ -39,7 +39,7 @@ const InterlinearView = ({ bookId, chapter, verse, onClose }: InterlinearViewPro
       setWords((data as InterlinearWord[]) || []);
       setLoading(false);
     };
-    fetch();
+    fetchData();
   }, [bookId, chapter, verse]);
 
   const handleWordClick = async (word: InterlinearWord) => {
@@ -53,7 +53,6 @@ const InterlinearView = ({ bookId, chapter, verse, onClose }: InterlinearViewPro
 
     if (word.strongs_number) {
       setLexiconLoading(true);
-      // Clean strongs number for lookup
       const cleanStrongs = word.strongs_number.replace(/[A-Za-z]$/, '');
       const { data } = await supabase
         .from("strongs_lexicon")
@@ -69,17 +68,17 @@ const InterlinearView = ({ bookId, chapter, verse, onClose }: InterlinearViewPro
 
   if (loading) {
     return (
-      <div className="py-3 flex items-center justify-center gap-2 text-muted-foreground">
-        <Loader2 className="w-3 h-3 animate-spin" />
-        <span className="text-xs font-sans">Carregando interlinear…</span>
+      <div className="py-6 flex items-center justify-center gap-2 text-muted-foreground">
+        <Loader2 className="w-4 h-4 animate-spin" />
+        <span className="text-sm font-sans">Carregando interlinear…</span>
       </div>
     );
   }
 
   if (words.length === 0) {
     return (
-      <div className="py-2 px-4">
-        <p className="text-xs text-muted-foreground font-sans italic">
+      <div className="py-4 px-5">
+        <p className="text-sm text-muted-foreground font-sans italic">
           Texto interlinear não disponível para este versículo.
         </p>
       </div>
@@ -89,49 +88,47 @@ const InterlinearView = ({ bookId, chapter, verse, onClose }: InterlinearViewPro
   const isHebrew = words[0]?.language === "hebrew";
 
   return (
-    <div className="my-2 mx-1 rounded-lg border border-primary/20 bg-card/80 backdrop-blur-sm shadow-sm overflow-hidden animate-fade-in">
-      <div className="flex items-center justify-between px-4 py-2 bg-primary/5 border-b border-primary/10">
-        <div className="flex items-center gap-1.5">
-          <Languages className="w-3 h-3 text-primary" />
-          <span className="text-[10px] tracking-[0.2em] font-sans font-bold text-foreground uppercase">
-            Interlinear — v. {verse}
-          </span>
-          <span className={`text-[9px] px-1.5 py-0.5 rounded font-sans ${
-            isHebrew 
-              ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
-              : "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-          }`}>
-            {isHebrew ? "HEB" : "GRE"}
-          </span>
-        </div>
-        <button onClick={onClose} className="text-muted-foreground hover:text-foreground text-xs px-1">✕</button>
+    <div className="p-4">
+      {/* Language badge */}
+      <div className="flex items-center gap-2 mb-4">
+        <Languages className="w-4 h-4 text-primary" />
+        <span className="text-xs font-sans font-semibold text-foreground uppercase tracking-wider">
+          Versículo {verse}
+        </span>
+        <span className={`text-[10px] px-2 py-0.5 rounded-full font-sans font-medium ${
+          isHebrew 
+            ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
+            : "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+        }`}>
+          {isHebrew ? "Hebraico" : "Grego"}
+        </span>
       </div>
 
       {/* Word grid */}
-      <div className={`flex flex-wrap gap-1 p-3 ${isHebrew ? "flex-row-reverse" : ""}`}>
+      <div className={`flex flex-wrap gap-2 ${isHebrew ? "flex-row-reverse" : ""}`}>
         {words.map((w) => (
           <button
             key={w.word_num}
             onClick={() => handleWordClick(w)}
-            className={`flex flex-col items-center px-2 py-1.5 rounded-lg transition-colors min-w-[50px] ${
+            className={`flex flex-col items-center px-3 py-2.5 rounded-xl transition-all min-w-[60px] border ${
               selectedWord?.word_num === w.word_num
-                ? "bg-primary/10 ring-1 ring-primary/30"
-                : "hover:bg-muted/50"
+                ? "bg-primary/10 border-primary/30 shadow-sm"
+                : "border-transparent hover:bg-muted/50 hover:border-border"
             }`}
           >
-            <span className={`${isHebrew ? "text-base" : "text-sm"} font-serif text-foreground leading-tight`}>
+            <span className={`${isHebrew ? "text-lg" : "text-base"} font-serif text-foreground leading-tight`}>
               {w.original_word}
             </span>
             {w.transliteration && (
-              <span className="text-[9px] text-muted-foreground italic font-sans mt-0.5">
+              <span className="text-[10px] text-muted-foreground italic font-sans mt-1">
                 {w.transliteration}
               </span>
             )}
-            <span className="text-[10px] font-sans text-foreground/70 mt-0.5 leading-tight text-center">
+            <span className="text-[11px] font-sans text-foreground/80 mt-1 leading-tight text-center font-medium">
               {w.english}
             </span>
             {w.strongs_number && (
-              <span className="text-[8px] font-mono text-primary/60 mt-0.5">
+              <span className="text-[9px] font-mono text-primary/70 mt-1">
                 {w.strongs_number}
               </span>
             )}
@@ -141,53 +138,47 @@ const InterlinearView = ({ bookId, chapter, verse, onClose }: InterlinearViewPro
 
       {/* Selected word detail */}
       {selectedWord && (
-        <div className="px-4 pb-3 border-t border-border/50 pt-2">
-          <div className="flex items-start gap-3">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <span className={`${isHebrew ? "text-xl" : "text-lg"} font-serif text-foreground`}>
-                  {selectedWord.original_word}
-                </span>
-                {selectedWord.strongs_number && (
-                  <span className="text-[10px] font-mono text-primary font-bold">
-                    {selectedWord.strongs_number}
-                  </span>
-                )}
-              </div>
-              {selectedWord.transliteration && (
-                <p className="text-xs text-muted-foreground italic font-sans">
-                  {selectedWord.transliteration}
-                </p>
-              )}
-              <p className="text-sm font-sans font-medium text-foreground mt-0.5">
-                {selectedWord.english}
-              </p>
-              {selectedWord.grammar && (
-                <p className="text-[10px] font-mono text-muted-foreground mt-1">
-                  Morfologia: {selectedWord.grammar}
-                </p>
-              )}
-              {lexiconLoading && (
-                <div className="flex items-center gap-1 mt-2 text-muted-foreground">
-                  <Loader2 className="w-3 h-3 animate-spin" />
-                  <span className="text-[10px]">Buscando definição…</span>
-                </div>
-              )}
-              {lexiconDef && (
-                <div className="mt-2 p-2 bg-muted/30 rounded text-[11px] font-serif leading-relaxed text-foreground/85">
-                  {lexiconDef}
-                </div>
-              )}
-            </div>
+        <div className="mt-4 p-4 rounded-xl bg-muted/40 border border-border/50">
+          <div className="flex items-center gap-3 mb-2">
+            <span className={`${isHebrew ? "text-2xl" : "text-xl"} font-serif text-foreground`}>
+              {selectedWord.original_word}
+            </span>
+            {selectedWord.strongs_number && (
+              <span className="text-xs font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">
+                {selectedWord.strongs_number}
+              </span>
+            )}
           </div>
+          {selectedWord.transliteration && (
+            <p className="text-sm text-muted-foreground italic font-sans mb-1">
+              {selectedWord.transliteration}
+            </p>
+          )}
+          <p className="text-base font-sans font-semibold text-foreground">
+            {selectedWord.english}
+          </p>
+          {selectedWord.grammar && (
+            <p className="text-xs font-mono text-muted-foreground mt-2 bg-muted/50 inline-block px-2 py-1 rounded">
+              {selectedWord.grammar}
+            </p>
+          )}
+          {lexiconLoading && (
+            <div className="flex items-center gap-2 mt-3 text-muted-foreground">
+              <Loader2 className="w-3 h-3 animate-spin" />
+              <span className="text-xs">Buscando definição…</span>
+            </div>
+          )}
+          {lexiconDef && (
+            <div className="mt-3 p-3 bg-background rounded-lg border border-border/50 text-sm font-serif leading-relaxed text-foreground/90">
+              {lexiconDef}
+            </div>
+          )}
         </div>
       )}
 
-      <div className="px-4 pb-2">
-        <p className="text-[8px] text-muted-foreground/50 font-sans text-right">
-          STEPBible TAGNT/TAHOT (CC BY 4.0) — Tyndale House
-        </p>
-      </div>
+      <p className="text-[9px] text-muted-foreground/50 font-sans text-right mt-3">
+        STEPBible TAGNT/TAHOT (CC BY 4.0) — Tyndale House
+      </p>
     </div>
   );
 };
