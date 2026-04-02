@@ -1,6 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Book, Search, Shield, LogOut, Calendar, BookOpen, BookText, FileText, Clock, Heart, Navigation, MapPin, Share2, ArrowLeftRight } from "lucide-react";
+import { Book, Search, Shield, LogOut, Calendar, BookOpen, BookText, FileText, Clock, Heart, Navigation, MapPin, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoSrc from "@/assets/star-of-david-logo.png";
 
@@ -14,7 +14,6 @@ interface ReaderHeaderProps {
   onToggleGoTo?: () => void;
   onToggleMap?: () => void;
   onShare?: () => void;
-  onToggleCompare?: () => void;
 }
 
 const ReaderHeader = ({
@@ -27,7 +26,6 @@ const ReaderHeader = ({
   onToggleGoTo,
   onToggleMap,
   onShare,
-  onToggleCompare,
 }: ReaderHeaderProps) => {
   const { isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
@@ -86,11 +84,6 @@ const ReaderHeader = ({
         {onShare && (
           <Button variant="ghost" size="icon" onClick={onShare} title="Compartilhar Capítulo">
             <Share2 className="w-4 h-4" />
-          </Button>
-        )}
-        {onToggleCompare && (
-          <Button variant="ghost" size="icon" onClick={onToggleCompare} title="Comparar Versões">
-            <ArrowLeftRight className="w-4 h-4" />
           </Button>
         )}
         <Button variant="ghost" size="icon" onClick={() => navigate("/prefacio")} title="Prefácio">

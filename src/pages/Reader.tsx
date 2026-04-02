@@ -13,7 +13,7 @@ import DictionaryPanel from "@/components/DictionaryPanel";
 import UserPanel from "@/components/UserPanel";
 import BibleMapPanel from "@/components/BibleMapPanel";
 import VerseActionMenu from "@/components/VerseActionMenu";
-import VersionComparePanel from "@/components/VersionComparePanel";
+
 import LexiconPanel from "@/components/LexiconPanel";
 import PeoplePanel from "@/components/PeoplePanel";
 import DailyVerse from "@/components/DailyVerse";
@@ -81,7 +81,7 @@ const Reader = () => {
   const [showDictionary, setShowDictionary] = useState(false);
   const [showUserPanel, setShowUserPanel] = useState(false);
   const [showMap, setShowMap] = useState(false);
-  const [showCompare, setShowCompare] = useState(false);
+  
   const [showLexicon, setShowLexicon] = useState(false);
   const [showPeople, setShowPeople] = useState(false);
   const [userPanelTab, setUserPanelTab] = useState<UserPanelTab>("history");
@@ -222,7 +222,7 @@ const Reader = () => {
           onToggleReset={() => openUserPanel("data")}
           onToggleMap={() => setShowMap(!showMap)}
           onShare={handleShareChapter}
-          onToggleCompare={() => setShowCompare(!showCompare)}
+          
           onToggleLexicon={() => setShowLexicon(!showLexicon)}
           onTogglePeople={() => setShowPeople(!showPeople)}
         />
@@ -404,7 +404,7 @@ const Reader = () => {
       <DictionaryPanel open={showDictionary} onClose={() => setShowDictionary(false)} />
       <UserPanel open={showUserPanel} onClose={() => setShowUserPanel(false)} onNavigate={goToChapter} defaultTab={userPanelTab} />
       <BibleMapPanel open={showMap} onClose={() => setShowMap(false)} bookId={currentBook} chapter={currentChapter} onNavigate={goToChapter} />
-      <VersionComparePanel open={showCompare} onClose={() => setShowCompare(false)} bookId={currentBook} chapter={currentChapter} selectedVerse={selectedVerse} />
+      
       <LexiconPanel open={showLexicon} onClose={() => setShowLexicon(false)} />
       <PeoplePanel open={showPeople} onClose={() => setShowPeople(false)} />
     </SidebarProvider>

@@ -2,7 +2,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import {
   Book, Search, Shield, LogOut, Calendar, BookOpen, BookText,
-  FileText, Clock, Heart, Navigation, MapPin, Share2, ArrowLeftRight,
+  FileText, Clock, Heart, Navigation, MapPin, Share2,
   Languages, Users, RotateCcw,
 } from "lucide-react";
 import logoSrc from "@/assets/star-of-david-logo.png";
@@ -31,7 +31,6 @@ interface ReaderSidebarProps {
   onToggleReset?: () => void;
   onToggleMap?: () => void;
   onShare?: () => void;
-  onToggleCompare?: () => void;
   onToggleLexicon?: () => void;
   onTogglePeople?: () => void;
 }
@@ -47,7 +46,6 @@ const ReaderSidebar = ({
   onToggleReset,
   onToggleMap,
   onShare,
-  onToggleCompare,
   onToggleLexicon,
   onTogglePeople,
 }: ReaderSidebarProps) => {
@@ -66,7 +64,6 @@ const ReaderSidebar = ({
     { title: "Livros", icon: Book, onClick: act(onToggleBookSelector) },
     { title: "Buscar", icon: Search, onClick: act(onToggleSearch) },
     onToggleGoTo ? { title: "Ir Para", icon: Navigation, onClick: act(onToggleGoTo) } : null,
-    onToggleCompare ? { title: "Comparar Versões", icon: ArrowLeftRight, onClick: act(onToggleCompare) } : null,
   ].filter(Boolean) as { title: string; icon: any; onClick: () => void }[];
 
   const studyItems = [
