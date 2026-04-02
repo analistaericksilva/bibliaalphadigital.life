@@ -450,6 +450,14 @@ const Reader = () => {
         chapter={currentChapter}
         onNavigate={goToChapter}
       />
+
+      <VersionComparePanel
+        open={showCompare}
+        onClose={() => setShowCompare(false)}
+        bookId={currentBook}
+        chapter={currentChapter}
+        selectedVerse={selectedVerse}
+      />
     </div>
   );
 };
