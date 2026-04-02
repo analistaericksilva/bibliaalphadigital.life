@@ -25,6 +25,8 @@ interface Verse {
   text: string;
 }
 
+type UserPanelTab = "goto" | "history" | "favorites" | "data";
+
 const godSpeechPatterns = [
   /^Disse (?:mais )?(?:o )?(?:Senhor|Deus|SENHOR|Jeová)/i,
   /^E disse (?:o )?(?:Senhor|Deus|SENHOR)/i,
@@ -82,7 +84,7 @@ const Reader = () => {
   const [showCompare, setShowCompare] = useState(false);
   const [showLexicon, setShowLexicon] = useState(false);
   const [showPeople, setShowPeople] = useState(false);
-  const [userPanelTab, setUserPanelTab] = useState("history");
+  const [userPanelTab, setUserPanelTab] = useState<UserPanelTab>("history");
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
   const [verses, setVerses] = useState<Verse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -191,7 +193,7 @@ const Reader = () => {
   const getPersonalNote = (verse: number) => personalNotes.find((n) => n.verse === verse)?.content || "";
   const hasPersonalNote = (verse: number) => personalNotes.some((n) => n.verse === verse);
 
-  const openUserPanel = (tab: string) => {
+  const openUserPanel = (tab: UserPanelTab) => {
     setUserPanelTab(tab);
     setShowUserPanel(true);
   };
