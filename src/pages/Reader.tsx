@@ -171,8 +171,8 @@ const Reader = () => {
   };
 
   const handleVerseClick = (verseNum: number) => {
-    setSelectedVerse(verseNum);
-    setShowNotes(true);
+    // Toggle inline notes for this verse
+    setSelectedVerse((prev) => (prev === verseNum ? null : verseNum));
   };
 
   const handleVerseLongPress = (verseNum: number, e: React.MouseEvent | React.TouchEvent) => {
