@@ -285,7 +285,7 @@ const StudyNotesPanel = ({ open, onClose, bookId, chapter, selectedVerse, onNavi
         </div>
 
         <ScrollArea className="flex-1">
-          <div className="p-5 space-y-4">
+          <div className="p-5 space-y-5">
             {loading && (
               <div className="flex items-center justify-center py-16">
                 <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
