@@ -34,6 +34,7 @@ const App = () => (
             <Route path="/prefacio" element={<Preface />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </ReaderSettingsProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
