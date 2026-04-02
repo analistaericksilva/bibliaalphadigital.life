@@ -88,6 +88,11 @@ const ReaderHeader = ({
             <Share2 className="w-4 h-4" />
           </Button>
         )}
+        {onToggleCompare && (
+          <Button variant="ghost" size="icon" onClick={onToggleCompare} title="Comparar Versões">
+            <ArrowLeftRight className="w-4 h-4" />
+          </Button>
+        )}
         <Button variant="ghost" size="icon" onClick={() => navigate("/prefacio")} title="Prefácio">
           <FileText className="w-4 h-4" />
         </Button>
