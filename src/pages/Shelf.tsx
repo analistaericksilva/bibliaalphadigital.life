@@ -254,6 +254,54 @@ const Shelf = () => {
             </div>
           </div>
         </div>
+
+        {/* ===== FINANCE PROMO (compact) ===== */}
+        <div className="w-full max-w-3xl mx-auto mt-6">
+          <div className="relative overflow-hidden rounded-2xl border border-blue-500/15 bg-gradient-to-r from-[#0c1220] to-[#111827] p-5 sm:p-6">
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-500/5 blur-[60px] rounded-full" />
+            <div className="relative z-10 flex flex-col sm:flex-row items-center gap-4">
+              {/* Info */}
+              <div className="flex-1 text-center sm:text-left space-y-1.5">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/20">
+                  <Sparkles className="w-2.5 h-2.5 text-blue-400" />
+                  <span className="text-[9px] tracking-[0.2em] uppercase font-sans font-semibold text-blue-400">Plataforma Digital</span>
+                </div>
+                <h3 className="font-display text-lg sm:text-xl text-white">
+                  Inteligência <span className="italic text-blue-400">Financeira</span>
+                </h3>
+                <p className="font-sans text-[11px] text-white/40 leading-relaxed max-w-sm">
+                  Domine suas finanças com ferramentas profissionais de gestão e planejamento financeiro.
+                </p>
+              </div>
+              {/* Price + CTA */}
+              <div className="flex flex-col items-center gap-3 flex-shrink-0">
+                <div className="flex items-end gap-1">
+                  <span className="font-display text-3xl font-bold text-white">R$ 79<span className="text-lg">,90</span></span>
+                  <span className="text-[10px] text-white/35 font-sans mb-1">/ano</span>
+                </div>
+                <button
+                  onClick={copyPixFinance}
+                  className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-sans text-[10px] tracking-[0.2em] uppercase transition-all duration-300 ${
+                    pixCopiedFinance
+                      ? "bg-green-500 text-white"
+                      : "bg-blue-500 hover:bg-blue-600 text-white shadow-lg shadow-blue-500/15 hover:scale-[1.02]"
+                  }`}
+                >
+                  {pixCopiedFinance ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                  {pixCopiedFinance ? "Copiado!" : "Copiar Pix"}
+                </button>
+                <a
+                  href="https://wa.me/5519993586153?text=Ol%C3%A1%21%20Fiz%20o%20pagamento%20da%20Plataforma%20Intelig%C3%AAncia%20Financeira.%20Segue%20meu%20comprovante."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-[9px] tracking-wider uppercase font-sans text-[#25D366] hover:text-[#20bd5a] transition-colors"
+                >
+                  <MessageCircle className="w-3 h-3" /> Confirmar no WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
 
       {/* Premium footer */}
