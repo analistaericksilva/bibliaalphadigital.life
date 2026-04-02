@@ -13,6 +13,8 @@ import UserPanel from "@/components/UserPanel";
 import BibleMapPanel from "@/components/BibleMapPanel";
 import VerseActionMenu from "@/components/VerseActionMenu";
 import VersionComparePanel from "@/components/VersionComparePanel";
+import LexiconPanel from "@/components/LexiconPanel";
+import PeoplePanel from "@/components/PeoplePanel";
 import DailyVerse from "@/components/DailyVerse";
 import { useUserAnnotations } from "@/hooks/useUserAnnotations";
 import { ChevronLeft, ChevronRight, Loader2, ArrowLeft, Menu } from "lucide-react";
