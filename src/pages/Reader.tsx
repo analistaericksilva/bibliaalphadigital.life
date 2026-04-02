@@ -19,6 +19,8 @@ import PeoplePanel from "@/components/PeoplePanel";
 import DailyVerse from "@/components/DailyVerse";
 import OnboardingTour from "@/components/OnboardingTour";
 import { useUserAnnotations } from "@/hooks/useUserAnnotations";
+import ReaderSettingsBar from "@/components/ReaderSettingsBar";
+import { useReaderSettings } from "@/contexts/ReaderSettingsContext";
 import { ChevronLeft, ChevronRight, Loader2, ArrowLeft, Menu } from "lucide-react";
 
 interface Verse {
@@ -74,6 +76,7 @@ const HIGHLIGHT_BG: Record<string, string> = {
 const Reader = () => {
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
+  const { fontSize } = useReaderSettings();
   const [currentBook, setCurrentBook] = useState(searchParams.get("book") || "gn");
   const [currentChapter, setCurrentChapter] = useState(Number(searchParams.get("chapter")) || 1);
   const [showBooks, setShowBooks] = useState(false);
@@ -243,6 +246,8 @@ const Reader = () => {
               </span>
             </div>
             <div className="ml-auto flex items-center gap-1">
+              <ReaderSettingsBar />
+              <div className="w-px h-5 bg-border mx-1" />
               <button onClick={() => navigateChapter(-1)} className="p-1.5 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground">
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -312,7 +317,7 @@ const Reader = () => {
                     <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
                   </div>
                 ) : (
-                  <div className="reader-content">
+                  <div className="reader-content" style={{ fontSize: `${fontSize}px` }}>
                     {verses.map((v) => {
                       const speechClass = getSpeechClass(v.text, currentBook);
                       const hasNote = noteVerses.has(v.verse);

@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ReaderSettingsProvider } from "@/contexts/ReaderSettingsContext";
 import Shelf from "./pages/Shelf";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
@@ -22,6 +23,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <ReaderSettingsProvider>
           <Routes>
             <Route path="/" element={<Shelf />} />
             <Route path="/biblia" element={<Index />} />
@@ -32,6 +34,7 @@ const App = () => (
             <Route path="/prefacio" element={<Preface />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </ReaderSettingsProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
