@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Book, Search, Shield, LogOut, Calendar, BookOpen, BookText,
   FileText, Clock, Heart, Navigation, MapPin, Share2, ArrowLeftRight,
-  ChevronLeft, ChevronRight, Languages, Users,
+  Languages, Users,
 } from "lucide-react";
 import logoSrc from "@/assets/star-of-david-logo.png";
 import {
@@ -51,34 +51,40 @@ const ReaderSidebar = ({
 }: ReaderSidebarProps) => {
   const { isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
-  const { state } = useSidebar();
+  const { state, setOpenMobile, isMobile } = useSidebar();
   const collapsed = state === "collapsed";
 
+  // Wrap each action to close the sidebar on mobile before executing
+  const act = (fn?: () => void) => () => {
+    if (isMobile) setOpenMobile(false);
+    fn?.();
+  };
+
   const readingItems = [
-    { title: "Livros", icon: Book, onClick: onToggleBookSelector },
-    { title: "Buscar", icon: Search, onClick: onToggleSearch },
-    onToggleGoTo ? { title: "Ir Para", icon: Navigation, onClick: onToggleGoTo } : null,
-    onToggleCompare ? { title: "Comparar Versões", icon: ArrowLeftRight, onClick: onToggleCompare } : null,
+    { title: "Livros", icon: Book, onClick: act(onToggleBookSelector) },
+    { title: "Buscar", icon: Search, onClick: act(onToggleSearch) },
+    onToggleGoTo ? { title: "Ir Para", icon: Navigation, onClick: act(onToggleGoTo) } : null,
+    onToggleCompare ? { title: "Comparar Versões", icon: ArrowLeftRight, onClick: act(onToggleCompare) } : null,
   ].filter(Boolean) as { title: string; icon: any; onClick: () => void }[];
 
   const studyItems = [
-    onToggleNotes ? { title: "Notas de Estudo", icon: BookOpen, onClick: onToggleNotes } : null,
-    onToggleDictionary ? { title: "Dicionário Bíblico", icon: BookText, onClick: onToggleDictionary } : null,
-    onToggleLexicon ? { title: "Léxico Strong's", icon: Languages, onClick: onToggleLexicon } : null,
-    onTogglePeople ? { title: "Nomes Bíblicos", icon: Users, onClick: onTogglePeople } : null,
-    onToggleMap ? { title: "Mapa Bíblico", icon: MapPin, onClick: onToggleMap } : null,
+    onToggleNotes ? { title: "Notas de Estudo", icon: BookOpen, onClick: act(onToggleNotes) } : null,
+    onToggleDictionary ? { title: "Dicionário Bíblico", icon: BookText, onClick: act(onToggleDictionary) } : null,
+    onToggleLexicon ? { title: "Léxico Strong's", icon: Languages, onClick: act(onToggleLexicon) } : null,
+    onTogglePeople ? { title: "Nomes Bíblicos", icon: Users, onClick: act(onTogglePeople) } : null,
+    onToggleMap ? { title: "Mapa Bíblico", icon: MapPin, onClick: act(onToggleMap) } : null,
   ].filter(Boolean) as { title: string; icon: any; onClick: () => void }[];
 
   const userItems = [
-    onToggleHistory ? { title: "Histórico", icon: Clock, onClick: onToggleHistory } : null,
-    onToggleFavorites ? { title: "Favoritos", icon: Heart, onClick: onToggleFavorites } : null,
-    onShare ? { title: "Compartilhar", icon: Share2, onClick: onShare } : null,
+    onToggleHistory ? { title: "Histórico", icon: Clock, onClick: act(onToggleHistory) } : null,
+    onToggleFavorites ? { title: "Favoritos", icon: Heart, onClick: act(onToggleFavorites) } : null,
+    onShare ? { title: "Compartilhar", icon: Share2, onClick: act(onShare) } : null,
   ].filter(Boolean) as { title: string; icon: any; onClick: () => void }[];
 
   const navItems = [
-    { title: "Prefácio", icon: FileText, onClick: () => navigate("/prefacio") },
-    { title: "Planos de Leitura", icon: Calendar, onClick: () => navigate("/planos") },
-    isAdmin ? { title: "Administração", icon: Shield, onClick: () => navigate("/admin") } : null,
+    { title: "Prefácio", icon: FileText, onClick: act(() => navigate("/prefacio")) },
+    { title: "Planos de Leitura", icon: Calendar, onClick: act(() => navigate("/planos")) },
+    isAdmin ? { title: "Administração", icon: Shield, onClick: act(() => navigate("/admin")) } : null,
   ].filter(Boolean) as { title: string; icon: any; onClick: () => void }[];
 
   return (
@@ -168,7 +174,7 @@ const ReaderSidebar = ({
       <SidebarFooter className="p-2">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={signOut} tooltip="Sair" className="text-destructive hover:text-destructive">
+            <SidebarMenuButton onClick={act(signOut)} tooltip="Sair" className="text-destructive hover:text-destructive">
               <LogOut className="h-4 w-4" />
               {!collapsed && <span>Sair</span>}
             </SidebarMenuButton>

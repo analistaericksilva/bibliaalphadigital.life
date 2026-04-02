@@ -1,27 +1,8 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { bibleBooks } from "@/data/bibleBooks";
 import { X, MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-
-// Fix default marker icon
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
-  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
-});
-
-const goldIcon = new L.Icon({
-  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png",
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
 
 interface BiblePlace {
   id: string;
@@ -45,17 +26,32 @@ const getBookName = (bookId: string) => bibleBooks.find((b) => b.id === bookId)?
 const BibleMapPanel = ({ open, onClose, bookId, chapter, onNavigate }: BibleMapPanelProps) => {
   const [allPlaces, setAllPlaces] = useState<BiblePlace[]>([]);
   const [loading, setLoading] = useState(false);
+  const [leafletReady, setLeafletReady] = useState(false);
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<L.Map | null>(null);
+  const mapRef = useRef<any>(null);
+  const LRef = useRef<any>(null);
+
+  // Dynamically import leaflet to avoid SSR/bundling issues
+  useEffect(() => {
+    if (!open || leafletReady) return;
+    import("leaflet").then((L) => {
+      import("leaflet/dist/leaflet.css");
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
+        iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
+        shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+      });
+      LRef.current = L;
+      setLeafletReady(true);
+    });
+  }, [open, leafletReady]);
 
   useEffect(() => {
     if (!open) return;
     const fetchData = async () => {
       setLoading(true);
-      const { data } = await supabase
-        .from("bible_places")
-        .select("*")
-        .order("name");
+      const { data } = await supabase.from("bible_places").select("*").order("name");
       if (data) setAllPlaces(data as unknown as BiblePlace[]);
       setLoading(false);
     };
@@ -64,13 +60,20 @@ const BibleMapPanel = ({ open, onClose, bookId, chapter, onNavigate }: BibleMapP
 
   const filteredPlaces = useMemo(() => {
     return allPlaces.filter((p) =>
-      p.refs.some((r) => r.b === bookId && r.c === chapter)
+      Array.isArray(p.refs) && p.refs.some((r) => r.b === bookId && r.c === chapter)
     );
   }, [allPlaces, bookId, chapter]);
 
+  const onNavigateRef = useRef(onNavigate);
+  onNavigateRef.current = onNavigate;
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
   // Initialize / update map
   useEffect(() => {
-    if (!open || loading || filteredPlaces.length === 0 || !mapContainerRef.current) return;
+    if (!open || loading || !leafletReady || filteredPlaces.length === 0 || !mapContainerRef.current) return;
+    const L = LRef.current;
+    if (!L) return;
 
     // Clean up previous map
     if (mapRef.current) {
@@ -78,7 +81,16 @@ const BibleMapPanel = ({ open, onClose, bookId, chapter, onNavigate }: BibleMapP
       mapRef.current = null;
     }
 
-    const map = L.map(mapContainerRef.current).setView([31.5, 35.2], 7);
+    const goldIcon = new L.Icon({
+      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png",
+      shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41],
+    });
+
+    const map = L.map(mapContainerRef.current, { zoomControl: true }).setView([31.5, 35.2], 7);
     mapRef.current = map;
 
     L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
@@ -111,13 +123,13 @@ const BibleMapPanel = ({ open, onClose, bookId, chapter, onNavigate }: BibleMapP
       marker.on("popupopen", () => {
         const container = marker.getPopup()?.getElement();
         if (container) {
-          container.querySelectorAll(".popup-refs button").forEach((btn) => {
+          container.querySelectorAll(".popup-refs button").forEach((btn: Element) => {
             btn.addEventListener("click", () => {
               const b = btn.getAttribute("data-book")!;
               const c = Number(btn.getAttribute("data-chapter"));
               const v = Number(btn.getAttribute("data-verse"));
-              onNavigate(b, c, v);
-              onClose();
+              onNavigateRef.current(b, c, v);
+              onCloseRef.current();
             });
           });
         }
@@ -126,14 +138,17 @@ const BibleMapPanel = ({ open, onClose, bookId, chapter, onNavigate }: BibleMapP
 
     map.fitBounds(bounds, { padding: [30, 30], maxZoom: 10 });
 
-    // Force resize after panel animation
-    setTimeout(() => map.invalidateSize(), 300);
+    // Force resize after panel animation — multiple attempts
+    const timers = [200, 500, 1000].map((ms) =>
+      setTimeout(() => map.invalidateSize(), ms)
+    );
 
     return () => {
+      timers.forEach(clearTimeout);
       map.remove();
       mapRef.current = null;
     };
-  }, [open, loading, filteredPlaces, bookId, chapter, onNavigate, onClose]);
+  }, [open, loading, leafletReady, filteredPlaces, bookId, chapter]);
 
   if (!open) return null;
 
@@ -153,8 +168,8 @@ const BibleMapPanel = ({ open, onClose, bookId, chapter, onNavigate }: BibleMapP
           </Button>
         </div>
 
-        <div className="flex-1 relative">
-          {loading ? (
+        <div className="flex-1 relative" style={{ minHeight: "400px" }}>
+          {loading || !leafletReady ? (
             <div className="flex items-center justify-center h-full">
               <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
             </div>
@@ -168,7 +183,7 @@ const BibleMapPanel = ({ open, onClose, bookId, chapter, onNavigate }: BibleMapP
                   </p>
                 </div>
               ) : (
-                <div ref={mapContainerRef} style={{ height: "100%", width: "100%" }} />
+                <div ref={mapContainerRef} className="absolute inset-0" />
               )}
               {filteredPlaces.length > 0 && (
                 <div className="absolute bottom-4 left-4 bg-background/90 backdrop-blur-sm rounded px-3 py-2 border border-border z-[1000]">
