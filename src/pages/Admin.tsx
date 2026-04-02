@@ -4,7 +4,17 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { ArrowLeft, Check, X, Clock, Users, Shield } from "lucide-react";
+import { ArrowLeft, Check, X, Clock, Users, Shield, Ban, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import logoSrc from "@/assets/star-of-david-logo.png";
 
 interface UserProfile {
@@ -22,6 +32,7 @@ const Admin = () => {
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [filter, setFilter] = useState<"all" | "pending" | "approved" | "rejected">("all");
   const [loadingUsers, setLoadingUsers] = useState(true);
+  const [deleteTarget, setDeleteTarget] = useState<UserProfile | null>(null);
 
   useEffect(() => {
     if (!loading && !isAdmin) {
@@ -46,12 +57,26 @@ const Admin = () => {
       toast({ title: "Erro", description: error.message, variant: "destructive" });
     } else {
       if (status === "approved") {
-        // Also add subscriber role
         await supabase.from("user_roles").upsert({ user_id: userId, role: "subscriber" as any });
       }
-      toast({ title: "Atualizado", description: `Usuário ${status === "approved" ? "aprovado" : "rejeitado"} com sucesso.` });
+      const msg = status === "approved" ? "aprovado" : "bloqueado";
+      toast({ title: "Atualizado", description: `Usuário ${msg} com sucesso.` });
       fetchUsers();
     }
+  };
+
+  const deleteUser = async (userId: string) => {
+    const { data, error } = await supabase.functions.invoke("delete-user", {
+      body: { user_id: userId },
+    });
+
+    if (error || data?.error) {
+      toast({ title: "Erro", description: error?.message || data?.error, variant: "destructive" });
+    } else {
+      toast({ title: "Excluído", description: "Usuário removido com sucesso." });
+      fetchUsers();
+    }
+    setDeleteTarget(null);
   };
 
   const filteredUsers = filter === "all" ? users : users.filter((u) => u.status === filter);
@@ -101,7 +126,7 @@ const Admin = () => {
               </div>
               <p className="text-2xl font-sans font-semibold text-foreground">{statusCounts[key]}</p>
               <p className="text-[9px] tracking-[0.2em] text-muted-foreground font-sans mt-1">
-                {key === "all" ? "TOTAL" : key === "pending" ? "PENDENTES" : key === "approved" ? "APROVADOS" : "REJEITADOS"}
+                {key === "all" ? "TOTAL" : key === "pending" ? "PENDENTES" : key === "approved" ? "APROVADOS" : "BLOQUEADOS"}
               </p>
             </button>
           ))}
@@ -142,12 +167,49 @@ const Admin = () => {
                         <X className="w-3 h-3 mr-1" /> REJEITAR
                       </Button>
                     </>
+                  ) : user.status === "approved" ? (
+                    <>
+                      <span className="text-[9px] tracking-[0.2em] font-sans px-3 py-1 rounded bg-green-50 text-green-700">
+                        APROVADO
+                      </span>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => updateUserStatus(user.user_id, "rejected")}
+                        className="text-[9px] tracking-widest rounded-none h-8 border-orange-300 text-orange-600 hover:bg-orange-50"
+                      >
+                        <Ban className="w-3 h-3 mr-1" /> BLOQUEAR
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setDeleteTarget(user)}
+                        className="text-[9px] tracking-widest rounded-none h-8 border-destructive/30 text-destructive hover:bg-destructive/5"
+                      >
+                        <Trash2 className="w-3 h-3 mr-1" /> EXCLUIR
+                      </Button>
+                    </>
                   ) : (
-                    <span className={`text-[9px] tracking-[0.2em] font-sans px-3 py-1 rounded ${
-                      user.status === "approved" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
-                    }`}>
-                      {user.status === "approved" ? "APROVADO" : "REJEITADO"}
-                    </span>
+                    <>
+                      <span className="text-[9px] tracking-[0.2em] font-sans px-3 py-1 rounded bg-red-50 text-red-700">
+                        BLOQUEADO
+                      </span>
+                      <Button
+                        size="sm"
+                        onClick={() => updateUserStatus(user.user_id, "approved")}
+                        className="text-[9px] tracking-widest rounded-none h-8"
+                      >
+                        <Check className="w-3 h-3 mr-1" /> DESBLOQUEAR
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setDeleteTarget(user)}
+                        className="text-[9px] tracking-widest rounded-none h-8 border-destructive/30 text-destructive hover:bg-destructive/5"
+                      >
+                        <Trash2 className="w-3 h-3 mr-1" /> EXCLUIR
+                      </Button>
+                    </>
                   )}
                 </div>
               </div>
@@ -155,6 +217,28 @@ const Admin = () => {
           )}
         </div>
       </main>
+
+      {/* Delete confirmation dialog */}
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir usuário</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir <strong>{deleteTarget?.full_name || deleteTarget?.email}</strong>? 
+              Esta ação é irreversível e todos os dados do usuário serão removidos.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteTarget && deleteUser(deleteTarget.user_id)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
