@@ -19,6 +19,8 @@ import PeoplePanel from "@/components/PeoplePanel";
 import DailyVerse from "@/components/DailyVerse";
 import OnboardingTour from "@/components/OnboardingTour";
 import { useUserAnnotations } from "@/hooks/useUserAnnotations";
+import ReaderSettingsBar from "@/components/ReaderSettingsBar";
+import { useReaderSettings } from "@/contexts/ReaderSettingsContext";
 import { ChevronLeft, ChevronRight, Loader2, ArrowLeft, Menu } from "lucide-react";
 
 interface Verse {
