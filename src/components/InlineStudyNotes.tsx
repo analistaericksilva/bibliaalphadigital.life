@@ -88,6 +88,7 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
   const [dictEntries, setDictEntries] = useState<DictEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["main"]));
+  const [activeTab, setActiveTab] = useState<"notes" | "interlinear">("notes");
 
   const toggleSection = (key: string) => {
     setExpandedSections((prev) => {
