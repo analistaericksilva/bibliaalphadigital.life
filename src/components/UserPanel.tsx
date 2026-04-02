@@ -24,7 +24,7 @@ interface UserPanelProps {
   open: boolean;
   onClose: () => void;
   onNavigate: (bookId: string, chapter: number, verse?: number) => void;
-  defaultTab?: string;
+  defaultTab?: "goto" | "history" | "favorites" | "data";
 }
 
 interface HistoryItem {
@@ -169,7 +169,7 @@ const UserPanel = ({ open, onClose, onNavigate, defaultTab = "history" }: UserPa
   return (
     <>
       <div className="fixed inset-0 bg-foreground/5 backdrop-blur-sm z-40" onClick={onClose} />
-      <div className="fixed top-0 right-0 h-full w-full max-w-lg bg-background border-l border-border z-50 animate-fade-in flex flex-col">
+      <div className="fixed top-0 right-0 h-full w-full max-w-lg bg-background border-l border-border z-50 animate-fade-in flex flex-col overflow-hidden">
         <div className="flex items-center justify-between p-4 border-b border-border">
           <h2 className="text-xs tracking-[0.3em] font-sans font-semibold text-foreground">
             MINHA BÍBLIA
@@ -179,11 +179,12 @@ const UserPanel = ({ open, onClose, onNavigate, defaultTab = "history" }: UserPa
           </Button>
         </div>
 
-        <Tabs defaultValue={defaultTab} className="flex-1 flex flex-col">
-          <TabsList className="mx-4 mt-2 grid grid-cols-3">
+        <Tabs defaultValue={defaultTab} className="flex-1 min-h-0 flex flex-col">
+          <TabsList className="mx-4 mt-2 grid grid-cols-4 shrink-0">
             <TabsTrigger value="goto" className="text-xs">Ir Para</TabsTrigger>
             <TabsTrigger value="history" className="text-xs">Histórico</TabsTrigger>
             <TabsTrigger value="favorites" className="text-xs">Favoritos</TabsTrigger>
+            <TabsTrigger value="data" className="text-xs">Dados</TabsTrigger>
           </TabsList>
 
           {/* Go To */}
@@ -226,7 +227,7 @@ const UserPanel = ({ open, onClose, onNavigate, defaultTab = "history" }: UserPa
           </TabsContent>
 
           {/* History */}
-          <TabsContent value="history" className="flex-1">
+          <TabsContent value="history" className="flex-1 min-h-0">
             <ScrollArea className="h-full">
               <div className="p-4 space-y-2">
                 {loading && (
@@ -262,7 +263,7 @@ const UserPanel = ({ open, onClose, onNavigate, defaultTab = "history" }: UserPa
           </TabsContent>
 
           {/* Favorites */}
-          <TabsContent value="favorites" className="flex-1 flex flex-col">
+          <TabsContent value="favorites" className="flex-1 min-h-0 flex flex-col">
             <div className="px-4 pt-2">
               <Input
                 placeholder="Filtrar por livro..."
@@ -271,7 +272,7 @@ const UserPanel = ({ open, onClose, onNavigate, defaultTab = "history" }: UserPa
                 className="text-sm font-sans"
               />
             </div>
-            <ScrollArea className="flex-1">
+            <ScrollArea className="flex-1 min-h-0">
               <div className="p-4 space-y-2">
                 {loading && (
                   <div className="flex justify-center py-12">
@@ -301,43 +302,50 @@ const UserPanel = ({ open, onClose, onNavigate, defaultTab = "history" }: UserPa
               </div>
             </ScrollArea>
             {favorites.length > 0 && (
-              <div className="p-4 border-t border-border">
+              <div className="p-4 border-t border-border shrink-0">
                 <Button variant="outline" size="sm" onClick={handleExport} className="w-full text-xs">
                   <Download className="w-3 h-3 mr-2" /> Exportar anotações
                 </Button>
               </div>
             )}
           </TabsContent>
-        </Tabs>
+          <TabsContent value="data" className="flex-1 p-4 space-y-4">
+            <div className="rounded-lg border border-border bg-muted/20 p-4">
+              <h3 className="text-sm font-sans font-semibold text-foreground">
+                Resetar dados de uso
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground font-sans">
+                Apague suas anotações, destaques, favoritos, histórico de leitura e progresso dos planos para voltar ao estado inicial.
+              </p>
+            </div>
 
-        {/* Reset - always visible at the bottom */}
-        <div className="p-4 border-t border-border mt-auto">
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="outline" size="sm" className="w-full text-xs text-destructive hover:text-destructive border-destructive/30 hover:border-destructive/50 hover:bg-destructive/5">
-                <RotateCcw className="w-3 h-3 mr-2" /> Resetar todos os meus dados
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Tem certeza?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Esta ação irá apagar permanentemente todas as suas anotações pessoais, marcações de destaque, favoritos, histórico de leitura e progresso dos planos de leitura. Esta ação não pode ser desfeita.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleReset}
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                >
-                  {resetting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                  Sim, apagar tudo
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" className="w-full text-sm text-destructive hover:text-destructive border-destructive/30 hover:border-destructive/50 hover:bg-destructive/5">
+                  <RotateCcw className="w-4 h-4 mr-2" /> Resetar todos os meus dados
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Tem certeza?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Esta ação irá apagar permanentemente todas as suas anotações pessoais, marcações de destaque, favoritos, histórico de leitura e progresso dos planos de leitura. Esta ação não pode ser desfeita.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleReset}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    {resetting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                    Sim, apagar tudo
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </TabsContent>
+        </Tabs>
       </div>
     </>
   );

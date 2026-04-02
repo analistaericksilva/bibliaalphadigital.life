@@ -217,6 +217,7 @@ const Reader = () => {
           onToggleHistory={() => openUserPanel("history")}
           onToggleFavorites={() => openUserPanel("favorites")}
           onToggleGoTo={() => openUserPanel("goto")}
+          onToggleReset={() => openUserPanel("data")}
           onToggleMap={() => setShowMap(!showMap)}
           onShare={handleShareChapter}
           onToggleCompare={() => setShowCompare(!showCompare)}
