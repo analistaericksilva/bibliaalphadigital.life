@@ -287,6 +287,36 @@ const UserPanel = ({ open, onClose, onNavigate, defaultTab = "history" }: UserPa
               </div>
             )}
           </TabsContent>
+
+          {/* Reset */}
+          <div className="p-4 border-t border-border">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" size="sm" className="w-full text-xs text-destructive hover:text-destructive border-destructive/30 hover:border-destructive/50 hover:bg-destructive/5">
+                  <RotateCcw className="w-3 h-3 mr-2" /> Resetar todos os meus dados
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Tem certeza?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Esta ação irá apagar permanentemente todas as suas anotações pessoais, marcações de destaque, favoritos, histórico de leitura e progresso dos planos de leitura. Esta ação não pode ser desfeita.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleReset}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    {resetting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                    Sim, apagar tudo
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+          </TabsContent>
         </Tabs>
       </div>
     </>
