@@ -327,6 +327,7 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
           </div>
         )}
       </div>
+      )}
     </div>
   );
 };
