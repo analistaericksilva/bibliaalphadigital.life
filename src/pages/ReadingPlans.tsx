@@ -123,7 +123,7 @@ const ReadingPlans = () => {
   };
 
   const goToReading = (bookId: string, chapter: number) => {
-    navigate(`/?book=${bookId}&chapter=${chapter}`);
+    navigate(`/biblia?book=${bookId}&chapter=${chapter}`);
   };
 
   const progressPercent = selectedPlan
