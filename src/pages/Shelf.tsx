@@ -11,6 +11,16 @@ import pixQr from "@/assets/pix-qr.png";
 const Shelf = () => {
   const { user, loading, isApproved, isAdmin, signOut } = useAuth();
 
+  const [pixCopied, setPixCopied] = useState(false);
+
+  const pixCode = "00020126850014br.gov.bcb.pix0129analista.ericksilva@gmail.com0230Acesso exclusivo 1 ano B.ALPHA520400005303986540549.905802BR5922Erick Pereira da Silva6002NA62070503***6304EFEE";
+
+  const copyPix = () => {
+    navigator.clipboard.writeText(pixCode);
+    setPixCopied(true);
+    setTimeout(() => setPixCopied(false), 3000);
+  };
+
   const handleProductClick = () => {
     const loginUrl = `${window.location.origin}/login`;
     const loginWindow = window.open(
