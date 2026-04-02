@@ -392,6 +392,8 @@ const Reader = () => {
       <UserPanel open={showUserPanel} onClose={() => setShowUserPanel(false)} onNavigate={goToChapter} defaultTab={userPanelTab} />
       <BibleMapPanel open={showMap} onClose={() => setShowMap(false)} bookId={currentBook} chapter={currentChapter} onNavigate={goToChapter} />
       <VersionComparePanel open={showCompare} onClose={() => setShowCompare(false)} bookId={currentBook} chapter={currentChapter} selectedVerse={selectedVerse} />
+      <LexiconPanel open={showLexicon} onClose={() => setShowLexicon(false)} />
+      <PeoplePanel open={showPeople} onClose={() => setShowPeople(false)} />
     </SidebarProvider>
   );
 };
