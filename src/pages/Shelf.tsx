@@ -105,6 +105,84 @@ const Shelf = () => {
             onCustomClick={() => window.open("https://inteligenciafinanceira.tech/", "_blank")}
           />
         </div>
+
+        {/* ===== PROMO SECTION ===== */}
+        <div className="w-full max-w-4xl mx-auto mt-4">
+          <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-[#0f1729] via-[#141e33] to-[#1a1a2e] shadow-2xl">
+            {/* Glow effects */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 bg-primary/10 blur-3xl rounded-full" />
+            <div className="absolute bottom-0 right-0 w-40 h-40 bg-primary/5 blur-3xl rounded-full" />
+
+            <div className="relative z-10 flex flex-col lg:flex-row items-center gap-6 p-6 sm:p-8 lg:p-10">
+              {/* Left: Banner image */}
+              <div className="w-full lg:w-2/5 flex-shrink-0">
+                <img
+                  src={promoBanner}
+                  alt="Bíblia Alpha de Estudos"
+                  className="w-full rounded-xl shadow-lg border border-primary/10"
+                  loading="lazy"
+                  width={800}
+                  height={512}
+                />
+              </div>
+
+              {/* Right: Promo content */}
+              <div className="flex-1 text-center lg:text-left space-y-4">
+                {/* Badge */}
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 border border-primary/30">
+                  <Sparkles className="w-3 h-3 text-primary" />
+                  <span className="text-[10px] tracking-[0.2em] uppercase font-sans font-semibold text-primary">
+                    Condição Especial por Tempo Limitado
+                  </span>
+                </div>
+
+                <h2 className="font-display text-2xl sm:text-3xl text-white leading-snug">
+                  Bíblia Alpha <span className="italic text-primary">de Estudos</span>
+                </h2>
+
+                <p className="font-elegant text-sm sm:text-base text-white/60 leading-relaxed max-w-md">
+                  Acesso completo à plataforma de estudos bíblicos mais avançada. Interlinear Hebraico-Grego, 
+                  léxico Strong's, notas de estudo, mapas e muito mais.
+                </p>
+
+                {/* Features */}
+                <div className="flex flex-wrap justify-center lg:justify-start gap-3 text-[10px] tracking-wider uppercase font-sans text-white/40">
+                  <span className="flex items-center gap-1"><BookOpen className="w-3 h-3 text-primary/60" /> Interlinear</span>
+                  <span className="flex items-center gap-1"><Crown className="w-3 h-3 text-primary/60" /> Léxico Strong's</span>
+                  <span className="flex items-center gap-1"><Sparkles className="w-3 h-3 text-primary/60" /> Notas de Estudo</span>
+                </div>
+
+                {/* Price */}
+                <div className="flex items-end gap-2 justify-center lg:justify-start">
+                  <span className="font-display text-4xl sm:text-5xl font-bold text-white">R$ 49<span className="text-2xl">,90</span></span>
+                  <span className="text-xs text-white/40 font-sans mb-2">/ano</span>
+                </div>
+
+                {/* QR Code + Copy */}
+                <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
+                  <div className="bg-white rounded-xl p-2 shadow-lg">
+                    <img src={pixQr} alt="QR Code Pix" className="w-28 h-28 sm:w-32 sm:h-32" width={128} height={128} />
+                  </div>
+                  <div className="space-y-2 text-center sm:text-left">
+                    <p className="text-[10px] tracking-[0.15em] uppercase font-sans text-white/50">
+                      Escaneie o QR Code ou copie o código Pix
+                    </p>
+                    <button
+                      onClick={copyPix}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-sans text-xs tracking-widest uppercase transition-all duration-300 shadow-lg shadow-primary/20"
+                    >
+                      {pixCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                      {pixCopied ? "CÓDIGO COPIADO!" : "COPIAR CÓDIGO PIX"}
+                    </button>
+                    <p className="text-[9px] text-white/30 font-sans">
+                      Após o pagamento, envie o comprovante para ativar seu acesso.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
 
       {/* Premium footer */}
