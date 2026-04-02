@@ -1,5 +1,4 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
 import { LogOut, Mail, Instagram } from "lucide-react";
 import ShelfProductCard from "@/components/ShelfProductCard";
 import bibleCover from "@/assets/bible-cover.png";
@@ -7,14 +6,16 @@ import financeAppCover from "@/assets/finance-app-cover.png";
 
 const Shelf = () => {
   const { user, loading, isApproved, isAdmin, signOut } = useAuth();
-  const navigate = useNavigate();
 
   const handleProductClick = () => {
-    if (user && (isApproved || isAdmin)) {
-      navigate("/biblia");
-      return;
-    }
-    window.open("/login", "_blank");
+    const loginUrl = `${window.location.origin}/login`;
+    const loginWindow = window.open(
+      loginUrl,
+      "alpha-login",
+      "width=560,height=780,resizable=yes,scrollbars=yes"
+    );
+
+    loginWindow?.focus();
   };
 
   if (loading) {
