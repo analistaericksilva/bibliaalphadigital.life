@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Book, Search, Shield, LogOut, Calendar, BookOpen, BookText,
   FileText, Clock, Heart, Navigation, MapPin, Share2, ArrowLeftRight,
-  Languages, Users,
+  Languages, Users, RotateCcw,
 } from "lucide-react";
 import logoSrc from "@/assets/star-of-david-logo.png";
 import {
@@ -28,6 +28,7 @@ interface ReaderSidebarProps {
   onToggleHistory?: () => void;
   onToggleFavorites?: () => void;
   onToggleGoTo?: () => void;
+  onToggleReset?: () => void;
   onToggleMap?: () => void;
   onShare?: () => void;
   onToggleCompare?: () => void;
@@ -43,6 +44,7 @@ const ReaderSidebar = ({
   onToggleHistory,
   onToggleFavorites,
   onToggleGoTo,
+  onToggleReset,
   onToggleMap,
   onShare,
   onToggleCompare,
@@ -78,6 +80,7 @@ const ReaderSidebar = ({
   const userItems = [
     onToggleHistory ? { title: "Histórico", icon: Clock, onClick: act(onToggleHistory) } : null,
     onToggleFavorites ? { title: "Favoritos", icon: Heart, onClick: act(onToggleFavorites) } : null,
+    onToggleReset ? { title: "Resetar dados", icon: RotateCcw, onClick: act(onToggleReset) } : null,
     onShare ? { title: "Compartilhar", icon: Share2, onClick: act(onShare) } : null,
   ].filter(Boolean) as { title: string; icon: any; onClick: () => void }[];
 
