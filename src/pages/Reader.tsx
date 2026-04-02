@@ -244,6 +244,7 @@ const Reader = () => {
         onToggleGoTo={() => openUserPanel("goto")}
         onToggleMap={() => setShowMap(!showMap)}
         onShare={handleShareChapter}
+        onToggleCompare={() => setShowCompare(!showCompare)}
       />
 
       {/* Navigation zones */}
