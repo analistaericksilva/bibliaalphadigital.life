@@ -216,9 +216,18 @@ const Shelf = () => {
                       {pixCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                       {pixCopied ? "Código Copiado!" : "Copiar Código Pix"}
                     </button>
+                    <a
+                      href="https://wa.me/5519993586153?text=Ol%C3%A1%21%20Fiz%20o%20pagamento%20da%20B%C3%ADblia%20Alpha%20de%20Estudos.%20Segue%20meu%20comprovante."
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-sans text-xs tracking-[0.2em] uppercase transition-all duration-300 shadow-lg shadow-[#25D366]/20 hover:scale-[1.02]"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                      Confirmar pelo WhatsApp
+                    </a>
                     <p className="text-[10px] text-white/35 font-sans flex items-center gap-1 justify-center sm:justify-start">
                       <Mail className="w-3 h-3" />
-                      Envie o comprovante para ativar seu acesso
+                      Envie o comprovante para liberar seu acesso
                     </p>
                   </div>
                 </div>
