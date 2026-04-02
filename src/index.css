@@ -23,7 +23,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 9%;
 
-    --primary: 40 56% 52%;
+    --primary: 40 56% 40%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 40 20% 96%;
@@ -32,7 +32,7 @@
     --muted: 40 10% 95%;
     --muted-foreground: 0 0% 45%;
 
-    --accent: 40 56% 52%;
+    --accent: 40 56% 40%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
@@ -40,7 +40,7 @@
 
     --border: 0 0% 90%;
     --input: 0 0% 90%;
-    --ring: 40 56% 52%;
+    --ring: 40 56% 40%;
 
     --radius: 0.25rem;
 
@@ -55,7 +55,7 @@
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 40 56% 52%;
+    --sidebar-ring: 40 56% 40%;
 
     --font-serif: 'EB Garamond', Georgia, serif;
     --font-sans: 'Inter', system-ui, sans-serif;

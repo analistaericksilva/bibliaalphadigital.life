@@ -27,7 +27,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
+    <main className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-sm mx-auto px-6 animate-fade-in">
         <div className="text-center mb-16">
           <img src={logoSrc} alt="Bíblia Alpha" className="w-36 h-36 mx-auto mb-8 drop-shadow-xl" width={144} height={144} />
@@ -74,7 +74,7 @@ const Login = () => {
           </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 
