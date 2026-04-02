@@ -219,6 +219,8 @@ const Reader = () => {
           onToggleMap={() => setShowMap(!showMap)}
           onShare={handleShareChapter}
           onToggleCompare={() => setShowCompare(!showCompare)}
+          onToggleLexicon={() => setShowLexicon(!showLexicon)}
+          onTogglePeople={() => setShowPeople(!showPeople)}
         />
 
         <div className="flex-1 flex flex-col min-w-0">
