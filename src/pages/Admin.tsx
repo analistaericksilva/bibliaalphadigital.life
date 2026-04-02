@@ -42,7 +42,10 @@ const Admin = () => {
   const [filter, setFilter] = useState<"all" | "pending" | "approved" | "rejected">("all");
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [deleteTarget, setDeleteTarget] = useState<UserProfile | null>(null);
-
+  const [passwordOpen, setPasswordOpen] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [changingPassword, setChangingPassword] = useState(false);
   useEffect(() => {
     if (!loading && !isAdmin) {
       navigate("/");
