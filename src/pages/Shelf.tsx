@@ -29,13 +29,8 @@ const Shelf = () => {
       navigate("/biblia");
       return;
     }
-    if (user && !isApproved && !isAdmin) {
-      setShowPending(true);
-      setShowAuth(false);
-      return;
-    }
-    setShowAuth(true);
-    setShowPending(false);
+    // Open login page in a new window/tab
+    window.open("/login", "_blank");
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -212,16 +207,16 @@ const Shelf = () => {
 
       {/* Footer with support email */}
       <footer className="pb-8 pt-4 flex flex-col items-center gap-4">
-        <a
-          href="mailto:analista.ericksilva@gmail.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-muted-foreground/60 hover:text-primary transition-colors duration-300 text-xs tracking-[0.1em]"
-        >
-          <Mail className="w-3.5 h-3.5" />
-          analista.ericksilva@gmail.com
-        </a>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-5 flex-wrap justify-center">
+          <a
+            href="mailto:analista.ericksilva@gmail.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-muted-foreground/60 hover:text-primary transition-colors duration-300 text-[11px] tracking-[0.1em]"
+          >
+            <Mail className="w-4 h-4" />
+            Contato
+          </a>
           <a
             href="https://www.instagram.com/bibliaalphadigital?igsh=Ym91YmlyNzNzZDU0"
             target="_blank"
