@@ -1,5 +1,4 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { Navigate } from "react-router-dom";
 import Reader from "./Reader";
 import PendingApproval from "./PendingApproval";
 
@@ -16,14 +15,13 @@ const Index = () => {
     );
   }
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (!isApproved && !isAdmin) {
+  // Se o usuário estiver logado mas não aprovado/admin, mostra tela de pendente
+  if (user && !isApproved && !isAdmin) {
     return <PendingApproval />;
   }
 
+  // Caso contrário (não logado ou logado/aprovado), mostra o Reader
+  // O Reader deve lidar com funcionalidades restritas se o usuário não estiver logado
   return <Reader />;
 };
 

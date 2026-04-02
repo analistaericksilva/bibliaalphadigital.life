@@ -1,6 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Book, Search, Shield, LogOut, Calendar, BookOpen, BookText, FileText, Clock, Heart, Navigation, MapPin, Share2 } from "lucide-react";
+import { Book, Search, Shield, LogOut, LogIn, Calendar, BookOpen, BookText, FileText, Clock, Heart, Navigation, MapPin, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoSrc from "@/assets/star-of-david-logo.png";
 
@@ -27,7 +27,7 @@ const ReaderHeader = ({
   onToggleMap,
   onShare,
 }: ReaderHeaderProps) => {
-  const { isAdmin, signOut } = useAuth();
+  const { user, isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -97,9 +97,15 @@ const ReaderHeader = ({
             <Shield className="w-4 h-4" />
           </Button>
         )}
-        <Button variant="ghost" size="icon" onClick={signOut} title="Sair">
-          <LogOut className="w-4 h-4" />
-        </Button>
+        {user ? (
+          <Button variant="ghost" size="icon" onClick={signOut} title="Sair">
+            <LogOut className="w-4 h-4" />
+          </Button>
+        ) : (
+          <Button variant="ghost" size="icon" onClick={() => navigate("/login")} title="Entrar">
+            <LogIn className="w-4 h-4" />
+          </Button>
+        )}
       </div>
     </header>
   );
