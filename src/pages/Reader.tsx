@@ -317,7 +317,7 @@ const Reader = () => {
                       const pNote = hasPersonalNote(v.verse);
                       const hlBg = hlColor ? HIGHLIGHT_BG[hlColor] || "" : "";
 
-                      return (
+                        return (
                         <span key={v.verse}>
                           <span
                             ref={(el) => { verseRefs.current[v.verse] = el; }}
@@ -338,6 +338,15 @@ const Reader = () => {
                             </sup>
                             <span className={speechClass}>{v.text}</span>{" "}
                           </span>
+                          {selectedVerse === v.verse && (
+                            <InlineStudyNotes
+                              bookId={currentBook}
+                              chapter={currentChapter}
+                              verse={v.verse}
+                              onNavigate={goToChapter}
+                              onClose={() => setSelectedVerse(null)}
+                            />
+                          )}
                         </span>
                       );
                     })}
