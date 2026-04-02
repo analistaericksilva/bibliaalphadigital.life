@@ -260,26 +260,32 @@ const StudyNotesPanel = ({ open, onClose, bookId, chapter, selectedVerse, onNavi
   return (
     <>
       <div className="fixed inset-0 bg-foreground/5 backdrop-blur-sm z-40" onClick={onClose} />
-      <div className="fixed top-0 right-0 h-full w-full max-w-lg bg-background border-l border-border z-50 animate-fade-in flex flex-col">
+      <div className="fixed top-0 right-0 h-full w-full max-w-lg bg-background border-l border-border z-50 animate-fade-in flex flex-col shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-border bg-muted/20">
           <div>
-            <h2 className="text-[11px] tracking-[0.25em] font-sans font-semibold text-foreground uppercase">
+            <div className="flex items-center gap-2 mb-1">
+              <BookOpen className="w-4 h-4 text-primary" />
+              <h2 className="text-xs tracking-[0.2em] font-sans font-bold text-foreground uppercase">
+                NOTAS DE ESTUDO
+              </h2>
+            </div>
+            <p className="text-sm font-serif text-foreground/80">
               {selectedVerse
                 ? `${bookName} ${chapter}:${selectedVerse}`
-                : `${bookName} ${chapter}`}
-            </h2>
-            <p className="text-[10px] font-sans text-muted-foreground mt-0.5">
-              {selectedVerse ? "Notas, referências e léxico" : "Visão geral do capítulo"}
+                : `${bookName} — Capítulo ${chapter}`}
+            </p>
+            <p className="text-[10px] font-sans text-muted-foreground mt-1">
+              {selectedVerse ? "Comentários, referências e léxico do versículo" : "Visão geral do capítulo"}
             </p>
           </div>
-          <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
+          <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 rounded-full hover:bg-muted">
             <X className="w-4 h-4" />
           </Button>
         </div>
 
         <ScrollArea className="flex-1">
-          <div className="p-5 space-y-4">
+          <div className="p-5 space-y-5">
             {loading && (
               <div className="flex items-center justify-center py-16">
                 <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
@@ -294,17 +300,21 @@ const StudyNotesPanel = ({ open, onClose, bookId, chapter, selectedVerse, onNavi
 
             {/* Léxico Hebraico/Grego — show first when available for immediate context */}
             {!loading && strongEntries.length > 0 && (
-              <div className="rounded-lg border border-border bg-card overflow-hidden">
-                <div className="px-5 pt-4 pb-2 border-b border-border/50 bg-muted/30">
-                  <div className="flex items-center gap-2">
-                    <Languages className="w-3.5 h-3.5 text-primary" />
-                    <h3 className="text-[10px] tracking-[0.25em] font-sans font-bold text-foreground uppercase">
-                      PALAVRAS ORIGINAIS
-                    </h3>
+              <div className="rounded-xl border border-border bg-card overflow-hidden shadow-sm">
+                <div className="px-5 pt-4 pb-3 border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Languages className="w-3.5 h-3.5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-[10px] tracking-[0.25em] font-sans font-bold text-foreground uppercase">
+                        PALAVRAS ORIGINAIS
+                      </h3>
+                      <p className="text-[10px] font-sans text-muted-foreground">
+                        Hebraico & Grego — Léxico de Strong
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-[10px] font-sans text-muted-foreground mt-0.5">
-                    Hebraico & Grego — Léxico de Strong
-                  </p>
                 </div>
                 <div className="px-5 py-4 space-y-3">
                   {strongEntries.map((entry) => (
@@ -367,15 +377,19 @@ const StudyNotesPanel = ({ open, onClose, bookId, chapter, selectedVerse, onNavi
                   });
 
                   return Object.entries(bySource).map(([source, srcNotes]) => (
-                    <div key={`sermon-${source}`} className="rounded-lg border border-border bg-card overflow-hidden">
-                      <div className="px-5 pt-4 pb-2 border-b border-border/50 bg-muted/30">
-                        <div className="flex items-center gap-2">
-                          <BookOpen className="w-3.5 h-3.5 text-primary" />
-                          <h3 className="text-[10px] tracking-[0.25em] font-sans font-bold text-foreground uppercase">
-                            {source.toUpperCase()}
-                          </h3>
+                    <div key={`sermon-${source}`} className="rounded-xl border border-border bg-card overflow-hidden shadow-sm">
+                      <div className="px-5 pt-4 pb-3 border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <BookOpen className="w-3.5 h-3.5 text-primary" />
+                          </div>
+                          <div>
+                            <h3 className="text-[10px] tracking-[0.25em] font-sans font-bold text-foreground uppercase">
+                              {source.toUpperCase()}
+                            </h3>
+                            <p className="text-[10px] font-sans text-muted-foreground">Pregação Clássica</p>
+                          </div>
                         </div>
-                        <p className="text-[10px] font-sans text-muted-foreground mt-0.5">Pregação Clássica</p>
                       </div>
                       <div className="px-5 py-4 space-y-4">
                         {srcNotes.map((note) => (
@@ -401,8 +415,8 @@ const StudyNotesPanel = ({ open, onClose, bookId, chapter, selectedVerse, onNavi
                 }
 
                 return (
-                  <div key={type} className="rounded-lg border border-border bg-card overflow-hidden">
-                    <div className="px-5 pt-4 pb-2 border-b border-border/50 bg-muted/30">
+                  <div key={type} className="rounded-xl border border-border bg-card overflow-hidden shadow-sm">
+                    <div className="px-5 pt-4 pb-3 border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
                       <h3 className="text-[10px] tracking-[0.25em] font-sans font-bold text-foreground uppercase">
                         {config.label}
                       </h3>
@@ -438,15 +452,19 @@ const StudyNotesPanel = ({ open, onClose, bookId, chapter, selectedVerse, onNavi
 
             {/* Concordância Exaustiva */}
             {!loading && concordanceRefs.length > 0 && (
-              <div className="rounded-lg border border-border bg-card overflow-hidden">
-                <div className="px-5 pt-4 pb-2 border-b border-border/50 bg-muted/30">
-                  <div className="flex items-center gap-2">
-                    <Link2 className="w-3.5 h-3.5 text-primary" />
-                    <h3 className="text-[10px] tracking-[0.25em] font-sans font-bold text-foreground uppercase">
-                      CONCORDÂNCIA EXAUSTIVA
-                    </h3>
+              <div className="rounded-xl border border-border bg-card overflow-hidden shadow-sm">
+                <div className="px-5 pt-4 pb-3 border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Link2 className="w-3.5 h-3.5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-[10px] tracking-[0.25em] font-sans font-bold text-foreground uppercase">
+                        CONCORDÂNCIA EXAUSTIVA
+                      </h3>
+                      <p className="text-[10px] font-sans text-muted-foreground">Referências Cruzadas</p>
+                    </div>
                   </div>
-                  <p className="text-[10px] font-sans text-muted-foreground mt-0.5">Referências Cruzadas</p>
                 </div>
                 <div className="px-5 py-4 space-y-3">
                   {concordanceRefs.map((ref) => (
