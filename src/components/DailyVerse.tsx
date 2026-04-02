@@ -1,9 +1,16 @@
 import { useState, useEffect } from "react";
 import { RefreshCw, Loader2, BookOpen } from "lucide-react";
-import { bibleApi, type RandomVerse } from "@/lib/bibleApi";
+import { supabase } from "@/integrations/supabase/client";
+
+interface DailyVerseData {
+  text: string;
+  book_name: string;
+  chapter: number;
+  verse_number: number;
+}
 
 const DailyVerse = () => {
-  const [verse, setVerse] = useState<RandomVerse | null>(null);
+  const [verse, setVerse] = useState<DailyVerseData | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -12,10 +19,24 @@ const DailyVerse = () => {
     else setLoading(true);
 
     try {
-      const data = await bibleApi.getRandomVerse("nvi");
+      // Get total count, then pick a random offset
+      const { count } = await supabase
+        .from("bible_verses")
+        .select("id", { count: "exact", head: true });
+
+      if (!count || count === 0) throw new Error("No verses");
+
+      const randomOffset = Math.floor(Math.random() * count);
+      const { data, error } = await supabase
+        .from("bible_verses")
+        .select("text, book_name, chapter, verse_number")
+        .range(randomOffset, randomOffset)
+        .single();
+
+      if (error) throw error;
       setVerse(data);
     } catch {
-      // Silently fail — the component will just not show
+      // Silently fail
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -23,7 +44,6 @@ const DailyVerse = () => {
   };
 
   useEffect(() => {
-    // Try to use a cached verse for today
     const today = new Date().toISOString().split("T")[0];
     const cached = localStorage.getItem("dailyVerse");
     if (cached) {
@@ -75,7 +95,7 @@ const DailyVerse = () => {
       </blockquote>
 
       <p className="text-sm font-sans text-muted-foreground">
-        {verse.book.name} {verse.chapter}:{verse.number}
+        {verse.book_name} {verse.chapter}:{verse.verse_number}
       </p>
 
       <button
