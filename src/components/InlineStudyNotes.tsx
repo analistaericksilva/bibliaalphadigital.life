@@ -1,0 +1,302 @@
+import { useState, useEffect, useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { bibleBooks } from "@/data/bibleBooks";
+import { Loader2, BookOpen, Languages, Link2, ChevronDown, ChevronUp } from "lucide-react";
+
+interface StudyNote {
+  id: string;
+  verse_start: number;
+  verse_end: number | null;
+  title: string | null;
+  content: string;
+  source: string | null;
+  note_type: string;
+}
+
+interface DictEntry {
+  id: string;
+  term: string;
+  definition: string;
+  hebrew_greek: string | null;
+  references_list: any;
+}
+
+interface InlineStudyNotesProps {
+  bookId: string;
+  chapter: number;
+  verse: number;
+  onNavigate?: (bookId: string, chapter: number, verse?: number) => void;
+  onClose: () => void;
+}
+
+const abbrevToId: Record<string, string> = {};
+const nameToId: Record<string, string> = {};
+bibleBooks.forEach((b) => {
+  abbrevToId[b.abbrev.toLowerCase()] = b.id;
+  nameToId[b.name.toLowerCase()] = b.id;
+  abbrevToId[b.id] = b.id;
+});
+
+function parseReference(refStr: string) {
+  const match = refStr.trim().match(/^(\d?\s?[A-Za-zÀ-ú]+)\s+(\d+)(?:[\.:](\d+))?/);
+  if (!match) return null;
+  const abbrev = match[1].replace(/\s/g, "").toLowerCase();
+  const bookId = abbrevToId[abbrev] || nameToId[abbrev];
+  if (!bookId) return null;
+  return { bookId, chapter: parseInt(match[2], 10), verse: match[3] ? parseInt(match[3], 10) : undefined };
+}
+
+function renderContentWithRefs(
+  text: string,
+  onNav?: (bookId: string, chapter: number, verse?: number) => void
+) {
+  if (!onNav) return <span>{text}</span>;
+  const refRegex = /(\d?\s?[A-ZÀ-Ú][a-zà-ú]+)\s+(\d+)[\.:](\d+)(?:-(\d+))?/g;
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  while ((match = refRegex.exec(text)) !== null) {
+    const abbrev = match[1].replace(/\s/g, "").toLowerCase();
+    const bookId = abbrevToId[abbrev] || nameToId[abbrev];
+    if (bookId) {
+      if (match.index > lastIndex) parts.push(<span key={`t${lastIndex}`}>{text.slice(lastIndex, match.index)}</span>);
+      const ch = parseInt(match[2], 10);
+      const vs = parseInt(match[3], 10);
+      parts.push(
+        <button key={`r${match.index}`} className="text-primary hover:underline cursor-pointer" onClick={() => onNav(bookId, ch, vs)}>
+          {match[0]}
+        </button>
+      );
+      lastIndex = match.index + match[0].length;
+    }
+  }
+  if (lastIndex < text.length) parts.push(<span key={`t${lastIndex}`}>{text.slice(lastIndex)}</span>);
+  return parts.length > 0 ? <>{parts}</> : <span>{text}</span>;
+}
+
+const SOURCE_LABELS: Record<string, string> = {
+  matthew_henry: "Matthew Henry",
+  sermon: "Sermão",
+  commentary: "Nota de Estudo",
+  concordance: "Concordância",
+};
+
+const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: InlineStudyNotesProps) => {
+  const [notes, setNotes] = useState<StudyNote[]>([]);
+  const [concordance, setConcordance] = useState<StudyNote[]>([]);
+  const [dictEntries, setDictEntries] = useState<DictEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["main"]));
+
+  const toggleSection = (key: string) => {
+    setExpandedSections((prev) => {
+      const next = new Set(prev);
+      next.has(key) ? next.delete(key) : next.add(key);
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    const fetch = async () => {
+      setLoading(true);
+      const [notesRes, concRes, dictRes] = await Promise.all([
+        supabase
+          .from("study_notes")
+          .select("*")
+          .eq("book_id", bookId)
+          .eq("chapter", chapter)
+          .neq("note_type", "concordance")
+          .lte("verse_start", verse)
+          .order("verse_start"),
+        supabase
+          .from("study_notes")
+          .select("*")
+          .eq("book_id", bookId)
+          .eq("chapter", chapter)
+          .eq("note_type", "concordance")
+          .eq("verse_start", verse),
+        supabase
+          .from("bible_dictionary")
+          .select("*")
+          .not("references_list", "is", null)
+          .not("hebrew_greek", "is", null),
+      ]);
+
+      let filtered = (notesRes.data as StudyNote[]) || [];
+      filtered = filtered.filter(
+        (n) => n.verse_start <= verse && (n.verse_end ? n.verse_end >= verse : n.verse_start === verse)
+      );
+      setNotes(filtered);
+      setConcordance((concRes.data as StudyNote[]) || []);
+
+      // Filter dict entries matching this verse
+      const idToAbbrev: Record<string, string> = {};
+      bibleBooks.forEach((b) => { idToAbbrev[b.id] = b.abbrev; });
+      const allDict = (dictRes.data as DictEntry[]) || [];
+      const matched = allDict.filter((e) => {
+        if (!e.references_list || !Array.isArray(e.references_list)) return false;
+        return e.references_list.some((ref: string) => {
+          const parsed = parseReference(ref);
+          return parsed && parsed.bookId === bookId && parsed.chapter === chapter && parsed.verse === verse;
+        });
+      });
+      setDictEntries(matched);
+      setLoading(false);
+    };
+    fetch();
+  }, [bookId, chapter, verse]);
+
+  const handleNav = useCallback(
+    (bId: string, ch: number, v?: number) => {
+      onClose();
+      onNavigate?.(bId, ch, v);
+    },
+    [onNavigate, onClose]
+  );
+
+  const hasContent = notes.length > 0 || concordance.length > 0 || dictEntries.length > 0;
+
+  if (loading) {
+    return (
+      <div className="py-3 px-4 flex items-center gap-2 text-muted-foreground">
+        <Loader2 className="w-3 h-3 animate-spin" />
+        <span className="text-xs font-sans">Carregando notas…</span>
+      </div>
+    );
+  }
+
+  if (!hasContent) {
+    return (
+      <div className="py-2 px-4">
+        <p className="text-xs text-muted-foreground font-sans italic">Sem notas de estudo para este versículo.</p>
+      </div>
+    );
+  }
+
+  // Group notes by type
+  const grouped: Record<string, StudyNote[]> = {};
+  notes.forEach((n) => {
+    const key = n.note_type || "commentary";
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(n);
+  });
+
+  return (
+    <div className="my-2 mx-1 rounded-lg border border-primary/20 bg-card/80 backdrop-blur-sm shadow-sm overflow-hidden animate-fade-in">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-2 bg-primary/5 border-b border-primary/10">
+        <div className="flex items-center gap-1.5">
+          <BookOpen className="w-3 h-3 text-primary" />
+          <span className="text-[10px] tracking-[0.2em] font-sans font-bold text-foreground uppercase">
+            v. {verse} — Notas de Estudo
+          </span>
+        </div>
+        <button onClick={onClose} className="text-muted-foreground hover:text-foreground text-xs px-1">
+          ✕
+        </button>
+      </div>
+
+      <div className="divide-y divide-border/50">
+        {/* Dictionary / Original Words */}
+        {dictEntries.length > 0 && (
+          <div>
+            <button
+              onClick={() => toggleSection("dict")}
+              className="w-full flex items-center gap-2 px-4 py-2 hover:bg-muted/30 transition-colors"
+            >
+              <Languages className="w-3 h-3 text-primary" />
+              <span className="text-[10px] tracking-[0.15em] font-sans font-bold uppercase flex-1 text-left">
+                Palavras Originais
+              </span>
+              {expandedSections.has("dict") ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+            </button>
+            {expandedSections.has("dict") && (
+              <div className="px-4 pb-3 space-y-2">
+                {dictEntries.map((entry) => (
+                  <div key={entry.id} className="text-xs">
+                    <span className="font-serif font-bold text-primary">{entry.term}</span>
+                    {entry.hebrew_greek && (
+                      <span className="text-[10px] font-mono text-muted-foreground ml-1.5">{entry.hebrew_greek}</span>
+                    )}
+                    <p className="text-[12px] font-serif leading-relaxed text-foreground/85 mt-0.5">{entry.definition}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Study notes by type */}
+        {Object.entries(grouped).map(([type, typeNotes]) => (
+          <div key={type}>
+            <button
+              onClick={() => toggleSection(type)}
+              className="w-full flex items-center gap-2 px-4 py-2 hover:bg-muted/30 transition-colors"
+            >
+              <BookOpen className="w-3 h-3 text-primary" />
+              <span className="text-[10px] tracking-[0.15em] font-sans font-bold uppercase flex-1 text-left">
+                {SOURCE_LABELS[type] || type}
+              </span>
+              {expandedSections.has(type) ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+            </button>
+            {expandedSections.has(type) && (
+              <div className="px-4 pb-3 space-y-2">
+                {typeNotes.map((note) => (
+                  <div key={note.id}>
+                    {note.title && (
+                      <p className="text-[11px] font-sans font-semibold text-foreground mb-0.5">{note.title}</p>
+                    )}
+                    <div className="text-[12px] font-serif leading-[1.7] text-foreground/85 whitespace-pre-line">
+                      {renderContentWithRefs(note.content, onNavigate ? handleNav : undefined)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+
+        {/* Concordance */}
+        {concordance.length > 0 && (
+          <div>
+            <button
+              onClick={() => toggleSection("conc")}
+              className="w-full flex items-center gap-2 px-4 py-2 hover:bg-muted/30 transition-colors"
+            >
+              <Link2 className="w-3 h-3 text-primary" />
+              <span className="text-[10px] tracking-[0.15em] font-sans font-bold uppercase flex-1 text-left">
+                Referências Cruzadas
+              </span>
+              {expandedSections.has("conc") ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+            </button>
+            {expandedSections.has("conc") && (
+              <div className="px-4 pb-3">
+                {concordance.map((ref) => (
+                  <div key={ref.id} className="text-xs flex flex-wrap gap-1">
+                    {ref.content.split(";").map((r, i) => {
+                      const parsed = parseReference(r.trim());
+                      if (parsed && onNavigate) {
+                        return (
+                          <button
+                            key={i}
+                            className="text-primary hover:underline bg-primary/5 rounded px-1.5 py-0.5 text-[10px]"
+                            onClick={() => handleNav(parsed.bookId, parsed.chapter, parsed.verse)}
+                          >
+                            {r.trim()}
+                          </button>
+                        );
+                      }
+                      return <span key={i} className="text-muted-foreground text-[10px]">{r.trim()}</span>;
+                    })}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default InlineStudyNotes;
