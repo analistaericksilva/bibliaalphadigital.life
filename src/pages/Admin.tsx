@@ -91,6 +91,28 @@ const Admin = () => {
     setDeleteTarget(null);
   };
 
+  const handleChangePassword = async () => {
+    if (newPassword.length < 8) {
+      toast({ title: "Erro", description: "A senha deve ter no mínimo 8 caracteres.", variant: "destructive" });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast({ title: "Erro", description: "As senhas não coincidem.", variant: "destructive" });
+      return;
+    }
+    setChangingPassword(true);
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) {
+      toast({ title: "Erro", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Sucesso", description: "Senha alterada com sucesso." });
+      setPasswordOpen(false);
+      setNewPassword("");
+      setConfirmPassword("");
+    }
+    setChangingPassword(false);
+  };
+
   const filteredUsers = filter === "all" ? users : users.filter((u) => u.status === filter);
 
   const statusCounts = {
@@ -114,6 +136,9 @@ const Admin = () => {
           <span className="text-xs tracking-[0.3em] font-sans font-light text-foreground">ADMINISTRAÇÃO</span>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => setPasswordOpen(true)} className="text-[9px] tracking-widest rounded-none h-8">
+            <KeyRound className="w-3 h-3 mr-1" /> ALTERAR SENHA
+          </Button>
           <Shield className="w-4 h-4 text-primary" />
           <span className="text-[10px] tracking-widest text-muted-foreground font-sans">ADMIN</span>
         </div>
