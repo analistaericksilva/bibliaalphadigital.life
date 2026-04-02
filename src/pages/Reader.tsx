@@ -212,7 +212,7 @@ const Reader = () => {
         <ReaderSidebar
           onToggleSearch={() => setShowSearch(!showSearch)}
           onToggleBookSelector={() => setShowBooks(!showBooks)}
-          onToggleNotes={() => { setSelectedVerse(null); setShowNotes(!showNotes); }}
+          onToggleNotes={() => { setSelectedVerse(null); setShowNotes((p) => !p); }}
           onToggleDictionary={() => setShowDictionary(!showDictionary)}
           onToggleHistory={() => openUserPanel("history")}
           onToggleFavorites={() => openUserPanel("favorites")}
