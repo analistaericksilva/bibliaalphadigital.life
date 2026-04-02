@@ -246,6 +246,8 @@ const Reader = () => {
               </span>
             </div>
             <div className="ml-auto flex items-center gap-1">
+              <ReaderSettingsBar />
+              <div className="w-px h-5 bg-border mx-1" />
               <button onClick={() => navigateChapter(-1)} className="p-1.5 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground">
                 <ChevronLeft className="w-4 h-4" />
               </button>
