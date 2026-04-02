@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { bibleBooks } from "@/data/bibleBooks";
 import { Loader2, BookOpen, Languages, Link2, ChevronDown, ChevronUp } from "lucide-react";
+import InterlinearView from "@/components/InterlinearView";
 
 interface StudyNote {
   id: string;
