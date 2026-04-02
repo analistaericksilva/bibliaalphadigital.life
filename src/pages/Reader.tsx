@@ -317,7 +317,7 @@ const Reader = () => {
                     <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
                   </div>
                 ) : (
-                  <div className="reader-content">
+                  <div className="reader-content" style={{ fontSize: `${fontSize}px` }}>
                     {verses.map((v) => {
                       const speechClass = getSpeechClass(v.text, currentBook);
                       const hasNote = noteVerses.has(v.verse);
