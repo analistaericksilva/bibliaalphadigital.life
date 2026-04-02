@@ -17,6 +17,7 @@ import VerseActionMenu from "@/components/VerseActionMenu";
 import LexiconPanel from "@/components/LexiconPanel";
 import PeoplePanel from "@/components/PeoplePanel";
 import DailyVerse from "@/components/DailyVerse";
+import OnboardingTour from "@/components/OnboardingTour";
 import { useUserAnnotations } from "@/hooks/useUserAnnotations";
 import { ChevronLeft, ChevronRight, Loader2, ArrowLeft, Menu } from "lucide-react";
 
