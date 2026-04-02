@@ -11,6 +11,8 @@ import DictionaryPanel from "@/components/DictionaryPanel";
 import UserPanel from "@/components/UserPanel";
 import BibleMapPanel from "@/components/BibleMapPanel";
 import VerseActionMenu from "@/components/VerseActionMenu";
+import VersionComparePanel from "@/components/VersionComparePanel";
+import DailyVerse from "@/components/DailyVerse";
 import { useUserAnnotations } from "@/hooks/useUserAnnotations";
 import { ChevronLeft, ChevronRight, Loader2, ArrowLeft } from "lucide-react";
 
@@ -73,6 +75,7 @@ const Reader = () => {
   const [showDictionary, setShowDictionary] = useState(false);
   const [showUserPanel, setShowUserPanel] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const [showCompare, setShowCompare] = useState(false);
   const [userPanelTab, setUserPanelTab] = useState("history");
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
   const [verses, setVerses] = useState<Verse[]>([]);
@@ -241,6 +244,7 @@ const Reader = () => {
         onToggleGoTo={() => openUserPanel("goto")}
         onToggleMap={() => setShowMap(!showMap)}
         onShare={handleShareChapter}
+        onToggleCompare={() => setShowCompare(!showCompare)}
       />
 
       {/* Navigation zones */}
@@ -257,8 +261,13 @@ const Reader = () => {
         <ChevronRight className="w-8 h-8" />
       </div>
 
-      {/* Reader content */}
+      {/* Daily verse + Reader content */}
       <main className="max-w-3xl mx-auto px-6 md:px-12 pt-32 pb-48">
+        {/* Daily Verse */}
+        <div className="mb-8 animate-fade-in">
+          <DailyVerse />
+        </div>
+
         <div className="bg-paper page-shadow rounded p-8 md:p-16 mb-8 animate-fade-in">
           {/* Back button */}
           {navHistory.length > 0 && (
@@ -440,6 +449,14 @@ const Reader = () => {
         bookId={currentBook}
         chapter={currentChapter}
         onNavigate={goToChapter}
+      />
+
+      <VersionComparePanel
+        open={showCompare}
+        onClose={() => setShowCompare(false)}
+        bookId={currentBook}
+        chapter={currentChapter}
+        selectedVerse={selectedVerse}
       />
     </div>
   );
