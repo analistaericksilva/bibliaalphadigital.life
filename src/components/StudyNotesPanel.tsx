@@ -15,7 +15,7 @@ interface StudyNote {
   content: string;
   source: string | null;
   note_type: string;
-  color: string | null;
+  color?: string | null;
 }
 
 interface DictEntry {

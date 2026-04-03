@@ -12,6 +12,7 @@ interface StudyNote {
   content: string;
   source: string | null;
   note_type: string;
+  color?: string | null;
 }
 
 interface DictEntry {
@@ -288,23 +289,29 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
               </button>
               {expandedSections.has(type) && (
                 <div className="px-5 pb-5 space-y-4">
-                  {typeNotes.map((note) => (
-                    <div key={note.id} className="p-5 rounded-xl bg-muted/20 border border-border/30">
-                      {note.title && (
-                        <p className="text-sm font-sans font-bold text-foreground mb-3 pb-2 border-b border-border/30">
-                          {note.title}
-                        </p>
-                      )}
-                      <div className="text-base font-serif leading-[2.1] text-foreground/90 whitespace-pre-line text-left">
-                        {renderContentWithRefs(note.content, onNavigate ? handleNav : undefined)}
+                  {typeNotes.map((note) => {
+                    const bgColor = note.color ? `bg-[${note.color}]/10` : "bg-muted/20";
+                    const borderColor = note.color ? `border-[${note.color}]/30` : "border-border/30";
+                    const textColor = note.color ? `text-[${note.color}]` : "text-foreground";
+                    const sourceColor = note.color ? `text-[${note.color}]/70` : "text-muted-foreground/60";
+                    return (
+                      <div key={note.id} className={`p-5 rounded-xl ${bgColor} border ${borderColor}`} style={note.color ? { backgroundColor: `${note.color}15`, borderColor: `${note.color}4d` } : {}}>
+                        {note.title && (
+                          <p className={`text-sm font-sans font-bold ${textColor} mb-3 pb-2 border-b ${borderColor}`} style={note.color ? { color: note.color, borderColor: `${note.color}4d` } : {}}>
+                            {note.title}
+                          </p>
+                        )}
+                        <div className="text-base font-serif leading-[2.1] whitespace-pre-line text-left" style={note.color ? { color: note.color } : {}}>
+                          {renderContentWithRefs(note.content, onNavigate ? handleNav : undefined)}
+                        </div>
+                        {note.source && (
+                          <p className={`text-[10px] font-sans ${sourceColor} mt-3 pt-2 border-t ${borderColor} uppercase tracking-wider`} style={note.color ? { color: `${note.color}b3`, borderColor: `${note.color}33` } : {}}>
+                            Fonte: {SOURCE_LABELS[note.source] || note.source}
+                          </p>
+                        )}
                       </div>
-                      {note.source && (
-                        <p className="text-[10px] font-sans text-muted-foreground/60 mt-3 pt-2 border-t border-border/20 uppercase tracking-wider">
-                          Fonte: {SOURCE_LABELS[note.source] || note.source}
-                        </p>
-                      )}
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
