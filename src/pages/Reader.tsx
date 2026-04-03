@@ -13,6 +13,7 @@ import DictionaryPanel from "@/components/DictionaryPanel";
 import UserPanel from "@/components/UserPanel";
 import BibleMapPanel from "@/components/BibleMapPanel";
 import VerseActionMenu from "@/components/VerseActionMenu";
+import ChapterNavigation from "@/components/ChapterNavigation";
 
 import LexiconPanel from "@/components/LexiconPanel";
 import PeoplePanel from "@/components/PeoplePanel";
@@ -310,6 +311,11 @@ const Reader = () => {
                 <p className="text-[9px] text-center text-muted-foreground font-sans mb-6 tracking-wide">
                   Clique longo em qualquer versículo para grifar, favoritar ou anotar
                 </p>
+
+                {/* Chapter Navigation Strip */}
+                <ChapterNavigation bookId={currentBook} chapter={currentChapter} onNavigate={goToChapter} />
+
+                <div className="mt-6"></div>
 
                 {/* Verses */}
                 {loading ? (
