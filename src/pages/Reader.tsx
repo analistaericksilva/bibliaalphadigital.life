@@ -19,6 +19,7 @@ import LexiconPanel from "@/components/LexiconPanel";
 import PeoplePanel from "@/components/PeoplePanel";
 import DailyVerse from "@/components/DailyVerse";
 import OnboardingTour from "@/components/OnboardingTour";
+import AuthorNotesSidebar from "@/components/AuthorNotesSidebar";
 import { useUserAnnotations } from "@/hooks/useUserAnnotations";
 import ReaderSettingsBar from "@/components/ReaderSettingsBar";
 import { useReaderSettings } from "@/contexts/ReaderSettingsContext";
@@ -89,6 +90,7 @@ const Reader = () => {
   
   const [showLexicon, setShowLexicon] = useState(false);
   const [showPeople, setShowPeople] = useState(false);
+  const [showRightPanel, setShowRightPanel] = useState(true);
   const [userPanelTab, setUserPanelTab] = useState<UserPanelTab>("history");
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
   const [verses, setVerses] = useState<Verse[]>([]);
@@ -389,6 +391,12 @@ const Reader = () => {
             </div>
           </main>
         </div>
+        <AuthorNotesSidebar
+          bookId={currentBook}
+          chapter={currentChapter}
+          isOpen={showRightPanel}
+          onToggle={() => setShowRightPanel(!showRightPanel)}
+        />
       </div>
 
       {/* Overlays */}
