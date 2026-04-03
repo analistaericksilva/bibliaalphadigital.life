@@ -1,33 +1,33 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { supabase } from '../supabaseClient';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [readingPosition, setReadingPosition] = useState(0);
+    const [session, setSession] = useState(null);
 
-    // Session persistence with localStorage fallback
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-        const storedPosition = localStorage.getItem('readingPosition');
-        if (storedPosition) {
-            setReadingPosition(parseInt(storedPosition, 10));
-        }
+        const { data: subscription } = supabase
+            .auth.onAuthStateChange((_, session) => {
+                setSession(session);
+            });
+
+        return () => {
+            subscription.unsubscribe();
+        };
     }, []);
 
-    const signOut = () => {
-        setUser(null);
-        setReadingPosition(0);
-        localStorage.removeItem('user');
-        localStorage.removeItem('readingPosition');
+    const signOut = async () => {
+        await supabase.auth.signOut();
+        setSession(null);
+        localStorage.removeItem('lastReadPosition'); // Clear lastReadPosition on signOut
     };
 
-    const value = { user, setUser, readingPosition, setReadingPosition, signOut };
-
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return (
+        <AuthContext.Provider value={{ session, signOut }}>
+            {children}
+        </AuthContext.Provider>
+    );
 };
 
 export const useAuth = () => {
