@@ -266,7 +266,7 @@ const Reader = () => {
                 <DailyVerse />
               </div>
 
-              <div className="bg-paper page-shadow rounded p-8 md:p-16 mb-8 animate-fade-in">
+              <div className="bg-white rounded-none md:rounded-lg p-6 md:p-12 mb-8 animate-fade-in">
                 {/* Back button */}
                 {navHistory.length > 0 && (
                   <button
@@ -323,7 +323,7 @@ const Reader = () => {
                     <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
                   </div>
                 ) : (
-                  <div className="reader-content" style={{ fontSize: `${fontSize}px` }}>
+                  <div className="reader-content text-[#222]" style={{ fontSize: `${fontSize}px`, lineHeight: 2.05, letterSpacing: "0.01em" }}>
                     {verses.map((v) => {
                       const speechClass = getSpeechClass(v.text, currentBook);
                       const hasNote = noteVerses.has(v.verse);
@@ -338,7 +338,7 @@ const Reader = () => {
                         <span key={v.verse}>
                           <span
                             ref={(el) => { verseRefs.current[v.verse] = el; }}
-                            className={`cursor-pointer ${hlBg} rounded px-0.5 transition-colors`}
+                            className={`cursor-pointer ${hlBg} rounded px-0.5 transition-colors align-baseline`}
                             onClick={() => handleVerseClick(v.verse)}
                             onContextMenu={(e) => handleVerseLongPress(v.verse, e)}
                             onTouchStart={(e) => {
@@ -349,11 +349,21 @@ const Reader = () => {
                             }}
                           >
                             <sup
-                              className={`verse-number ${hasNote ? "!text-primary !font-bold" : ""} ${fav ? "!text-destructive !font-bold" : ""} ${pNote ? "!text-accent !underline" : ""}`}
+                              className={`verse-number text-[0.58em] align-super mr-0.5 text-[#5A5A5A] ${hasNote ? "!text-primary !font-bold" : ""} ${fav ? "!text-destructive !font-bold" : ""} ${pNote ? "!text-accent !underline" : ""}`}
                             >
                               {v.verse}{fav && "♥"}
                             </sup>
-                            <span className={speechClass}>{v.text}</span>{" "}
+                            <span className={speechClass}>{v.text}</span>
+                            {hasCrossRef && (
+                              <button
+                                className="ml-1 align-super text-[10px] font-sans underline underline-offset-2 cursor-pointer"
+                                style={{ color: "#4B2E83", textDecorationColor: "#4B2E8388" }}
+                                onClick={() => handleVerseClick(v.verse)}
+                                aria-label={`Ver referências do versículo ${v.verse}`}
+                              >
+                                ↗
+                              </button>
+                            )}{" "}
                           </span>
                           {shouldShowInlineNotes && (
                             <InlineStudyNotes
