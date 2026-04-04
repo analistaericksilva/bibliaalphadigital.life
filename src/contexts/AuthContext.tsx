@@ -41,31 +41,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const fetchProfileAndRole = useCallback(async (userId: string) => {
-    const [profileRes, adminRes] = await Promise.all([
-      supabase
-        .from("profiles")
-        .select("*")
-        .eq("user_id", userId)
-        .maybeSingle(),
-      supabase.rpc("has_role", {
-        _user_id: userId,
-        _role: "admin",
-      }),
-    ]);
+    try {
+      const [profileRes, adminRes] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("*")
+          .eq("user_id", userId)
+          .maybeSingle(),
+        supabase.rpc("has_role", {
+          _user_id: userId,
+          _role: "admin",
+        }),
+      ]);
 
-    if (profileRes.error) {
-      console.error("Erro ao buscar perfil:", profileRes.error.message);
+      if (profileRes.error) {
+        console.error("Erro ao buscar perfil:", profileRes.error.message);
+      }
+
+      if (adminRes.error) {
+        console.error("Erro ao verificar role admin:", adminRes.error.message);
+      }
+
+      const profileData = profileRes.data ?? null;
+
+      setProfile(profileData);
+      setIsApproved(profileData?.status === "approved");
+      setIsAdmin(adminRes.data === true);
+    } catch (error) {
+      console.error("Falha inesperada ao carregar perfil/permissões:", error);
+      setProfile(null);
+      setIsApproved(false);
+      setIsAdmin(false);
     }
-
-    if (adminRes.error) {
-      console.error("Erro ao verificar role admin:", adminRes.error.message);
-    }
-
-    const profileData = profileRes.data ?? null;
-
-    setProfile(profileData);
-    setIsApproved(profileData?.status === "approved");
-    setIsAdmin(adminRes.data === true);
   }, []);
 
   const hydrateFromSession = useCallback(
@@ -90,17 +97,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const initAuth = async () => {
       setLoading(true);
 
-      const { data, error } = await supabase.auth.getSession();
-      if (!mounted) return;
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (!mounted) return;
 
-      if (error || !data.session) {
+        if (error || !data.session) {
+          clearAuthState();
+          return;
+        }
+
+        await hydrateFromSession(data.session);
+      } catch (error) {
+        console.error("Falha ao inicializar autenticação:", error);
         clearAuthState();
-        setLoading(false);
-        return;
+      } finally {
+        if (mounted) setLoading(false);
       }
-
-      await hydrateFromSession(data.session);
-      if (mounted) setLoading(false);
     };
 
     initAuth();
@@ -124,8 +136,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       setLoading(true);
-      await hydrateFromSession(nextSession);
-      if (mounted) setLoading(false);
+      try {
+        await hydrateFromSession(nextSession);
+      } catch (error) {
+        console.error("Falha ao processar mudança de autenticação:", error);
+      } finally {
+        if (mounted) setLoading(false);
+      }
     });
 
     return () => {
