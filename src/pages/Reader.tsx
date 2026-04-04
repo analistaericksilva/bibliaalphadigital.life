@@ -628,7 +628,6 @@ const Reader = () => {
                               chapter={currentChapter}
                               verse={v.verse}
                               onNavigate={goToChapter}
-                              onClose={() => setSelectedVerse(null)}
                             />
                           )}
                         </span>

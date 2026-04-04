@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { bibleBooks } from "@/data/bibleBooks";
-import { Loader2, X, ChevronDown, ChevronUp } from "lucide-react";
+import { Loader2, ChevronDown, ChevronUp } from "lucide-react";
 
 interface StudyNote {
   id: string;
@@ -26,7 +26,6 @@ interface InlineStudyNotesProps {
   chapter: number;
   verse: number;
   onNavigate?: (bookId: string, chapter: number, verse?: number) => void;
-  onClose: () => void;
 }
 
 const abbrevToId: Record<string, string> = {};
@@ -119,7 +118,6 @@ const InlineStudyNotes = ({
   chapter,
   verse,
   onNavigate,
-  onClose,
 }: InlineStudyNotesProps) => {
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState<StudyNote[]>([]);
@@ -127,7 +125,7 @@ const InlineStudyNotes = ({
   const [keywords, setKeywords] = useState<DictEntry[]>([]);
   const [openCommentId, setOpenCommentId] = useState<string | null>(null);
   const [openKeywordId, setOpenKeywordId] = useState<string | null>(null);
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(true);
 
   useEffect(() => {
     let mounted = true;
@@ -196,7 +194,7 @@ const InlineStudyNotes = ({
       setComments(limitedComments);
       setCrossRefs(refs);
       setKeywords(matchedKeywords);
-      setOpenCommentId(limitedComments[0]?.id ?? null);
+      setOpenCommentId(null);
       setOpenKeywordId(null);
       setLoading(false);
     };
@@ -214,7 +212,7 @@ const InlineStudyNotes = ({
   );
 
   useEffect(() => {
-    setIsMinimized(false);
+    setIsMinimized(true);
   }, [bookId, chapter, verse]);
 
   if (loading) {
@@ -233,14 +231,6 @@ const InlineStudyNotes = ({
       <span className="block mt-2 mb-5 rounded-xl border border-border/70 bg-card/80 px-4 py-3 shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
         <span className="flex items-center justify-between">
           <span className="text-[10px] uppercase tracking-[0.22em] menu-strong">Verso {verse}</span>
-          <button
-            type="button"
-            onClick={onClose}
-            className="h-6 w-6 rounded-full text-foreground hover:text-foreground hover:bg-muted/70 transition-colors"
-            aria-label="Fechar notas"
-          >
-            <X className="w-3.5 h-3.5 mx-auto" />
-          </button>
         </span>
         <span className="mt-2 block text-[13px] comment-strong">Sem comentários ou referências para este versículo.</span>
       </span>
@@ -260,14 +250,6 @@ const InlineStudyNotes = ({
             title={isMinimized ? "Expandir notas" : "Minimizar notas"}
           >
             {isMinimized ? <ChevronDown className="w-3.5 h-3.5 mx-auto" /> : <ChevronUp className="w-3.5 h-3.5 mx-auto" />}
-          </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="h-6 w-6 rounded-full text-foreground hover:text-foreground hover:bg-muted/70 transition-colors"
-            aria-label="Fechar notas"
-          >
-            <X className="w-3.5 h-3.5 mx-auto" />
           </button>
         </span>
       </span>
