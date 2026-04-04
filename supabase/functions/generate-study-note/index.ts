@@ -20,7 +20,6 @@ Deno.serve(async (req) => {
       )
     }
 
-    // Fetch the verse text
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     const supabase = createClient(supabaseUrl, supabaseKey)
@@ -35,7 +34,6 @@ Deno.serve(async (req) => {
 
     const verseText = verseData?.text || ''
 
-    // Also fetch surrounding verses for context (2 before, 2 after)
     const { data: contextVerses } = await supabase
       .from('bible_verses')
       .select('verse_number, text')
@@ -57,25 +55,36 @@ Deno.serve(async (req) => {
       )
     }
 
-    const prompt = `Você é um teólogo evangélico experiente. Gere notas de estudo para o versículo abaixo.
+    // Determine testament for Scofield context
+    const otBooks = ['gn','ex','lv','nm','dt','js','jz','rt','1sm','2sm','1rs','2rs','1cr','2cr','ed','ne','et','jo','sl','pv','ec','ct','is','jr','lm','ez','dn','os','jl','am','ob','jn','mq','na','hc','sf','ag','zc','ml']
+    const isOT = otBooks.includes(bookId)
+
+    const prompt = `Você é um teólogo evangélico experiente com profundo conhecimento da Scofield Reference Bible (edição revisada de 1917, domínio público) e dos grandes comentaristas reformados e puritanos.
+
+Gere notas de estudo para o versículo abaixo.
 
 Livro: ${bookName}
 Capítulo: ${chapter}
 Versículo: ${verse}
 Texto: "${verseText}"
+Testamento: ${isOT ? 'Antigo Testamento' : 'Novo Testamento'}
 
 Contexto (versículos ao redor):
 ${contextText}
 
 Responda EXATAMENTE no formato JSON abaixo, sem nenhum texto fora do JSON, sem markdown, sem backticks:
-{"matthewHenry":"<nota devocional e prática no estilo de Matthew Henry, 2-3 parágrafos, cite como do Comentário Bíblico de Matthew Henry>","strong":"<nota teológica sistemática no estilo de Augustus Hopkins Strong, 1-2 parágrafos, aborde aspectos doutrinários>","pentecostal":"<nota breve 2-3 frases com perspectiva pentecostal, sem citar fontes>","devocional":"<devocional pessoal breve, máximo 5 linhas, reflexão espiritual>","aplicacao":"<aplicação prática direta, máximo 3 linhas, comece com verbo de ação>"}
+{"matthewHenry":"<nota devocional e prática no estilo de Matthew Henry, 2-3 parágrafos, cite como do Comentário Bíblico de Matthew Henry>","strong":"<nota teológica sistemática no estilo de Augustus Hopkins Strong, 1-2 parágrafos, aborde aspectos doutrinários>","pentecostal":"<nota breve 2-3 frases com perspectiva pentecostal/wesleyana, pode incluir John Wesley, Charles Finney ou R.A. Torrey>","scofield":"<nota no estilo da Scofield Reference Bible 1917. Inclua: (1) explicação dispensacionalista quando pertinente, (2) referências cruzadas importantes, (3) notas sobre tipos e figuras, (4) contexto histórico-profético. TRADUZA TUDO para português brasileiro. 2-3 parágrafos substanciais. Se o versículo não tiver nota relevante no estilo Scofield, escreva 'null'>","reformada":"<nota breve no estilo reformado/puritano, pode referenciar João Calvino, Martinho Lutero, John Owen, Thomas Watson ou Richard Baxter. 2-3 frases com aplicação espiritual prática>","devocional":"<devocional pessoal breve, máximo 5 linhas, reflexão espiritual>","aplicacao":"<aplicação prática direta, máximo 3 linhas, comece com verbo de ação>"}
 
 Instruções:
-- Escreva em português brasileiro
+- Escreva TUDO em português brasileiro
 - Não repita o texto do versículo
 - Tom reverente mas acessível
 - Não use emojis, asteriscos ou markdown
 - Devocional + Aplicação juntos não devem exceder 7 linhas
+- Para a nota Scofield: traduza fielmente o conteúdo e estilo da Scofield Reference Bible 1917 para português. Mantenha as referências cruzadas no formato "Livro Capítulo:Versículo"
+- Para a nota reformada: use apenas autores em domínio público (Calvino, Lutero, Owen, Watson, Baxter, Agostinho com filtro evangélico)
+- Evite viés católico ou sacramental
+- Priorize interpretação bíblica reformada com aplicação espiritual prática
 - Responda SOMENTE o JSON, nada mais`
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -89,7 +98,7 @@ Instruções:
         messages: [
           { role: 'user', content: prompt }
         ],
-        max_tokens: 1500,
+        max_tokens: 2500,
         temperature: 0.7,
       }),
     })
@@ -97,6 +106,20 @@ Instruções:
     if (!response.ok) {
       const errText = await response.text()
       console.error('AI API error:', errText)
+      
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ error: 'Limite de requisições excedido. Tente novamente em alguns segundos.' }),
+          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+      if (response.status === 402) {
+        return new Response(
+          JSON.stringify({ error: 'Créditos de IA esgotados.' }),
+          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+      
       return new Response(
         JSON.stringify({ error: 'Failed to generate note' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -106,13 +129,15 @@ Instruções:
     const aiData = await response.json()
     const rawContent = aiData.choices?.[0]?.message?.content || ''
 
-    // Try to parse structured JSON from AI response
     let sections = null
     try {
-      // Extract JSON from response (handle possible markdown wrapping)
       const jsonMatch = rawContent.match(/\{[\s\S]*\}/)
       if (jsonMatch) {
         sections = JSON.parse(jsonMatch[0])
+        // Remove null scofield
+        if (sections?.scofield === 'null' || sections?.scofield === null) {
+          delete sections.scofield
+        }
       }
     } catch (e) {
       console.error('Failed to parse AI JSON, returning raw:', e)

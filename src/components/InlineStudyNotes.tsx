@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { bibleBooks } from "@/data/bibleBooks";
-import { Loader2, BookOpen, Languages, Link2, ChevronDown, ChevronUp } from "lucide-react";
+import { Loader2, BookOpen, Languages, Link2, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
 import InterlinearView from "@/components/InterlinearView";
+import { toast } from "sonner";
 
 interface StudyNote {
   id: string;
@@ -21,6 +22,16 @@ interface DictEntry {
   definition: string;
   hebrew_greek: string | null;
   references_list: any;
+}
+
+interface AiSections {
+  matthewHenry?: string;
+  strong?: string;
+  pentecostal?: string;
+  scofield?: string;
+  reformada?: string;
+  devocional?: string;
+  aplicacao?: string;
 }
 
 interface InlineStudyNotesProps {
@@ -87,6 +98,16 @@ const SOURCE_LABELS: Record<string, string> = {
   concordance: "Concordância",
 };
 
+const AI_SECTION_CONFIG: Record<string, { label: string; color: string; icon: string }> = {
+  scofield: { label: "Scofield Reference Bible (1917)", color: "#1E40AF", icon: "📘" },
+  reformada: { label: "Nota Reformada / Puritana", color: "#7C3AED", icon: "⛪" },
+  matthewHenry: { label: "Matthew Henry", color: "#047857", icon: "📖" },
+  strong: { label: "Teologia Sistemática", color: "#B45309", icon: "🔬" },
+  pentecostal: { label: "Perspectiva Wesleyana", color: "#DC2626", icon: "🔥" },
+  devocional: { label: "Devocional", color: "#0891B2", icon: "💎" },
+  aplicacao: { label: "Aplicação Prática", color: "#059669", icon: "✅" },
+};
+
 const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: InlineStudyNotesProps) => {
   const [notes, setNotes] = useState<StudyNote[]>([]);
   const [concordance, setConcordance] = useState<StudyNote[]>([]);
@@ -94,6 +115,8 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
   const [loading, setLoading] = useState(true);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["main"]));
   const [activeTab, setActiveTab] = useState<"notes" | "interlinear">("notes");
+  const [aiSections, setAiSections] = useState<AiSections | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
 
   const toggleSection = (key: string) => {
     setExpandedSections((prev) => {
@@ -104,6 +127,7 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
   };
 
   useEffect(() => {
+    setAiSections(null);
     const fetchData = async () => {
       setLoading(true);
       const [notesRes, concRes, dictRes] = await Promise.all([
@@ -148,6 +172,36 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
       setLoading(false);
     };
     fetchData();
+  }, [bookId, chapter, verse]);
+
+  const generateAiNotes = useCallback(async () => {
+    setAiLoading(true);
+    const bookName = bibleBooks.find((b) => b.id === bookId)?.name || bookId;
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-study-note", {
+        body: { bookId, bookName, chapter, verse },
+      });
+      if (error) throw error;
+      if (data?.sections) {
+        setAiSections(data.sections);
+        setExpandedSections((prev) => new Set([...prev, "scofield", "reformada"]));
+      } else if (data?.note) {
+        setAiSections({ devocional: data.note });
+      } else {
+        toast.error("Não foi possível gerar notas.");
+      }
+    } catch (err: any) {
+      console.error("AI generation error:", err);
+      if (err?.message?.includes("429") || err?.status === 429) {
+        toast.error("Limite de requisições excedido. Tente novamente em alguns segundos.");
+      } else if (err?.message?.includes("402") || err?.status === 402) {
+        toast.error("Créditos de IA esgotados.");
+      } else {
+        toast.error("Erro ao gerar notas de estudo.");
+      }
+    } finally {
+      setAiLoading(false);
+    }
   }, [bookId, chapter, verse]);
 
   const handleNav = useCallback(
@@ -223,16 +277,81 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
         />
       )}
 
-      {/* Notes tab - empty state */}
-      {activeTab === "notes" && !hasContent && (
-        <div className="py-6 px-5">
-          <p className="text-sm text-muted-foreground font-sans italic">Sem notas de estudo para este versículo.</p>
-        </div>
-      )}
-
-      {/* Notes tab - content */}
-      {activeTab === "notes" && hasContent && (
+      {/* Notes tab */}
+      {activeTab === "notes" && (
         <div className="divide-y divide-border/30">
+          {/* AI Generate Button */}
+          {!aiSections && !aiLoading && (
+            <div className="px-5 py-3">
+              <button
+                onClick={generateAiNotes}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-[#1E40AF]/10 to-[#7C3AED]/10 border border-[#1E40AF]/20 hover:border-[#1E40AF]/40 text-sm font-sans font-semibold text-foreground transition-all hover:shadow-md cursor-pointer"
+              >
+                <Sparkles className="w-4 h-4 text-[#1E40AF]" />
+                Gerar Notas — Scofield, Reformada, Puritana e mais
+              </button>
+            </div>
+          )}
+
+          {aiLoading && (
+            <div className="px-5 py-6 flex items-center justify-center gap-2 text-muted-foreground">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span className="text-sm font-sans">Gerando notas de estudo com IA…</span>
+            </div>
+          )}
+
+          {/* AI Generated Sections */}
+          {aiSections && Object.entries(aiSections).map(([key, content]) => {
+            if (!content || content === "null") return null;
+            const config = AI_SECTION_CONFIG[key];
+            if (!config) return null;
+            const isExpanded = expandedSections.has(key);
+            return (
+              <div key={key}>
+                <button
+                  onClick={() => toggleSection(key)}
+                  className="w-full flex items-center gap-2.5 px-5 py-3.5 hover:bg-muted/30 transition-colors cursor-pointer"
+                >
+                  <span className="text-base">{config.icon}</span>
+                  <span
+                    className="text-xs tracking-wider font-sans font-bold uppercase flex-1 text-left"
+                    style={{ color: config.color }}
+                  >
+                    {config.label}
+                  </span>
+                  <span className="text-[9px] font-sans text-muted-foreground/60 bg-muted/40 rounded px-1.5 py-0.5">IA</span>
+                  {isExpanded ? (
+                    <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                  )}
+                </button>
+                {isExpanded && (
+                  <div className="px-5 pb-5">
+                    <div
+                      className="p-4 rounded-xl border"
+                      style={{
+                        backgroundColor: `${config.color}08`,
+                        borderColor: `${config.color}25`,
+                      }}
+                    >
+                      <div className="text-base font-serif leading-[2.1] whitespace-pre-line text-left text-foreground/90">
+                        {renderContentWithRefs(content, onNavigate ? handleNav : undefined)}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          {/* Empty state (only if no DB notes AND no AI notes) */}
+          {!hasContent && !aiSections && !aiLoading && (
+            <div className="py-4 px-5">
+              <p className="text-sm text-muted-foreground font-sans italic">Sem notas pré-cadastradas. Clique acima para gerar.</p>
+            </div>
+          )}
+
           {/* Dictionary / Original Words */}
           {dictEntries.length > 0 && (
             <div>
@@ -289,29 +408,23 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
               </button>
               {expandedSections.has(type) && (
                 <div className="px-5 pb-5 space-y-4">
-                  {typeNotes.map((note) => {
-                    const bgColor = note.color ? `bg-[${note.color}]/10` : "bg-muted/20";
-                    const borderColor = note.color ? `border-[${note.color}]/30` : "border-border/30";
-                    const textColor = note.color ? `text-[${note.color}]` : "text-foreground";
-                    const sourceColor = note.color ? `text-[${note.color}]/70` : "text-muted-foreground/60";
-                    return (
-                      <div key={note.id} className={`p-5 rounded-xl ${bgColor} border ${borderColor}`} style={note.color ? { backgroundColor: `${note.color}15`, borderColor: `${note.color}4d` } : {}}>
-                        {note.title && (
-                          <p className={`text-sm font-sans font-bold ${textColor} mb-3 pb-2 border-b ${borderColor}`} style={note.color ? { color: note.color, borderColor: `${note.color}4d` } : {}}>
-                            {note.title}
-                          </p>
-                        )}
-                        <div className="text-base font-serif leading-[2.1] whitespace-pre-line text-left" style={note.color ? { color: note.color } : {}}>
-                          {renderContentWithRefs(note.content, onNavigate ? handleNav : undefined)}
-                        </div>
-                        {note.source && (
-                          <p className={`text-[10px] font-sans ${sourceColor} mt-3 pt-2 border-t ${borderColor} uppercase tracking-wider`} style={note.color ? { color: `${note.color}b3`, borderColor: `${note.color}33` } : {}}>
-                            Fonte: {SOURCE_LABELS[note.source] || note.source}
-                          </p>
-                        )}
+                  {typeNotes.map((note) => (
+                    <div key={note.id} className="p-5 rounded-xl border" style={note.color ? { backgroundColor: `${note.color}15`, borderColor: `${note.color}4d` } : { backgroundColor: 'hsl(var(--muted) / 0.2)', borderColor: 'hsl(var(--border) / 0.3)' }}>
+                      {note.title && (
+                        <p className="text-sm font-sans font-bold mb-3 pb-2 border-b" style={note.color ? { color: note.color, borderColor: `${note.color}4d` } : {}}>
+                          {note.title}
+                        </p>
+                      )}
+                      <div className="text-base font-serif leading-[2.1] whitespace-pre-line text-left" style={note.color ? { color: note.color } : {}}>
+                        {renderContentWithRefs(note.content, onNavigate ? handleNav : undefined)}
                       </div>
-                    );
-                  })}
+                      {note.source && (
+                        <p className="text-[10px] font-sans mt-3 pt-2 border-t uppercase tracking-wider" style={note.color ? { color: `${note.color}b3`, borderColor: `${note.color}33` } : { color: 'hsl(var(--muted-foreground) / 0.6)' }}>
+                          Fonte: {SOURCE_LABELS[note.source] || note.source}
+                        </p>
+                      )}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
