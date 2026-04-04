@@ -120,10 +120,11 @@ supabase/
 ### Pipeline de dados (novo)
 ```bash
 scripts/bible-intelligence/
-├── build-resource-manifest.mjs   # Descobre links dos hubs awesome-*
-├── import-crossrefs-json.mjs     # Converte JSON de refs em grafo SQL/CSV
-├── import-macula-tsv.mjs         # Converte TSV MACULA em tabelas normalizadas
-└── book-id-map.mjs               # Mapeamento OSIS -> IDs internos
+├── build-resource-manifest.mjs      # Descobre links dos hubs awesome-*
+├── import-crossrefs-json.mjs        # Converte JSON de refs em grafo SQL/CSV
+├── import-macula-tsv.mjs            # Converte TSV MACULA em tabelas normalizadas
+├── import-matthew-henry-ccel.mjs    # CCEL HTML -> parser/normalizador -> SQL UPSERT
+└── book-id-map.mjs                  # Mapeamento OSIS -> IDs internos
 ```
 
 ---
@@ -139,9 +140,12 @@ npm run upgrade:crossrefs:prepare -- ../crossrefs-json
 
 # 3) Preparar base MACULA (hebraico + grego)
 npm run upgrade:macula:prepare -- --hebrew ../macula-hebrew/WLC/tsv/macula-hebrew.tsv --greek-nestle ../macula-greek/Nestle1904/tsv/macula-greek-Nestle1904.tsv --greek-sbl ../macula-greek/SBLGNT/tsv/macula-greek-SBLGNT.tsv
+
+# 4) Importar comentário completo Matthew Henry (CCEL)
+npm run upgrade:matthew-henry:prepare
 ```
 
-Depois aplique a migration SQL `20260406090000_bible_intelligence_stack.sql` e importe os CSVs gerados em `data/bible-intelligence/`.
+Depois aplique as migrations SQL `20260406090000_bible_intelligence_stack.sql` e `20260406103000_matthew_henry_ccel_pipeline.sql`, e importe os artefatos gerados em `data/bible-intelligence/` (incluindo `matthew-henry-upsert.sql`).
 
 ---
 
