@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { bibleBooks } from "@/data/bibleBooks";
 import { supabase } from "@/integrations/supabase/client";
@@ -57,13 +57,24 @@ const godSpeechPatterns = [
 const jesusSpeechPatterns = [
   /^(?:E\s+)?[Dd]isse-?lhes?\s+(?:Jesus|ele|Ele)/i,
   /^(?:E\s+)?[Rr]espondeu-?lhes?\s+(?:Jesus|ele|Ele)/i,
-  /^(?:E\s+)?[Jj]esus\s+(?:disse|respondeu|lhes disse|replicou|falou)/i,
+  /^(?:E\s+)?[Jj]esus\s+(?:disse|respondeu|lhes disse|replicou|falou|exclamou|declarou|ensinou)/i,
   /^(?:E\s+)?[Dd]isse\s+(?:Jesus|o Senhor Jesus)/i,
   /^(?:E\s+)?[Rr]espondeu\s+(?:Jesus)/i,
   /^(?:E\s+)?[Tt]ornou\s+(?:Jesus)/i,
   /^(?:Então\s+)?Jesus\s+/i,
   /^Em verdade,?\s+em verdade/i,
   /^Eu\s+sou/i,
+];
+
+const nonJesusSpeechMarkers = [
+  /^(?:E\s+)?(?:Pedro|Paulo|Pilatos|Herodes|Marta|Tomé|Filipe|Judas|fariseus|escribas|discípulos|multidão)\s+(?:disse|respondeu|perguntou|falaram)/i,
+  /^(?:E\s+)?(?:Disse|Responderam|Perguntaram)\s+eles/i,
+  /^(?:E\s+)?(?:Disse|Respondeu)\s+o\s+(?:sumo sacerdote|governador|centurião)/i,
+];
+
+const jesusContinuationPatterns = [
+  /^[-—“"'«»]/,
+  /^(?:Bem-aventurados|Ouvistes|Eu\s+porém\s+vos\s+digo|Se\s+alguém|Na\s+verdade\s+vos\s+digo|Porque\s+eu\s+vos\s+digo|Vinde\s+a\s+mim)/i,
 ];
 
 const ntBooks = new Set(bibleBooks.filter((b) => b.testament === "new").map((b) => b.id));
@@ -155,6 +166,41 @@ const Reader = () => {
   );
 
   const book = bibleBooks.find((b) => b.id === currentBook);
+
+  const jesusSpeechVerses = useMemo(() => {
+    if (!ntBooks.has(currentBook) || verses.length === 0) return new Set<number>();
+
+    const marked = new Set<number>();
+    let jesusContextOpen = false;
+
+    for (const v of verses) {
+      const text = (v.text || "").trim();
+      const explicitJesus = jesusSpeechPatterns.some((pattern) => pattern.test(text));
+      const explicitNonJesus = nonJesusSpeechMarkers.some((pattern) => pattern.test(text));
+
+      if (explicitJesus) {
+        marked.add(v.verse);
+        jesusContextOpen = true;
+        continue;
+      }
+
+      if (jesusContextOpen) {
+        if (explicitNonJesus) {
+          jesusContextOpen = false;
+          continue;
+        }
+
+        if (jesusContinuationPatterns.some((pattern) => pattern.test(text))) {
+          marked.add(v.verse);
+          continue;
+        }
+
+        jesusContextOpen = false;
+      }
+    }
+
+    return marked;
+  }, [currentBook, verses]);
 
   const {
     highlights, personalNotes, favorites,
@@ -450,7 +496,7 @@ const Reader = () => {
                 <span className="text-[10px] tracking-[0.28em] menu-strong uppercase">
                   Leitura Bíblica
                 </span>
-                <span className="text-sm tracking-[0.12em] font-serif font-medium text-foreground truncate">
+                <span className="text-sm tracking-[0.09em] title-strong truncate">
                   {book?.name}
                 </span>
               </div>
@@ -535,7 +581,9 @@ const Reader = () => {
                 ) : (
                   <div className="reader-content text-foreground/95" style={{ fontSize: `${fontSize}px`, lineHeight: 2.05, letterSpacing: "0.008em" }}>
                     {verses.map((v) => {
-                      const speechClass = getSpeechClass(v.text, currentBook);
+                      const speechClass = jesusSpeechVerses.has(v.verse)
+                        ? "text-jesus"
+                        : getSpeechClass(v.text, currentBook);
                       const hasNote = noteVerses.has(v.verse);
                       const hasCrossRef = crossRefVerses.has(v.verse);
                       const shouldShowInlineNotes = hasNote || hasCrossRef || selectedVerse === v.verse;

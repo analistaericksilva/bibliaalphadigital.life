@@ -53,7 +53,7 @@
 
     --radius: 0.25rem;
 
-    --jesus: 0 78% 46%;
+    --jesus: 0 86% 42%;
     --god: 210 100% 20%;
     --paper: 40 30% 98%;
 
@@ -91,7 +91,7 @@
     --input: 0 0% 18%;
     --ring: 40 56% 50%;
     --paper: 0 0% 10%;
-    --jesus: 0 88% 66%;
+    --jesus: 0 92% 64%;
     --god: 210 95% 70%;
     --sidebar-background: 0 0% 7%;
     --sidebar-foreground: 0 0% 88%;
@@ -124,7 +124,8 @@
   }
   .text-jesus {
     color: hsl(var(--jesus));
-    font-weight: 500;
+    font-weight: 600;
+    letter-spacing: 0.01em;
   }
   .text-god {
     color: hsl(var(--god));
@@ -135,21 +136,22 @@
 
   .menu-strong {
     font-family: var(--font-sans);
-    font-weight: 700;
-    letter-spacing: 0.02em;
+    font-weight: 600;
+    letter-spacing: 0.015em;
     color: hsl(var(--foreground));
   }
 
   .title-strong {
     font-family: 'Playfair Display', var(--font-serif);
-    font-weight: 700;
-    letter-spacing: 0.04em;
+    font-weight: 600;
+    letter-spacing: 0.025em;
     color: hsl(var(--foreground));
   }
 
   .comment-strong {
-    font-family: var(--font-serif);
+    font-family: 'Cormorant Garamond', var(--font-serif);
     font-weight: 500;
+    letter-spacing: 0.01em;
     color: hsl(var(--foreground));
   }
 }
