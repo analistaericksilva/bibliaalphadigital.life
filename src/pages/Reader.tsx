@@ -54,14 +54,15 @@ const godSpeechPatterns = [
 ];
 
 const jesusSpeechPatterns = [
-  /^(?:E )?[Dd]isse-lhes? (?:Jesus|ele|Ele)/i,
-  /^(?:E )?[Rr]espondeu-lhes? (?:Jesus|ele|Ele)/i,
-  /^(?:E )?[Jj]esus (?:disse|respondeu|lhes disse)/i,
-  /^(?:E )?[Dd]isse (?:Jesus|o Senhor Jesus)/i,
-  /^(?:E )?[Rr]espondeu (?:Jesus)/i,
-  /^(?:E )?[Tt]ornou (?:Jesus)/i,
-  /^Eu sou/i,
-  /^Em verdade,? em verdade/i,
+  /^(?:E\s+)?[Dd]isse-?lhes?\s+(?:Jesus|ele|Ele)/i,
+  /^(?:E\s+)?[Rr]espondeu-?lhes?\s+(?:Jesus|ele|Ele)/i,
+  /^(?:E\s+)?[Jj]esus\s+(?:disse|respondeu|lhes disse|replicou|falou)/i,
+  /^(?:E\s+)?[Dd]isse\s+(?:Jesus|o Senhor Jesus)/i,
+  /^(?:E\s+)?[Rr]espondeu\s+(?:Jesus)/i,
+  /^(?:E\s+)?[Tt]ornou\s+(?:Jesus)/i,
+  /^(?:Então\s+)?Jesus\s+/i,
+  /^Em verdade,?\s+em verdade/i,
+  /^Eu\s+sou/i,
 ];
 
 const ntBooks = new Set(bibleBooks.filter((b) => b.testament === "new").map((b) => b.id));
@@ -158,17 +159,32 @@ const Reader = () => {
     toggleHighlight, toggleFavorite, savePersonalNote, recordReading,
   } = useUserAnnotations(currentBook, currentChapter);
 
+  const isContainerScrollable = useCallback(() => {
+    const container = readingContainerRef.current;
+    if (!container) return false;
+    return container.scrollHeight - container.clientHeight > 4;
+  }, []);
+
+  const getCurrentScrollTop = useCallback(() => {
+    const container = readingContainerRef.current;
+    if (container && isContainerScrollable()) {
+      return container.scrollTop;
+    }
+    return window.scrollY;
+  }, [isContainerScrollable]);
+
   const getClosestVisibleVerse = useCallback(() => {
     const container = readingContainerRef.current;
-    if (!container) return null;
+    const viewportTop = container && isContainerScrollable()
+      ? container.getBoundingClientRect().top
+      : 120;
 
-    const containerTop = container.getBoundingClientRect().top;
     let closestVerse: number | null = null;
     let closestDistance = Number.POSITIVE_INFINITY;
 
     Object.entries(verseRefs.current).forEach(([verseKey, element]) => {
       if (!element) return;
-      const distance = Math.abs(element.getBoundingClientRect().top - containerTop);
+      const distance = Math.abs(element.getBoundingClientRect().top - viewportTop);
       if (distance < closestDistance) {
         closestDistance = distance;
         closestVerse = Number(verseKey);
@@ -176,12 +192,11 @@ const Reader = () => {
     });
 
     return closestVerse;
-  }, []);
+  }, [isContainerScrollable]);
 
   const persistLastReading = useCallback((override: Partial<LastReadingState> = {}) => {
     if (!lastReadingKey) return;
 
-    const container = readingContainerRef.current;
     const fallbackVerse = lastFocusedVerse ?? selectedVerse ?? getClosestVisibleVerse() ?? undefined;
 
     const payload: LastReadingState = {
@@ -189,21 +204,21 @@ const Reader = () => {
       chapter: override.chapter ?? currentChapter,
       verse: override.verse ?? fallbackVerse,
       selectedVerse: override.selectedVerse ?? selectedVerse,
-      scrollTop: override.scrollTop ?? (container ? container.scrollTop : window.scrollY),
+      scrollTop: override.scrollTop ?? getCurrentScrollTop(),
       savedAt: new Date().toISOString(),
     };
 
     localStorage.setItem(lastReadingKey, JSON.stringify(payload));
-  }, [lastReadingKey, currentBook, currentChapter, lastFocusedVerse, selectedVerse, getClosestVisibleVerse]);
+  }, [lastReadingKey, currentBook, currentChapter, lastFocusedVerse, selectedVerse, getClosestVisibleVerse, getCurrentScrollTop]);
 
   const scrollReaderToTop = useCallback(() => {
     const container = readingContainerRef.current;
-    if (container) {
+    if (container && isContainerScrollable()) {
       container.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, []);
+  }, [isContainerScrollable]);
 
   const fetchVerses = async (bookId: string, chapter: number) => {
     setLoading(true);
@@ -245,22 +260,32 @@ const Reader = () => {
   }, [lastReadingKey, persistLastReading]);
 
   useEffect(() => {
-    const container = readingContainerRef.current;
-    if (!container || !lastReadingKey) return;
+    if (!lastReadingKey) return;
 
+    const container = readingContainerRef.current;
     let scrollTimer: number | undefined;
+
     const onScroll = () => {
       window.clearTimeout(scrollTimer);
       scrollTimer = window.setTimeout(() => persistLastReading(), 180);
     };
 
-    container.addEventListener("scroll", onScroll, { passive: true });
+    const useContainer = container && isContainerScrollable();
+    if (useContainer) {
+      container.addEventListener("scroll", onScroll, { passive: true });
+    } else {
+      window.addEventListener("scroll", onScroll, { passive: true });
+    }
 
     return () => {
       window.clearTimeout(scrollTimer);
-      container.removeEventListener("scroll", onScroll);
+      if (useContainer) {
+        container.removeEventListener("scroll", onScroll);
+      } else {
+        window.removeEventListener("scroll", onScroll);
+      }
     };
-  }, [lastReadingKey, currentBook, currentChapter, persistLastReading]);
+  }, [lastReadingKey, currentBook, currentChapter, persistLastReading, isContainerScrollable]);
 
   useEffect(() => {
     if (loading || verses.length === 0) return;
@@ -272,15 +297,19 @@ const Reader = () => {
     const timeout = window.setTimeout(() => {
       if (target.verse && verseRefs.current[target.verse]) {
         verseRefs.current[target.verse]?.scrollIntoView({ behavior: "auto", block: "center" });
-      } else if (container && typeof target.scrollTop === "number") {
-        container.scrollTo({ top: target.scrollTop, behavior: "auto" });
+      } else if (typeof target.scrollTop === "number") {
+        if (container && isContainerScrollable()) {
+          container.scrollTo({ top: target.scrollTop, behavior: "auto" });
+        } else {
+          window.scrollTo({ top: target.scrollTop, behavior: "auto" });
+        }
       }
 
       restoreTargetRef.current = null;
     }, 60);
 
     return () => window.clearTimeout(timeout);
-  }, [loading, verses.length, currentBook, currentChapter]);
+  }, [loading, verses.length, currentBook, currentChapter, isContainerScrollable]);
 
   const goToChapter = useCallback((bookId: string, chapter: number, verse?: number) => {
     if (bookId !== currentBook || chapter !== currentChapter) {
@@ -367,7 +396,11 @@ const Reader = () => {
     const shareText = `📖 ${book?.name} ${currentChapter} — Bíblia Alpha`;
     const shareUrl = `${window.location.origin}/?book=${currentBook}&chapter=${currentChapter}`;
     if (navigator.share) {
-      try { await navigator.share({ title: shareText, text: shareText, url: shareUrl }); } catch {}
+      try {
+        await navigator.share({ title: shareText, text: shareText, url: shareUrl });
+      } catch (error) {
+        console.warn("Compartilhamento cancelado ou indisponível:", error);
+      }
     } else {
       await navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
     }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { LogOut, Mail, Instagram, Sparkles, Crown, BookOpen, Copy, Check, MessageCircle } from "lucide-react";
 import ShelfProductCard from "@/components/ShelfProductCard";
@@ -10,6 +11,7 @@ import pixQr from "@/assets/pix-qr.png";
 
 
 const Shelf = () => {
+  const navigate = useNavigate();
   const { user, loading, isApproved, isAdmin, signOut } = useAuth();
 
   const [pixCopied, setPixCopied] = useState(false);
@@ -24,13 +26,12 @@ const Shelf = () => {
 
 
   const handleProductClick = () => {
-    const loginUrl = `${window.location.origin}/login`;
-    const loginWindow = window.open(
-      loginUrl,
-      "alpha-login",
-      "width=560,height=780,resizable=yes,scrollbars=yes"
-    );
-    loginWindow?.focus();
+    if (user && (isApproved || isAdmin)) {
+      navigate("/biblia");
+      return;
+    }
+
+    navigate("/login");
   };
 
   if (loading) {
