@@ -490,75 +490,64 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
 
           {/* Dictionary / Original Words */}
           {dictEntries.length > 0 && (
-            <div className="px-5 py-4 space-y-3">
-              <div className="flex items-center gap-2.5">
-                <Languages className="w-4 h-4" style={{ color: "#4B2E83" }} />
-                <span
-                  className="text-xs tracking-wider font-sans font-bold uppercase"
-                  style={{ color: "#4B2E83" }}
-                >
-                  Concordância Exaustiva
-                </span>
-              </div>
+            <div className="px-5 pt-2 pb-3">
+              <p className="text-[11px] font-sans tracking-wide mb-2" style={{ color: "#4B2E83" }}>
+                <span className="font-semibold">Concordância exaustiva:</span>
+              </p>
 
-              {dictEntries.map((entry) => (
-                <div
-                  key={entry.id}
-                  className="p-4 rounded-xl border"
-                  style={{ backgroundColor: "#4B2E8308", borderColor: "#4B2E8328" }}
-                >
-                  <div className="flex items-baseline gap-3 mb-2 flex-wrap">
-                    <span className="font-serif font-bold text-xl" style={{ color: "#4B2E83" }}>
+              <div className="space-y-2">
+                {dictEntries.map((entry) => (
+                  <div key={entry.id} className="text-[13px] font-serif leading-[1.75] text-foreground/85">
+                    <span className="font-semibold" style={{ color: "#4B2E83" }}>
                       {entry.term}
                     </span>
                     {entry.hebrew_greek && (
-                      <span className="text-sm font-mono text-muted-foreground bg-muted/40 px-2 py-0.5 rounded">
-                        {entry.hebrew_greek}
+                      <span className="ml-1 text-[11px] font-mono text-muted-foreground/80">
+                        ({entry.hebrew_greek})
+                      </span>
+                    )}
+                    <span className="ml-1">{entry.definition}</span>
+
+                    {Array.isArray(entry.references_list) && entry.references_list.length > 0 && (
+                      <span className="ml-2 inline-flex flex-wrap gap-1 align-middle">
+                        {(entry.references_list as string[]).slice(0, 6).map((refStr, i) => {
+                          const cleanRef = refStr.trim();
+                          const parsed = parseReference(cleanRef);
+                          if (parsed && onNavigate) {
+                            return (
+                              <button
+                                key={entry.id + "-" + i}
+                                className="rounded px-1.5 py-0.5 text-[10px] font-sans transition-colors cursor-pointer"
+                                style={{
+                                  color: "#4B2E83",
+                                  backgroundColor: "#4B2E8312",
+                                  border: "1px solid #4B2E8328",
+                                }}
+                                onClick={() => handleNav(parsed.bookId, parsed.chapter, parsed.verse)}
+                              >
+                                {cleanRef}
+                              </button>
+                            );
+                          }
+                          return (
+                            <span
+                              key={entry.id + "-" + i}
+                              className="rounded px-1.5 py-0.5 text-[10px] font-sans"
+                              style={{
+                                color: "#4B2E83",
+                                backgroundColor: "#4B2E830D",
+                                border: "1px solid #4B2E8322",
+                              }}
+                            >
+                              {cleanRef}
+                            </span>
+                          );
+                        })}
                       </span>
                     )}
                   </div>
-
-                  <p className="text-base font-serif leading-[1.95] text-foreground/90 text-left">{entry.definition}</p>
-
-                  {Array.isArray(entry.references_list) && entry.references_list.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {(entry.references_list as string[]).slice(0, 8).map((refStr, i) => {
-                        const cleanRef = refStr.trim();
-                        const parsed = parseReference(cleanRef);
-                        if (parsed && onNavigate) {
-                          return (
-                            <button
-                              key={entry.id + "-" + i}
-                              className="rounded-lg px-3 py-1.5 text-xs font-sans font-semibold transition-all cursor-pointer"
-                              style={{
-                                color: "#4B2E83",
-                                backgroundColor: "#4B2E8315",
-                                border: "1px solid #4B2E8333",
-                              }}
-                              onClick={() => handleNav(parsed.bookId, parsed.chapter, parsed.verse)}
-                            >
-                              📖 {cleanRef}
-                            </button>
-                          );
-                        }
-                        return (
-                          <span
-                            key={entry.id + "-" + i}
-                            className="rounded-lg px-3 py-1.5 text-xs font-sans"
-                            style={{
-                              color: "#4B2E83",
-                              backgroundColor: "#4B2E830F",
-                              border: "1px solid #4B2E8328",
-                            }}
-                          >
-                            {cleanRef}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
 
@@ -625,18 +614,12 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
 
           {/* Concordance / Cross References */}
           {concordance.length > 0 && (
-            <div className="px-5 py-4">
-              <div className="flex items-center gap-2.5 mb-3">
-                <Link2 className="w-4 h-4" style={{ color: "#4B2E83" }} />
-                <span
-                  className="text-xs tracking-wider font-sans font-bold uppercase"
-                  style={{ color: "#4B2E83" }}
-                >
-                  Referências Cruzadas
-                </span>
-              </div>
+            <div className="px-5 pt-1 pb-3">
+              <p className="text-[11px] font-sans tracking-wide mb-2" style={{ color: "#4B2E83" }}>
+                <span className="font-semibold">Referências cruzadas:</span>
+              </p>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5">
                 {concordance.map((ref) => (
                   ref.content.split(";").map((r, i) => {
                     const cleanRef = r.trim();
@@ -646,26 +629,26 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
                       return (
                         <button
                           key={ref.id + "-" + i}
-                          className="rounded-lg px-3.5 py-2 text-sm font-sans font-semibold transition-all cursor-pointer hover:shadow-sm"
+                          className="rounded px-2 py-0.5 text-[11px] font-sans transition-colors cursor-pointer"
                           style={{
                             color: "#4B2E83",
-                            backgroundColor: "#4B2E8315",
-                            border: "1px solid #4B2E8338",
+                            backgroundColor: "#4B2E8312",
+                            border: "1px solid #4B2E8330",
                           }}
                           onClick={() => handleNav(parsed.bookId, parsed.chapter, parsed.verse)}
                         >
-                          📖 {cleanRef}
+                          {cleanRef}
                         </button>
                       );
                     }
                     return (
                       <span
                         key={ref.id + "-" + i}
-                        className="rounded-lg px-3.5 py-2 text-sm font-sans"
+                        className="rounded px-2 py-0.5 text-[11px] font-sans"
                         style={{
                           color: "#4B2E83",
-                          backgroundColor: "#4B2E830F",
-                          border: "1px solid #4B2E8328",
+                          backgroundColor: "#4B2E830D",
+                          border: "1px solid #4B2E8322",
                         }}
                       >
                         {cleanRef}
