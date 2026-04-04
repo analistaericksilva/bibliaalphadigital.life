@@ -317,6 +317,52 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
             </div>
           ))}
 
+          {/* Concordance / Cross References */}
+          {concordance.length > 0 && (
+            <div>
+              <button
+                onClick={() => toggleSection("conc")}
+                className="w-full flex items-center gap-2.5 px-5 py-3.5 hover:bg-muted/30 transition-colors cursor-pointer"
+              >
+                <Link2 className="w-4 h-4 text-primary" />
+                <span className="text-xs tracking-wider font-sans font-bold uppercase flex-1 text-left text-foreground">
+                  Referências Cruzadas
+                </span>
+                {expandedSections.has("conc") ? (
+                  <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                )}
+              </button>
+              {expandedSections.has("conc") && (
+                <div className="px-5 pb-5">
+                  {concordance.map((ref) => (
+                    <div key={ref.id} className="flex flex-wrap gap-2">
+                      {ref.content.split(";").map((r, i) => {
+                        const parsed = parseReference(r.trim());
+                        if (parsed && onNavigate) {
+                          return (
+                            <button
+                              key={i}
+                              className="text-primary hover:text-primary/80 bg-primary/10 hover:bg-primary/20 rounded-lg px-3.5 py-2 text-sm font-sans font-medium transition-all cursor-pointer hover:shadow-sm active:scale-95"
+                              onClick={() => handleNav(parsed.bookId, parsed.chapter, parsed.verse)}
+                            >
+                              📖 {r.trim()}
+                            </button>
+                          );
+                        }
+                        return (
+                          <span key={i} className="text-muted-foreground text-sm px-2 py-1.5">
+                            {r.trim()}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>

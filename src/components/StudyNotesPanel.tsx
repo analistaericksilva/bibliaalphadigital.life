@@ -463,7 +463,38 @@ const StudyNotesPanel = ({ open, onClose, bookId, chapter, selectedVerse, onNavi
                 );
               })}
 
-
+            {/* Concordância Exaustiva */}
+            {!loading && concordanceRefs.length > 0 && (
+              <div className="rounded-xl border border-border bg-card overflow-hidden shadow-sm">
+                <div className="px-5 pt-4 pb-3 border-b border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Link2 className="w-3.5 h-3.5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-[10px] tracking-[0.25em] font-sans font-bold text-foreground uppercase">
+                        CONCORDÂNCIA EXAUSTIVA
+                      </h3>
+                      <p className="text-[10px] font-sans text-muted-foreground">Referências Cruzadas</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="px-5 py-4 space-y-3">
+                  {concordanceRefs.map((ref) => (
+                    <div key={ref.id}>
+                      <span className="text-[10px] font-sans font-semibold text-primary tracking-wider block mb-1">
+                        v. {ref.verse_start}
+                      </span>
+                      <div className="text-sm leading-relaxed text-foreground/90 flex flex-wrap gap-x-0.5">
+                        {onNavigate
+                          ? renderClickableRefs(ref.content, handleNavigate)
+                          : <span className="font-serif">{ref.content}</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </ScrollArea>
       </div>

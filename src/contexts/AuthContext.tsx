@@ -1,35 +1,89 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '../supabaseClient';
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { Session, User } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
 
-const AuthContext = createContext();
+interface AuthContextType {
+  session: Session | null;
+  user: User | null;
+  profile: any | null;
+  isAdmin: boolean;
+  isApproved: boolean;
+  loading: boolean;
+  signOut: () => Promise<void>;
+}
 
-export const AuthProvider = ({ children }) => {
-    const [session, setSession] = useState(null);
+const AuthContext = createContext<AuthContextType>({
+  session: null,
+  user: null,
+  profile: null,
+  isAdmin: false,
+  isApproved: false,
+  loading: true,
+  signOut: async () => {},
+});
 
-    useEffect(() => {
-        const { data: subscription } = supabase
-            .auth.onAuthStateChange((_, session) => {
-                setSession(session);
-            });
+export const useAuth = () => useContext(AuthContext);
 
-        return () => {
-            subscription.unsubscribe();
-        };
-    }, []);
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-    const signOut = async () => {
-        await supabase.auth.signOut();
-        setSession(null);
-        localStorage.removeItem('lastReadPosition'); // Clear lastReadPosition on signOut
-    };
+  const fetchProfile = async (userId: string) => {
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("user_id", userId)
+      .single();
+    
+    setProfile(profileData);
+    setIsApproved(profileData?.status === "approved");
 
-    return (
-        <AuthContext.Provider value={{ session, signOut }}>
-            {children}
-        </AuthContext.Provider>
+    const { data: adminCheck } = await supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
+    setIsAdmin(adminCheck === true);
+  };
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          setTimeout(() => fetchProfile(session.user.id), 0);
+        } else {
+          setProfile(null);
+          setIsAdmin(false);
+          setIsApproved(false);
+        }
+        setLoading(false);
+      }
     );
-};
 
-export const useAuth = () => {
-    return useContext(AuthContext);
-};
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchProfile(session.user.id);
+      }
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+  };
+
+  return (
+    <AuthContext.Provider value={{ session, user, profile, isAdmin, isApproved, loading, signOut }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
