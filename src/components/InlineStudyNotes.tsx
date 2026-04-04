@@ -143,6 +143,7 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
   const [aiSections, setAiSections] = useState<AiSections | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [scofieldOpen, setScofieldOpen] = useState(false);
+  const aiFeatureEnabled = false;
 
   const toggleSection = (key: string) => {
     setExpandedSections((prev) => {
@@ -332,7 +333,7 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
       {activeTab === "notes" && (
         <div className="divide-y divide-border/30">
           {/* AI Generate Button */}
-          {!aiSections && !aiLoading && (
+          {aiFeatureEnabled && !aiSections && !aiLoading && (
             <div className="px-5 py-3">
               <button
                 onClick={generateAiNotes}
@@ -344,7 +345,7 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
             </div>
           )}
 
-          {aiLoading && (
+          {aiFeatureEnabled && aiLoading && (
             <div className="px-5 py-6 flex items-center justify-center gap-2 text-muted-foreground">
               <Loader2 className="w-4 h-4 animate-spin" />
               <span className="text-sm font-sans">Gerando notas de estudo…</span>
@@ -352,7 +353,7 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
           )}
 
           {/* AI Generated — Modern Study Bible Layout */}
-          {aiSections && (
+          {aiFeatureEnabled && aiSections && (
             <div className="px-5 py-5 space-y-4">
               {/* Main explanation card */}
               {aiSections.explicacao && (
@@ -481,9 +482,9 @@ const InlineStudyNotes = ({ bookId, chapter, verse, onNavigate, onClose }: Inlin
           )}
 
           {/* Empty state */}
-          {!hasContent && !aiSections && !aiLoading && (
+          {!hasContent && (!aiFeatureEnabled || (!aiSections && !aiLoading)) && (
             <div className="py-4 px-5">
-              <p className="text-sm text-muted-foreground font-sans italic">Sem notas pré-cadastradas. Clique acima para gerar.</p>
+              <p className="text-sm text-muted-foreground font-sans italic">Sem notas pré-cadastradas para este versículo.</p>
             </div>
           )}
 
