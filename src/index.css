@@ -2,6 +2,8 @@
 @import '@fontsource/eb-garamond/500.css';
 @import '@fontsource/eb-garamond/600.css';
 @import '@fontsource/eb-garamond/400-italic.css';
+@import '@fontsource/eb-garamond/500-italic.css';
+@import '@fontsource/eb-garamond/600-italic.css';
 @import '@fontsource/inter/300.css';
 @import '@fontsource/inter/400.css';
 @import '@fontsource/inter/500.css';
@@ -16,6 +18,8 @@
 @import '@fontsource/cormorant-garamond/400.css';
 @import '@fontsource/cormorant-garamond/500.css';
 @import '@fontsource/cormorant-garamond/600.css';
+@import '@fontsource/source-serif-pro/400.css';
+@import '@fontsource/source-serif-pro/600.css';
 
 @tailwind base;
 @tailwind components;
@@ -32,8 +36,9 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 9%;
 
-    --primary: 40 56% 40%;
+    --primary: 38 52% 44%;
     --primary-foreground: 0 0% 100%;
+    --primary-light: 38 60% 92%;
 
     --secondary: 40 20% 96%;
     --secondary-foreground: 0 0% 9%;
@@ -41,7 +46,7 @@
     --muted: 40 10% 95%;
     --muted-foreground: 0 0% 8%;
 
-    --accent: 40 56% 40%;
+    --accent: 38 52% 44%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
@@ -49,13 +54,18 @@
 
     --border: 0 0% 90%;
     --input: 0 0% 90%;
-    --ring: 40 56% 40%;
+    --ring: 38 52% 44%;
 
-    --radius: 0.25rem;
+    --radius: 0.5rem;
 
     --jesus: 0 86% 42%;
     --god: 210 100% 20%;
     --paper: 40 30% 98%;
+    
+    --comfort: 45 30% 96%;
+    --comfort-warm: 40 25% 97%;
+    --ink: 0 0% 3%;
+    --ink-light: 0 0% 8%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 0 0% 6%;
@@ -64,43 +74,56 @@
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 0 0% 6%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 40 56% 40%;
+    --sidebar-ring: 38 52% 44%;
 
     --font-serif: 'EB Garamond', Georgia, serif;
     --font-sans: 'Inter', system-ui, sans-serif;
   }
 
   .dark {
-    --background: 0 0% 7%;
-    --foreground: 0 0% 88%;
-    --card: 0 0% 10%;
-    --card-foreground: 0 0% 88%;
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 88%;
-    --primary: 40 56% 50%;
+    --background: 230 15% 8%;
+    --foreground: 40 20% 92%;
+    
+    --card: 230 12% 10%;
+    --card-foreground: 40 20% 92%;
+    
+    --popover: 230 12% 10%;
+    --popover-foreground: 40 20% 92%;
+    
+    --primary: 38 60% 55%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 14%;
-    --secondary-foreground: 0 0% 88%;
-    --muted: 0 0% 14%;
-    --muted-foreground: 0 0% 55%;
-    --accent: 0 0% 14%;
-    --accent-foreground: 0 0% 88%;
+    --primary-light: 38 50% 20%;
+    
+    --secondary: 230 10% 14%;
+    --secondary-foreground: 40 20% 92%;
+    
+    --muted: 230 8% 15%;
+    --muted-foreground: 40 15% 70%;
+    
+    --accent: 38 60% 55%;
+    --accent-foreground: 0 0% 100%;
+    
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 88%;
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 40 56% 50%;
-    --paper: 0 0% 10%;
-    --jesus: 0 92% 64%;
-    --god: 210 95% 70%;
-    --sidebar-background: 0 0% 7%;
-    --sidebar-foreground: 0 0% 88%;
-    --sidebar-primary: 40 56% 50%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 230 10% 20%;
+    --input: 230 10% 20%;
+    --ring: 38 60% 55%;
+    
+    --paper: 230 15% 10%;
+    --comfort: 230 12% 12%;
+    --comfort-warm: 230 10% 14%;
+    --ink: 40 20% 92%;
+    --ink-light: 40 15% 80%;
+    
+    --sidebar-background: 230 15% 8%;
+    --sidebar-foreground: 40 20% 92%;
+    --sidebar-primary: 38 60% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 14%;
-    --sidebar-accent-foreground: 0 0% 88%;
-    --sidebar-border: 0 0% 18%;
-    --sidebar-ring: 40 56% 50%;
+    --sidebar-accent: 230 10% 14%;
+    --sidebar-accent-foreground: 40 20% 92%;
+    --sidebar-border: 230 10% 20%;
+    --sidebar-ring: 38 60% 55%;
   }
 }
 
@@ -154,6 +177,74 @@
     letter-spacing: 0.01em;
     color: hsl(var(--foreground));
   }
+
+  .reader-comfort {
+    font-family: var(--font-serif);
+    color: hsl(var(--ink));
+    background: hsl(var(--comfort));
+  }
+
+  .reading-relaxed {
+    font-family: var(--font-serif);
+    line-height: 2;
+    letter-spacing: 0.01em;
+    word-spacing: 0.02em;
+  }
+
+  .reading-comfortable {
+    font-family: var(--font-serif);
+    line-height: 2.2;
+    letter-spacing: 0.015em;
+  }
+
+  .verse-highlight-subtle {
+    background: linear-gradient(120deg, transparent 0%, transparent 60%, hsl(var(--primary-light) / 0.3) 60%, hsl(var(--primary-light) / 0.3) 100%);
+    background-size: 200% 100%;
+    animation: highlight-flow 3s ease-in-out infinite;
+  }
+
+  @keyframes highlight-flow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .panel-glass {
+    background: hsl(var(--background) / 0.85);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
+
+  .panel-soft {
+    background: linear-gradient(180deg, hsl(var(--comfort)) 0%, hsl(var(--background)) 100%);
+  }
+
+  .text-ink {
+    color: hsl(var(--ink));
+  }
+  
+  .text-ink-light {
+    color: hsl(var(--ink-light));
+  }
+
+  .text-serif-display {
+    font-family: 'Playfair Display', var(--font-serif);
+  }
+  
+  .text-cormorant {
+    font-family: 'Cormorant Garamond', var(--font-serif);
+  }
+
+  .bg-comfort {
+    background-color: hsl(var(--comfort));
+  }
+  
+  .bg-comfort-warm {
+    background-color: hsl(var(--comfort-warm));
+  }
+
+  .border-ink {
+    border-color: hsl(var(--border));
+  }
 }
 
 /* PDF-like reader styling */
@@ -163,6 +254,127 @@
   line-height: 2.1;
   text-align: justify;
   text-justify: inter-word;
+  color: hsl(var(--ink));
+}
+
+/* Soft reading mode */
+.reader-content-soft {
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  line-height: 2.3;
+  color: hsl(var(--ink-light));
+  letter-spacing: 0.015em;
+}
+
+.reader-content-relaxed {
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  line-height: 2.4;
+  color: hsl(var(--ink));
+  letter-spacing: 0.02em;
+  word-spacing: 0.03em;
+}
+
+/* Enhanced verse styling with subtle depth */
+.verse-number {
+  vertical-align: super;
+  font-size: 0.6em;
+  margin-right: 3px;
+  color: hsl(var(--foreground) / 0.6);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+/* Smooth transitions with easing */
+.transition-app {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.transition-comfort {
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.transition-gentle {
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Scrollbar styling - softer appearance */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--foreground) / 0.2);
+}
+
+/* Print-like page shadow - softer */
+.page-shadow {
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.02),
+    0 4px 16px rgba(0,0,0,0.04),
+    0 12px 40px rgba(0,0,0,0.06);
+}
+
+/* Soft shadow variants */
+.shadow-soft {
+  box-shadow: 
+    0 1px 3px rgba(0,0,0,0.02),
+    0 4px 12px rgba(0,0,0,0.04),
+    0 8px 24px rgba(0,0,0,0.04);
+}
+
+.shadow-panel {
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.02),
+    0 8px 24px rgba(0,0,0,0.06),
+    0 24px 48px rgba(0,0,0,0.08);
+}
+
+.shadow-glow {
+  box-shadow: 
+    0 0 0 1px hsl(var(--primary) / 0.05),
+    0 4px 16px hsl(var(--primary) / 0.1),
+    0 8px 32px hsl(var(--primary) / 0.08);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY( 0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes gentlePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
+.animate-gentle-pulse {
+  animation: gentlePulse 4s ease-in-out infinite;
 }
 
 .verse-number {
@@ -205,41 +417,54 @@
   animation: fadeIn 0.6s ease forwards;
 }
 
-/* Premium reader UI */
+/* Premium reader UI with enhanced comfort */
 .reader-shell {
-  background:
-    radial-gradient(circle at 20% -10%, hsl(var(--primary) / 0.08), transparent 42%),
-    radial-gradient(circle at 80% 0%, hsl(var(--primary) / 0.05), transparent 40%),
+  background: 
+    radial-gradient(ellipse at 20% -5%, hsl(var(--primary) / 0.06), transparent 45%),
+    radial-gradient(ellipse at 80% 5%, hsl(var(--primary) / 0.04), transparent 40%),
+    radial-gradient(ellipse at 50% 100%, hsl(var(--comfort) / 0.5), transparent 60%),
     hsl(var(--background));
+  min-height: 100vh;
 }
 
 .reader-topbar {
-  background: hsl(var(--background) / 0.84);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid hsl(var(--border) / 0.75);
+  background: hsl(var(--background) / 0.8);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid hsl(var(--border) / 0.6);
 }
 
 .reader-main-paper {
-  background: hsl(var(--card) / 0.9);
-  border: 1px solid hsl(var(--border) / 0.75);
+  background: 
+    linear-gradient(180deg, hsl(var(--card) / 0.95) 0%, hsl(var(--card) / 0.88) 100%);
+  border: 1px solid hsl(var(--border) / 0.6);
   border-radius: 1rem;
-  box-shadow: 0 10px 38px rgba(15, 23, 42, 0.08);
+  box-shadow: 
+    0 4px 6px rgba(0,0,0,0.02),
+    0 12px 32px rgba(15, 23, 42, 0.06),
+    0 24px 56px rgba(15, 23, 42, 0.04);
 }
 
 .reader-surface {
-  background: hsl(var(--card) / 0.9);
-  border: 1px solid hsl(var(--border) / 0.7);
+  background: 
+    linear-gradient(180deg, hsl(var(--card) / 0.92) 0%, hsl(var(--card) / 0.85) 100%);
+  border: 1px solid hsl(var(--border) / 0.5);
   border-radius: 1rem;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  box-shadow: 
+    0 4px 12px rgba(15, 23, 42, 0.04),
+    0 16px 32px rgba(15, 23, 42, 0.06);
 }
 
 .reader-floating-panel {
-  background: hsl(var(--background) / 0.88) !important;
-  backdrop-filter: blur(16px);
+  background: hsl(var(--background) / 0.92) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid hsl(var(--border) / 0.5);
 }
 
 .reader-panel-header {
-  background: linear-gradient(to right, hsl(var(--muted) / 0.7), transparent);
+  background: linear-gradient(180deg, hsl(var(--muted) / 0.4) 0%, transparent 100%);
+  border-bottom: 1px solid hsl(var(--border) / 0.4);
 }
 
 .reader-pill {
@@ -248,10 +473,10 @@
   gap: 0.35rem;
   padding: 0.3rem 0.55rem;
   border-radius: 999px;
-  border: 1px solid hsl(var(--border) / 0.9);
+  border: 1px solid hsl(var(--border) / 0.8);
   color: hsl(var(--foreground));
   background: hsl(var(--card) / 0.75);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .reader-chip {
@@ -261,14 +486,14 @@
   min-height: 1.7rem;
   padding: 0 0.65rem;
   border-radius: 999px;
-  border: 1px solid hsl(var(--border) / 0.8);
-  background: hsl(var(--card) / 0.7);
+  border: 1px solid hsl(var(--border) / 0.7);
+  background: hsl(var(--card) / 0.65);
   color: hsl(var(--foreground));
   font-size: 0.62rem;
   letter-spacing: 0.2em;
   font-family: var(--font-sans);
   text-transform: uppercase;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .reader-icon-button {
@@ -278,16 +503,16 @@
   width: 1.95rem;
   height: 1.95rem;
   border-radius: 0.6rem;
-  border: 1px solid hsl(var(--border) / 0.7);
-  background: hsl(var(--card) / 0.72);
+  border: 1px solid hsl(var(--border) / 0.6);
+  background: hsl(var(--card) / 0.7);
   color: hsl(var(--foreground));
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .reader-icon-button:hover {
   color: hsl(var(--foreground));
-  border-color: hsl(var(--primary) / 0.35);
-  background: hsl(var(--muted));
+  border-color: hsl(var(--primary) / 0.3);
+  background: hsl(var(--muted) / 0.6);
 }
 
 .reader-nav-button {
@@ -295,20 +520,26 @@
   letter-spacing: 0.2em;
   font-family: var(--font-sans);
   color: hsl(var(--foreground));
-  font-weight: 700;
-  transition: color 0.2s ease;
+  font-weight: 600;
+  transition: color 0.25s ease;
 }
 
 .reader-nav-button:hover {
-  color: hsl(var(--foreground));
+  color: hsl(var(--primary));
 }
 
 .reader-verse {
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius: 0.2rem;
 }
 
 .reader-verse:hover {
-  background-color: hsl(var(--muted) / 0.7);
+  background-color: hsl(var(--muted) / 0.5);
+}
+
+.reader-verse-active {
+  background-color: hsl(var(--primary-light) / 0.4);
+  border-radius: 0.25rem;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -347,7 +578,219 @@
 
 .dark .reader-main-paper,
 .dark .reader-surface {
-  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.35);
+  box-shadow: 
+    0 8px 16px rgba(0, 0, 0, 0.2),
+    0 24px 48px rgba(0, 0, 0, 0.25),
+    0 48px 96px rgba(0, 0, 0, 0.15);
+}
+
+.dark .reader-verse-active {
+  background-color: hsl(var(--primary-light) / 0.3);
+}
+
+/* Comfort reading mode controls */
+.reading-mode-relaxed {
+  font-size: 1.15rem;
+  line-height: 2.4;
+  letter-spacing: 0.02em;
+  color: hsl(var(--ink-light));
+  max-width: 65ch;
+}
+
+.reading-mode-comfortable {
+  font-size: 1.2rem;
+  line-height: 2.2;
+  letter-spacing: 0.015em;
+  color: hsl(var(--ink));
+  max-width: 70ch;
+}
+
+.reading-mode-standard {
+  font-size: 1.25rem;
+  line-height: 2.1;
+  letter-spacing: 0.01em;
+  color: hsl(var(--ink));
+  max-width: 75ch;
+}
+
+/* Subtle border and surface enhancements */
+.border-subtle {
+  border-color: hsl(var(--border) / 0.6);
+}
+
+.border-soft {
+  border-color: hsl(var(--border) / 0.4);
+}
+
+.bg-surface {
+  background-color: hsl(var(--card) / 0.9);
+}
+
+.bg-surface-elevated {
+  background-color: hsl(var(--card) / 0.95);
+}
+
+/* Focus states for accessibility */
+.focus-ring {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--primary) / 0.4);
+}
+
+/* Hide scrollbar but keep functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Reading line guide */
+.reading-guide {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    hsl(var(--primary) / 0.3) 20%, 
+    hsl(var(--primary) / 0.5) 50%, 
+    hsl(var(--primary) / 0.3) 80%, 
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+.reading-guide-dots {
+  background-image: linear-gradient(to right, 
+    hsl(var(--border) / 0.3) 1px, 
+    transparent 1px
+  );
+  background-size: 4px 1px;
+  height: 1px;
+}
+
+/* Smooth hover effects for interactive elements */
+.interactive-soft {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.interactive-soft:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Card styling improvements */
+.card-soft {
+  background: linear-gradient(180deg, hsl(var(--card)) 0%, hsl(var(--card) / 0.95) 100%);
+  border: 1px solid hsl(var(--border) / 0.5);
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.card-soft:hover {
+  border-color: hsl(var(--border) / 0.8);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+/* Gradient text for headers */
+.text-gradient {
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Highlight colors for verses */
+.bg-yellow-200\/60 { background-color: rgba(254, 240, 138, 0.6); }
+.bg-green-200\/60 { background-color: rgba(187, 247, 208, 0.6); }
+.bg-blue-200\/60 { background-color: rgba(191, 219, 254, 0.6); }
+.bg-pink-200\/60 { background-color: rgba(251, 207, 232, 0.6); }
+.bg-orange-200\/60 { background-color: rgba(254, 215, 170, 0.6); }
+.bg-violet-200\/60 { background-color: rgba(221, 214, 254, 0.6); }
+.bg-cyan-200\/60 { background-color: rgba(165, 243, 252, 0.6); }
+
+/* Anti-copy protection for bible content */
+.reader-content {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Allow selection on personal notes and search inputs */
+.reader-content input,
+.reader-content textarea,
+.reader-content [contenteditable] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  user-select: text;
+}
+
+/* Responsive typography for reading */
+@media (min-width: 768px) {
+  .reader-content {
+    font-size: 1.2rem;
+    line-height: 2.2;
+  }
+  
+  .reading-mode-relaxed {
+    font-size: 1.2rem;
+  }
+  
+  .reading-mode-comfortable {
+    font-size: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .reader-main-paper {
+    border-radius: 1.25rem;
+    box-shadow: 
+      0 6px 8px rgba(0,0,0,0.03),
+      0 20px 56px rgba(15, 23, 42, 0.1);
+  }
+
+  .reader-content {
+    font-size: 1.34rem;
+    line-height: 2.3;
+  }
+
+  .menu-strong {
+    letter-spacing: 0.02em;
+  }
+
+  .title-strong {
+    letter-spacing: 0.03em;
+  }
+
+  .comment-strong {
+    font-size: 1.04em;
+    line-height: 1.9;
+  }
+  
+  .reading-mode-relaxed {
+    font-size: 1.25rem;
+  }
+  
+  .reading-mode-comfortable {
+    font-size: 1.3rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .reader-shell {
+    background: white;
+  }
+  
+  .reader-main-paper {
+    box-shadow: none;
+    border: none;
+  }
 }
 
 /* Highlight colors for verses */
