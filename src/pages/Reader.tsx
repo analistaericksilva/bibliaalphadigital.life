@@ -624,17 +624,17 @@ const Reader = () => {
               </div>
             </div>
           </main>
-
-            {/* Persistent Comments Sidebar */}
-            <CommentsSidebar
-              bookId={currentBook}
-              chapter={currentChapter}
-              selectedVerse={selectedVerse}
-              onNavigate={goToChapter}
-              open={showRightPanel}
-              onClose={() => setShowRightPanel(false)}
-            />
           </div>
+
+          {/* Persistent Comments Sidebar */}
+          <CommentsSidebar
+            bookId={currentBook}
+            chapter={currentChapter}
+            selectedVerse={selectedVerse}
+            onNavigate={goToChapter}
+            open={showRightPanel}
+            onClose={() => setShowRightPanel(false)}
+          />
         </div>
 
       {/* Overlays */}
