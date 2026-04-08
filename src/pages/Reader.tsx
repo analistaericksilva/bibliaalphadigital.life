@@ -802,7 +802,7 @@ const Reader = () => {
             <header
               className={cn(
                 "sticky top-0 z-50 overflow-hidden transition-all duration-500 ease-out",
-                showHeaderFooter && isHeaderVisible
+                isHeaderVisible
                   ? "max-h-[220px] px-2 sm:px-3 pt-1.5 pb-1.5 bg-background/88 backdrop-blur-md border-b border-border/55 shadow-[0_10px_24px_-20px_rgba(15,23,42,0.45)] opacity-100 translate-y-0"
                   : "max-h-0 px-2 sm:px-3 pt-0 pb-0 border-b-0 bg-transparent shadow-none opacity-0 -translate-y-2 pointer-events-none"
               )}
