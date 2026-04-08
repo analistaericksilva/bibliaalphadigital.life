@@ -421,6 +421,39 @@ export type Database = {
         }
         Relationships: []
       }
+      sermon_notes: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          tags: string[]
+          title: string
+          updated_at: string
+          user_id: string
+          verses_refs: string[]
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          id?: string
+          tags?: string[]
+          title: string
+          updated_at?: string
+          user_id: string
+          verses_refs?: string[]
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          tags?: string[]
+          title?: string
+          updated_at?: string
+          user_id?: string
+          verses_refs?: string[]
+        }
+        Relationships: []
+      }
       strongs_lexicon: {
         Row: {
           created_at: string
@@ -542,6 +575,54 @@ export type Database = {
           note_type?: string
           source?: string | null
           title?: string | null
+          verse_end?: number | null
+          verse_start?: number
+        }
+        Relationships: []
+      }
+      user_annotations: {
+        Row: {
+          book_id: string
+          chapter: number
+          color: string | null
+          content: string
+          created_at: string
+          id: string
+          is_public: boolean
+          note_type: string
+          tags: string[] | null
+          updated_at: string
+          user_id: string
+          verse_end: number | null
+          verse_start: number
+        }
+        Insert: {
+          book_id: string
+          chapter: number
+          color?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          note_type?: string
+          tags?: string[] | null
+          updated_at?: string
+          user_id: string
+          verse_end?: number | null
+          verse_start: number
+        }
+        Update: {
+          book_id?: string
+          chapter?: number
+          color?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          note_type?: string
+          tags?: string[] | null
+          updated_at?: string
+          user_id?: string
           verse_end?: number | null
           verse_start?: number
         }
