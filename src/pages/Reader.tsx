@@ -731,7 +731,7 @@ const Reader = () => {
             onToggleCompareMode={() => setShowCompareMode((p) => !p)}
           />
           <div className="flex-1 flex flex-col min-w-0">
-            <header className="sticky top-0 z-40 px-3 pt-2 pb-2 bg-background/80 backdrop-blur-xl border-b border-border/60">
+            <header className="sticky top-0 z-50 px-3 pt-2 pb-2 bg-background/92 backdrop-blur-xl border-b border-border/60 shadow-[0_10px_24px_-20px_rgba(15,23,42,0.45)]">
               <div className="rounded-2xl border border-border/70 bg-card/85 shadow-sm browseros-header-shell">
                 <div className="flex flex-wrap md:flex-nowrap items-center gap-2 px-2 md:px-3 py-2 border-b border-border/60">
                   <SidebarTrigger className="h-8 w-8 rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground">
@@ -926,7 +926,7 @@ const Reader = () => {
                               onClick={() => handleVerseClick(v.verse)}
                               onContextMenu={(e) => handleVerseLongPress(v.verse, e)}
                             >
-                              <sup className={cn("verse-number", isActive && "text-primary")}>{v.verse}</sup>
+                              <sup className={cn("verse-number text-[#2E1065] font-semibold", isActive && "text-[#1F0A44]")}>{v.verse}</sup>
                               <span className={speechClass}>{v.text}</span>
                               {isActive && showInlineNotes && hasNote && <span className="ml-1 text-[10px] text-accent">✎</span>}
                               {isActive && fav && <span className="ml-1 text-[10px] text-destructive">♥</span>}
@@ -971,7 +971,7 @@ const Reader = () => {
                             role="button"
                             tabIndex={0}
                           >
-                            <sup className="verse-number">{v.verse}</sup>
+                            <sup className="verse-number text-[#2E1065] font-semibold">{v.verse}</sup>
                             <span className={speechClass}>{v.text}</span>
                           </div>
                         );
@@ -985,16 +985,70 @@ const Reader = () => {
               
 
               {/* Chapter navigation */}
-              <div className="flex items-center justify-between mt-12 pt-6 border-t border-border">
-                <button onClick={() => navigateChapter(-1)} className="reader-nav-button">
-                  ← Anterior
-                </button>
-                <span className="text-xs text-muted-foreground">
-                  {book?.abbrev} {currentChapter}
-                </span>
-                <button onClick={() => navigateChapter(1)} className="reader-nav-button">
-                  Próximo →
-                </button>
+              <div className="mt-12 pt-6 border-t border-border space-y-3">
+                <div className="flex items-center justify-between">
+                  <button onClick={() => navigateChapter(-1)} className="reader-nav-button">
+                    ← Anterior
+                  </button>
+                  <span className="text-xs text-muted-foreground">
+                    {book?.abbrev} {currentChapter}
+                  </span>
+                  <button onClick={() => navigateChapter(1)} className="reader-nav-button">
+                    Próximo →
+                  </button>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={() => setShowBooks(true)}
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-[#D8C8F3] text-[#2E1065] bg-[#F7F2FF] hover:bg-[#EFE5FF] transition-colors"
+                    type="button"
+                  >
+                    📚 Livro
+                  </button>
+                  <button
+                    onClick={() => openUserPanel("goto")}
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-[#D8C8F3] text-[#2E1065] bg-[#F7F2FF] hover:bg-[#EFE5FF] transition-colors"
+                    type="button"
+                  >
+                    🔢 Ir p/ capítulo
+                  </button>
+                  <button
+                    onClick={() => setShowSearch(true)}
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-[#D8C8F3] text-[#2E1065] bg-[#F7F2FF] hover:bg-[#EFE5FF] transition-colors"
+                    type="button"
+                  >
+                    🔍 Busca
+                  </button>
+                  <button
+                    onClick={() => setShowNotes(true)}
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-[#D8C8F3] text-[#2E1065] bg-[#F7F2FF] hover:bg-[#EFE5FF] transition-colors"
+                    type="button"
+                  >
+                    📝 Notas
+                  </button>
+                  <button
+                    onClick={scrollReaderToTop}
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-[#D8C8F3] text-[#2E1065] bg-[#F7F2FF] hover:bg-[#EFE5FF] transition-colors"
+                    type="button"
+                  >
+                    ↑ Topo
+                  </button>
+                  <button
+                    onClick={() => {
+                      const container = readingContainerRef.current;
+                      if (container && isContainerScrollable()) {
+                        container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+                      } else {
+                        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+                      }
+                    }}
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-[#D8C8F3] text-[#2E1065] bg-[#F7F2FF] hover:bg-[#EFE5FF] transition-colors"
+                    type="button"
+                  >
+                    ↓ Rodapé
+                  </button>
+                </div>
               </div>
               </div>
             </main>
