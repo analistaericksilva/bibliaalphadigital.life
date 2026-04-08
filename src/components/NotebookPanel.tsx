@@ -70,11 +70,11 @@ interface UserAnnotation {
   book_id: string;
   chapter: number;
   verse_start: number;
-  verse_end?: number;
+  verse_end?: number | null;
   content: string;
-  note_type: "highlight" | "note" | "favorite" | "bookmark" | "study";
-  color?: string;
-  tags?: string[];
+  note_type: string;
+  color?: string | null;
+  tags?: string[] | null;
   is_public: boolean;
   created_at: string;
   updated_at: string;
