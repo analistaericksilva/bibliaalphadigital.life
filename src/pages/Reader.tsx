@@ -26,7 +26,7 @@ import QuickAccessToolbar from "@/components/QuickAccessToolbar";
 import ModuleManager from "@/components/ModuleManager";
 import { useReaderSettings } from "@/contexts/ReaderSettingsContext";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, Loader2, ArrowLeft, Menu, MessageCircle, FileText, Search, BookOpen, Library, Map, Users, Settings2, PanelTopClose, Keyboard, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, ArrowLeft, Menu, MessageCircle, FileText, Search, BookOpen, Library, Map, Users, PanelTopClose, Keyboard, Star } from "lucide-react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -657,84 +657,87 @@ const Reader = () => {
             onToggleCompareMode={() => setShowCompareMode((p) => !p)}
           />
           <div className="flex-1 flex flex-col min-w-0">
-            {/* Microsoft Word inspired chrome */}
-            <header className="sticky top-0 z-40 border-b border-border/80 bg-background/95 backdrop-blur">
-              <div className="h-8 bg-[#2b579a] text-white flex items-center gap-2 px-3">
-                <SidebarTrigger className="h-6 w-6 rounded hover:bg-white/20">
-                  <Menu className="w-4 h-4" />
-                </SidebarTrigger>
-                <span className="text-[11px] font-medium tracking-wide truncate">
-                  Bíblia Alpha • {book?.name} {currentChapter}
-                </span>
-                <span className="ml-auto text-[10px] opacity-90">Estudo Avançado</span>
-              </div>
-
-              <div className="h-8 bg-muted/70 border-b border-border/60 px-2 flex items-center gap-1 text-[11px]">
-                {[
-                  { label: "Arquivo", icon: FileText, action: () => setShowBooks(true) },
-                  { label: "Editar", icon: Settings2, action: () => setShowDictionary(true) },
-                  { label: "Pesquisar", icon: Search, action: () => setShowSearch(true) },
-                  { label: "Estudo", icon: BookOpen, action: () => setShowNotes(true) },
-                  { label: "Módulos", icon: Library, action: () => setShowModuleManager(true) },
-                  { label: "Comandos", icon: Keyboard, action: () => setCommandOpen(true) },
-                ].map((item) => (
+            <header className="sticky top-0 z-40 px-3 pt-2 pb-2 bg-background/80 backdrop-blur-xl border-b border-border/60">
+              <div className="rounded-2xl border border-border/70 bg-card/85 shadow-sm browseros-header-shell">
+                <div className="flex items-center gap-2 px-3 py-2 border-b border-border/60">
+                  <SidebarTrigger className="h-8 w-8 rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground">
+                    <Menu className="w-4 h-4" />
+                  </SidebarTrigger>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold truncate">Bíblia Alpha</p>
+                    <p className="text-[11px] text-muted-foreground truncate">{book?.name} {currentChapter} • leitura inteligente</p>
+                  </div>
                   <button
-                    key={item.label}
-                    className="h-6 px-2.5 rounded hover:bg-background text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
-                    onClick={item.action}
+                    onClick={() => setCommandOpen(true)}
+                    className="ml-auto hidden md:inline-flex items-center gap-1.5 text-[11px] px-2.5 h-7 rounded-full border border-border bg-background/80 text-muted-foreground hover:text-foreground hover:border-primary/40"
                     type="button"
                   >
-                    <item.icon className="w-3.5 h-3.5" />
-                    {item.label}
+                    <Keyboard className="w-3.5 h-3.5" />
+                    Ctrl+K
                   </button>
-                ))}
-              </div>
-
-              <div className="h-11 px-3 bg-card border-b border-border/60 flex items-center gap-1.5">
-                <button onClick={() => navigateChapter(-1)} className="reader-icon-button" aria-label="Capítulo anterior" type="button">
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-                <button onClick={() => navigateChapter(1)} className="reader-icon-button" aria-label="Próximo capítulo" type="button">
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-                <div className="w-px h-6 bg-border mx-1" />
-                <button onClick={() => setShowSearch(true)} className="reader-icon-button" title="Buscar" type="button">
-                  <Search className="w-4 h-4" />
-                </button>
-                <button onClick={() => setShowNotes(true)} className="reader-icon-button" title="Notas" type="button">
-                  <BookOpen className="w-4 h-4" />
-                </button>
-                <button onClick={() => setShowLexicon(true)} className="reader-icon-button" title="Léxico" type="button">
-                  <Library className="w-4 h-4" />
-                </button>
-                <button onClick={() => setShowMap(true)} className="reader-icon-button" title="Mapa bíblico" type="button">
-                  <Map className="w-4 h-4" />
-                </button>
-                <button onClick={() => setShowPeople(true)} className="reader-icon-button" title="Personagens" type="button">
-                  <Users className="w-4 h-4" />
-                </button>
-                <button onClick={() => setShowModuleManager(true)} className="reader-icon-button" title="Gerenciador de módulos" type="button">
-                  <PanelTopClose className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => {
-                    const targetVerse = selectedVerse ?? verses[0]?.verse ?? null;
-                    if (!targetVerse) return;
-                    setSelectedVerse(targetVerse);
-                    setShowVerseCommentPopup((prev) => !prev || targetVerse !== selectedVerse);
-                  }}
-                  className={cn("reader-icon-button", showVerseCommentPopup && "bg-muted text-foreground")}
-                  title="Comentário do versículo"
-                  type="button"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                </button>
-                <button onClick={() => setCommandOpen(true)} className="reader-icon-button" title="Comandos rápidos (Ctrl+K)" type="button">
-                  <Keyboard className="w-4 h-4" />
-                </button>
-                <div className="ml-auto flex items-center gap-2">
-                  <span className="text-[11px] text-muted-foreground hidden md:block">{book?.abbrev?.toUpperCase()} {currentChapter}</span>
                   <ReaderSettingsBar />
+                </div>
+
+                <div className="px-3 py-2 border-b border-border/60 flex flex-wrap items-center gap-1.5">
+                  {[
+                    { label: "Biblioteca", action: () => setShowBooks(true) },
+                    { label: "Busca", action: () => setShowSearch(true) },
+                    { label: "Notas", action: () => setShowNotes(true) },
+                    { label: "Dicionário", action: () => setShowDictionary(true) },
+                    { label: "Módulos", action: () => setShowModuleManager(true) },
+                    { label: "Comandos", action: () => setCommandOpen(true) },
+                  ].map((item) => (
+                    <button
+                      key={item.label}
+                      className="browseros-menu-chip"
+                      onClick={item.action}
+                      type="button"
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="px-3 py-2 flex items-center gap-1.5">
+                  <button onClick={() => navigateChapter(-1)} className="reader-icon-button" aria-label="Capítulo anterior" type="button">
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button onClick={() => navigateChapter(1)} className="reader-icon-button" aria-label="Próximo capítulo" type="button">
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                  <div className="w-px h-6 bg-border mx-1" />
+                  <button onClick={() => setShowSearch(true)} className="reader-icon-button" title="Buscar" type="button">
+                    <Search className="w-4 h-4" />
+                  </button>
+                  <button onClick={() => setShowNotes(true)} className="reader-icon-button" title="Notas" type="button">
+                    <BookOpen className="w-4 h-4" />
+                  </button>
+                  <button onClick={() => setShowLexicon(true)} className="reader-icon-button" title="Léxico" type="button">
+                    <Library className="w-4 h-4" />
+                  </button>
+                  <button onClick={() => setShowMap(true)} className="reader-icon-button" title="Mapa bíblico" type="button">
+                    <Map className="w-4 h-4" />
+                  </button>
+                  <button onClick={() => setShowPeople(true)} className="reader-icon-button" title="Personagens" type="button">
+                    <Users className="w-4 h-4" />
+                  </button>
+                  <button onClick={() => setShowModuleManager(true)} className="reader-icon-button" title="Gerenciador de módulos" type="button">
+                    <PanelTopClose className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      const targetVerse = selectedVerse ?? verses[0]?.verse ?? null;
+                      if (!targetVerse) return;
+                      setSelectedVerse(targetVerse);
+                      setShowVerseCommentPopup((prev) => !prev || targetVerse !== selectedVerse);
+                    }}
+                    className={cn("reader-icon-button", showVerseCommentPopup && "bg-muted text-foreground")}
+                    title="Comentário do versículo"
+                    type="button"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                  </button>
+                  <span className="ml-auto text-[11px] text-muted-foreground hidden md:block">{book?.abbrev?.toUpperCase()} {currentChapter}</span>
                 </div>
               </div>
             </header>
@@ -807,9 +810,9 @@ const Reader = () => {
                                 verseRefs.current[v.verse] = el;
                               }}
                               className={cn(
-                                "inline rounded-md px-1 py-[1px] cursor-pointer transition-colors",
+                                "inline cursor-pointer transition-colors",
                                 hlBg,
-                                isActive && "bg-primary/15 ring-1 ring-primary/40",
+                                isActive && "text-primary underline decoration-primary/40 underline-offset-[3px]",
                               )}
                               onClick={() => handleVerseClick(v.verse)}
                               onContextMenu={(e) => handleVerseLongPress(v.verse, e)}
@@ -834,7 +837,7 @@ const Reader = () => {
                       </div>
                     </article>
                   ) : (
-                    <div className="space-y-2" style={{ fontSize: `${fontSize}px` }}>
+                    <div className="space-y-1.5" style={{ fontSize: `${fontSize}px` }}>
                       {verses.map((v) => {
                         const speechClass = jesusSpeechVerses.has(v.verse)
                           ? "text-jesus"
@@ -844,23 +847,24 @@ const Reader = () => {
                         const isActive = selectedVerse === v.verse;
 
                         return (
-                          <button
+                          <div
                             key={v.verse}
-                            type="button"
                             ref={(el) => {
                               verseRefs.current[v.verse] = el;
                             }}
                             className={cn(
-                              "w-full text-left reader-main-paper p-3 transition-colors",
+                              "reader-verse-line px-1 cursor-pointer transition-colors",
                               hlBg,
-                              isActive && "ring-1 ring-primary/40",
+                              isActive && "text-primary underline decoration-primary/40 underline-offset-[3px]",
                             )}
                             onClick={() => handleVerseClick(v.verse)}
                             onContextMenu={(e) => handleVerseLongPress(v.verse, e)}
+                            role="button"
+                            tabIndex={0}
                           >
                             <sup className="verse-number">{v.verse}</sup>
                             <span className={speechClass}>{v.text}</span>
-                          </button>
+                          </div>
                         );
                       })}
                     </div>
@@ -886,7 +890,7 @@ const Reader = () => {
               </div>
             </main>
 
-            <footer className="h-7 border-t border-border/60 bg-[#0078d4] text-white px-3 text-[11px] flex items-center justify-between">
+            <footer className="h-8 border-t border-border/60 bg-card/70 text-muted-foreground px-3 text-[11px] flex items-center justify-between backdrop-blur">
               <span>{book?.name} {currentChapter}</span>
               <span>{verses.length} versículos • {selectedVerse ? `v.${selectedVerse} selecionado` : "pronto"}</span>
             </footer>
