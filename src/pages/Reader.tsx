@@ -659,10 +659,19 @@ const Reader = () => {
                 </div>
                 </div>
               </div>
-            </main>
+              </main>
+            </div>
+
+            {/* Persistent Comments Sidebar */}
+            <CommentsSidebar
+              bookId={currentBook}
+              chapter={currentChapter}
+              selectedVerse={selectedVerse}
+              onNavigate={goToChapter}
+              open={showRightPanel}
+              onClose={() => setShowRightPanel(false)}
+            />
           </div>
-        </div>
-      </div>
 
       {/* Overlays */}
       {actionMenu && (
