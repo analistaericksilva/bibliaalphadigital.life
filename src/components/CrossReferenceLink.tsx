@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Loader2, Link2, ExternalLink, BookOpen, ChevronRight } from "lucide-react";
@@ -25,12 +25,12 @@ const CrossReferenceLink = ({ bookId, chapter, verse, className, children }: Cro
   const [isLoading, setIsLoading] = useState(false);
   const [crossRefs, setCrossRefs] = useState<CrossRef[]>([]);
 
-  useState(() => {
+  useEffect(() => {
     if (isOpen && !crossRefs.length) {
       setIsLoading(true);
       loadCrossRefs();
     }
-  });
+  }, [isOpen]);
 
   const loadCrossRefs = async () => {
     try {
