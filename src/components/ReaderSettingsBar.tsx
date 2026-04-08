@@ -33,6 +33,7 @@ const ReaderSettingsBar = () => {
     showFootnotes, setShowFootnotes,
     commentaryPosition, setCommentaryPosition,
     selectedFont, setSelectedFont,
+    usageTemplate, applyUsageTemplate,
   } = useReaderSettings();
 
   const [parallelMode, setParallelMode] = useState<"none" | "horizontal" | "vertical">("none");
@@ -47,8 +48,72 @@ const ReaderSettingsBar = () => {
   const currentTheme = themeOptions.find(t => t.value === theme) || themeOptions[0];
   const CurrentIcon = currentTheme.icon;
 
+  const usageTemplates: {
+    value: "browseros" | "focus" | "study";
+    label: string;
+    description: string;
+    color: string;
+  }[] = [
+    {
+      value: "browseros",
+      label: "BrowserOS",
+      description: "Layout translúcido, painel rápido e fluxo equilibrado.",
+      color: "from-slate-500/20 to-blue-500/20",
+    },
+    {
+      value: "focus",
+      label: "Foco",
+      description: "Distração mínima para leitura devocional contínua.",
+      color: "from-zinc-500/20 to-stone-500/20",
+    },
+    {
+      value: "study",
+      label: "Estudo profundo",
+      description: "Strong, morfologia e comentários prontos para pesquisa.",
+      color: "from-violet-500/20 to-cyan-500/20",
+    },
+  ];
+
   return (
     <div className="flex items-center gap-1.5">
+      {/* Usage templates */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <button
+            className={cn("reader-icon-button", usageTemplate !== "browseros" && "text-primary")}
+            title="Templates de uso"
+          >
+            <Layers className="w-4 h-4" />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-80 p-3 reader-surface border border-border/70" align="end">
+          <div className="space-y-2">
+            <p className="text-[10px] tracking-[0.2em] font-sans font-semibold text-muted-foreground flex items-center gap-1">
+              <Sparkles className="w-3 h-3" />
+              TEMPLATE DE USO
+            </p>
+            <div className="space-y-2">
+              {usageTemplates.map((template) => (
+                <button
+                  key={template.value}
+                  onClick={() => applyUsageTemplate(template.value)}
+                  className={cn(
+                    "w-full rounded-xl border text-left p-3 transition-all",
+                    usageTemplate === template.value
+                      ? "border-primary/40 bg-primary/10"
+                      : "border-border/60 hover:border-primary/20 hover:bg-muted/40",
+                  )}
+                >
+                  <div className={cn("h-8 rounded-lg mb-2 bg-gradient-to-r", template.color)} />
+                  <p className="text-xs font-semibold text-foreground">{template.label}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">{template.description}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
+
       {/* Theme toggle */}
       <Popover>
         <PopoverTrigger asChild>

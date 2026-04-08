@@ -126,6 +126,7 @@ const Reader = () => {
   const showHeaderFooter = readerSettings.showHeaderFooter;
   const showUserHighlights = readerSettings.showUserHighlights;
   const selectedFont = readerSettings.selectedFont;
+  const usageTemplate = readerSettings.usageTemplate;
 
   const lastReadingKey = user ? `biblia-alpha:last-reading:${user.id}` : null;
 
@@ -691,7 +692,7 @@ const Reader = () => {
 
   return (
     <SidebarProvider>
-      <div className="reader-shell min-h-screen flex w-full text-foreground">
+      <div className={cn("reader-shell min-h-screen flex w-full text-foreground", `reader-template-${usageTemplate}`)}>
         <ReaderSidebar
           onToggleSearch={() => setShowSearch(!showSearch)}
           onToggleBookSelector={() => setShowBooks(!showBooks)}

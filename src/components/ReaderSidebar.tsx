@@ -79,7 +79,7 @@ const ReaderSidebar = ({
   const userItems = [
     onToggleHistory ? { title: "Histórico", icon: Clock, onClick: act(onToggleHistory) } : null,
     onToggleFavorites ? { title: "Favoritos", icon: Heart, onClick: act(onToggleFavorites) } : null,
-    onToggleNotepad ? { title: "Notepad", icon: StickyNote, onClick: act(onToggleNotepad) } : null,
+    onToggleNotepad ? { title: "Bloco de notas", icon: StickyNote, onClick: act(onToggleNotepad) } : null,
     onToggleReset ? { title: "Resetar dados", icon: RotateCcw, onClick: act(onToggleReset) } : null,
     onShare ? { title: "Compartilhar", icon: Share2, onClick: act(onShare) } : null,
   ].filter(Boolean) as { title: string; icon: any; onClick: () => void }[];

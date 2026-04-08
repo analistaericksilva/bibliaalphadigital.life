@@ -49,7 +49,7 @@ const QuickAccessToolbar = ({
     { type: "separator" as const },
     { icon: Bookmark, label: "Busca de Palavras (D)", active: wordLookupEnabled, action: toggleWordLookupEnabled },
     { type: "separator" as const },
-    { icon: Home, label: "Header/Footer (Q)", active: showHeaderFooter, action: () => setShowHeaderFooter(!showHeaderFooter) },
+    { icon: Home, label: "Cabeçalho/Rodapé (Q)", active: showHeaderFooter, action: () => setShowHeaderFooter(!showHeaderFooter) },
     { icon: Star, label: "Destaques Usuário (U)", active: showUserHighlights, action: () => setShowUserHighlights(!showUserHighlights) },
     { type: "separator" as const },
     { icon: Search, label: "Modo Comparar", active: showCompareMode, action: onToggleCompareMode },

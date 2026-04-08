@@ -3,6 +3,7 @@ import { useState, useEffect, createContext, useContext, ReactNode } from "react
 type ThemeMode = "light" | "gray" | "dark";
 type ViewMode = "paragraph" | "verse";
 type CommentaryPosition = "none" | "below" | "right";
+type UsageTemplate = "browseros" | "focus" | "study";
 
 interface ReaderSettingsContextType {
   fontSize: number;
@@ -48,6 +49,9 @@ interface ReaderSettingsContextType {
   setShowLeftIcons: (show: boolean) => void;
   showCompareMode: boolean;
   setShowCompareMode: (show: boolean) => void;
+  usageTemplate: UsageTemplate;
+  setUsageTemplate: (template: UsageTemplate) => void;
+  applyUsageTemplate: (template: UsageTemplate) => void;
 }
 
 const ReaderSettingsContext = createContext<ReaderSettingsContextType>({
@@ -94,6 +98,9 @@ const ReaderSettingsContext = createContext<ReaderSettingsContextType>({
   setShowLeftIcons: () => {},
   showCompareMode: false,
   setShowCompareMode: () => {},
+  usageTemplate: "browseros",
+  setUsageTemplate: () => {},
+  applyUsageTemplate: () => {},
 });
 
 export const useReaderSettings = () => useContext(ReaderSettingsContext);
@@ -115,6 +122,7 @@ const COMMENTARY_POSITION_KEY = "biblia-alpha-commentary-position";
 const SELECTED_FONT_KEY = "biblia-alpha-selected-font";
 const LEFT_ICONS_KEY = "biblia-alpha-left-icons";
 const COMPARE_MODE_KEY = "biblia-alpha-compare-mode";
+const USAGE_TEMPLATE_KEY = "biblia-alpha-usage-template";
 
 export function ReaderSettingsProvider({ children }: { children: ReactNode }) {
   const [fontSize, setFontSizeState] = useState(() => {
@@ -202,6 +210,12 @@ export function ReaderSettingsProvider({ children }: { children: ReactNode }) {
   const [showCompareMode, setShowCompareModeState] = useState(() => {
     const saved = localStorage.getItem(COMPARE_MODE_KEY);
     return saved === "true";
+  });
+
+  const [usageTemplate, setUsageTemplateState] = useState<UsageTemplate>(() => {
+    const saved = localStorage.getItem(USAGE_TEMPLATE_KEY);
+    if (saved && ["browseros", "focus", "study"].includes(saved)) return saved as UsageTemplate;
+    return "browseros";
   });
 
   useEffect(() => {
@@ -335,6 +349,94 @@ export function ReaderSettingsProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(COMPARE_MODE_KEY, String(show));
   };
 
+  const setUsageTemplate = (template: UsageTemplate) => {
+    setUsageTemplateState(template);
+    localStorage.setItem(USAGE_TEMPLATE_KEY, template);
+  };
+
+  const applyUsageTemplate = (template: UsageTemplate) => {
+    setUsageTemplate(template);
+
+    if (template === "browseros") {
+      setThemeState("gray");
+      localStorage.setItem(THEME_KEY, "gray");
+      setViewModeState("paragraph");
+      localStorage.setItem(VIEW_MODE_KEY, "paragraph");
+      setShowCrossRefsState(true);
+      localStorage.setItem(CROSS_REFS_KEY, "true");
+      setShowInlineNotesState(true);
+      localStorage.setItem(INLINE_NOTES_KEY, "true");
+      setShowCommentaryLinksState(true);
+      localStorage.setItem(COMMENTARY_LINKS_KEY, "true");
+      setWordLookupEnabledState(true);
+      localStorage.setItem(WORD_LOOKUP_KEY, "true");
+      setShowLeftIconsState(true);
+      localStorage.setItem(LEFT_ICONS_KEY, "true");
+      setShowHeaderFooterState(true);
+      localStorage.setItem(HEADER_FOOTER_KEY, "true");
+      setShowStrongNumbersState(false);
+      localStorage.setItem(STRONG_NUMBERS_KEY, "false");
+      setShowMorphologyState(false);
+      localStorage.setItem(MORPHOLOGY_KEY, "false");
+      setCommentaryPositionState("none");
+      localStorage.setItem(COMMENTARY_POSITION_KEY, "none");
+      return;
+    }
+
+    if (template === "focus") {
+      setThemeState("dark");
+      localStorage.setItem(THEME_KEY, "dark");
+      setViewModeState("paragraph");
+      localStorage.setItem(VIEW_MODE_KEY, "paragraph");
+      setShowCrossRefsState(false);
+      localStorage.setItem(CROSS_REFS_KEY, "false");
+      setShowInlineNotesState(false);
+      localStorage.setItem(INLINE_NOTES_KEY, "false");
+      setShowCommentaryLinksState(false);
+      localStorage.setItem(COMMENTARY_LINKS_KEY, "false");
+      setWordLookupEnabledState(false);
+      localStorage.setItem(WORD_LOOKUP_KEY, "false");
+      setShowLeftIconsState(false);
+      localStorage.setItem(LEFT_ICONS_KEY, "false");
+      setShowHeaderFooterState(false);
+      localStorage.setItem(HEADER_FOOTER_KEY, "false");
+      setShowFootnotesState(false);
+      localStorage.setItem(FOOTNOTES_KEY, "false");
+      setShowStrongNumbersState(false);
+      localStorage.setItem(STRONG_NUMBERS_KEY, "false");
+      setShowMorphologyState(false);
+      localStorage.setItem(MORPHOLOGY_KEY, "false");
+      setCommentaryPositionState("none");
+      localStorage.setItem(COMMENTARY_POSITION_KEY, "none");
+      return;
+    }
+
+    setThemeState("light");
+    localStorage.setItem(THEME_KEY, "light");
+    setViewModeState("verse");
+    localStorage.setItem(VIEW_MODE_KEY, "verse");
+    setShowCrossRefsState(true);
+    localStorage.setItem(CROSS_REFS_KEY, "true");
+    setShowInlineNotesState(true);
+    localStorage.setItem(INLINE_NOTES_KEY, "true");
+    setShowCommentaryLinksState(true);
+    localStorage.setItem(COMMENTARY_LINKS_KEY, "true");
+    setWordLookupEnabledState(true);
+    localStorage.setItem(WORD_LOOKUP_KEY, "true");
+    setShowLeftIconsState(true);
+    localStorage.setItem(LEFT_ICONS_KEY, "true");
+    setShowHeaderFooterState(true);
+    localStorage.setItem(HEADER_FOOTER_KEY, "true");
+    setShowFootnotesState(true);
+    localStorage.setItem(FOOTNOTES_KEY, "true");
+    setShowStrongNumbersState(true);
+    localStorage.setItem(STRONG_NUMBERS_KEY, "true");
+    setShowMorphologyState(true);
+    localStorage.setItem(MORPHOLOGY_KEY, "true");
+    setCommentaryPositionState("right");
+    localStorage.setItem(COMMENTARY_POSITION_KEY, "right");
+  };
+
   const toggleTheme = () => {
     setThemeState(prev => {
       if (prev === "light") return "gray";
@@ -361,6 +463,7 @@ export function ReaderSettingsProvider({ children }: { children: ReactNode }) {
       selectedFont, setSelectedFont,
       showLeftIcons, setShowLeftIcons,
       showCompareMode, setShowCompareMode,
+      usageTemplate, setUsageTemplate, applyUsageTemplate,
     }}>
       {children}
     </ReaderSettingsContext.Provider>

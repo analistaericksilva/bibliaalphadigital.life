@@ -126,49 +126,49 @@
   }
 
   .gray {
-    --background: 220 10% 94%;
-    --foreground: 220 13% 18%;
-    
-    --card: 0 0% 100%;
-    --card-foreground: 220 13% 18%;
-    
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 13% 18%;
-    
-    --primary: 220 14% 28%;
-    --primary-foreground: 0 0% 100%;
-    --primary-light: 220 20% 90%;
-    
-    --secondary: 220 10% 90%;
-    --secondary-foreground: 220 13% 18%;
-    
-    --muted: 220 10% 90%;
-    --muted-foreground: 220 10% 46%;
-    
-    --accent: 220 14% 28%;
-    --accent-foreground: 0 0% 100%;
-    
-    --destructive: 0 72% 51%;
+    --background: 220 12% 13%;
+    --foreground: 220 12% 91%;
+
+    --card: 220 12% 17%;
+    --card-foreground: 220 12% 91%;
+
+    --popover: 220 12% 17%;
+    --popover-foreground: 220 12% 91%;
+
+    --primary: 216 18% 73%;
+    --primary-foreground: 220 18% 10%;
+    --primary-light: 220 14% 24%;
+
+    --secondary: 220 10% 20%;
+    --secondary-foreground: 220 12% 91%;
+
+    --muted: 220 10% 21%;
+    --muted-foreground: 220 8% 70%;
+
+    --accent: 215 26% 74%;
+    --accent-foreground: 220 18% 10%;
+
+    --destructive: 0 68% 56%;
     --destructive-foreground: 0 0% 100%;
-    
-    --border: 220 10% 86%;
-    --input: 220 10% 86%;
-    --ring: 220 14% 28%;
-    
-    --paper: 0 0% 100%;
-    --comfort: 220 10% 95%;
-    --comfort-warm: 220 8% 96%;
-    --ink: 220 13% 18%;
-    --ink-light: 220 10% 36%;
-    
-    --sidebar-background: 220 10% 92%;
-    --sidebar-foreground: 220 13% 18%;
-    --sidebar-primary: 220 14% 28%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 10% 88%;
-    --sidebar-accent-foreground: 220 13% 18%;
-    --sidebar-border: 220 10% 86%;
-    --sidebar-ring: 220 14% 28%;
+
+    --border: 220 9% 28%;
+    --input: 220 9% 28%;
+    --ring: 216 18% 73%;
+
+    --paper: 220 11% 16%;
+    --comfort: 220 11% 15%;
+    --comfort-warm: 220 10% 18%;
+    --ink: 220 12% 90%;
+    --ink-light: 220 8% 72%;
+
+    --sidebar-background: 220 12% 11%;
+    --sidebar-foreground: 220 12% 91%;
+    --sidebar-primary: 216 18% 73%;
+    --sidebar-primary-foreground: 220 18% 10%;
+    --sidebar-accent: 220 10% 19%;
+    --sidebar-accent-foreground: 220 12% 91%;
+    --sidebar-border: 220 9% 24%;
+    --sidebar-ring: 216 18% 73%;
   }
 }
 
@@ -178,6 +178,10 @@
   }
   body {
     @apply bg-background text-foreground font-sans;
+    background-image:
+      radial-gradient(circle at 15% 10%, hsl(var(--primary) / 0.16), transparent 36%),
+      radial-gradient(circle at 85% 90%, hsl(var(--accent) / 0.14), transparent 32%);
+    background-attachment: fixed;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -279,8 +283,12 @@
 
 /* Reader shell */
 .reader-shell {
-  background: hsl(var(--background));
+  position: relative;
   min-height: 100vh;
+  background:
+    linear-gradient(160deg, hsl(var(--background) / 0.92) 0%, hsl(var(--background) / 0.86) 100%),
+    radial-gradient(circle at top left, hsl(var(--primary) / 0.12), transparent 42%),
+    radial-gradient(circle at bottom right, hsl(var(--accent) / 0.1), transparent 35%);
 }
 
 .reader-topbar {
@@ -433,15 +441,41 @@
 }
 
 /* Scrollbar styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary) / 0.45) hsl(var(--muted) / 0.25);
+}
+
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 10px;
+  height: 10px;
 }
+
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: hsl(var(--muted) / 0.22);
+  border-radius: 999px;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--border));
-  border-radius: 2px;
+  background: linear-gradient(180deg, hsl(var(--primary) / 0.58), hsl(var(--primary) / 0.35));
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, hsl(var(--primary) / 0.72), hsl(var(--primary) / 0.48));
+  background-clip: content-box;
+}
+
+.notepad-scroll::-webkit-scrollbar {
+  width: 12px;
+}
+
+.notepad-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, hsl(var(--accent) / 0.68), hsl(var(--primary) / 0.4));
+  border: 2px solid transparent;
+  background-clip: content-box;
 }
 
 /* Animations */
@@ -566,6 +600,32 @@
 
 .reader-verse-line:hover {
   background: hsl(var(--muted) / 0.55);
+}
+
+.reader-template-browseros .browseros-header-shell,
+.reader-template-browseros .browseros-reader-card {
+  box-shadow:
+    0 22px 55px -36px hsl(var(--foreground) / 0.65),
+    inset 0 1px 0 hsl(var(--background) / 0.45);
+}
+
+.reader-template-focus .browseros-menu-chip,
+.reader-template-focus .reader-pill {
+  opacity: 0.82;
+}
+
+.reader-template-focus .browseros-reader-card::before {
+  opacity: 0.12;
+}
+
+.reader-template-study .reader-main-paper {
+  border-color: hsl(var(--primary) / 0.28);
+  box-shadow: 0 18px 45px -28px hsl(var(--accent) / 0.55);
+}
+
+.reader-template-study .verse-number {
+  color: hsl(var(--primary));
+  opacity: 0.8;
 }
 
 /* Print */
