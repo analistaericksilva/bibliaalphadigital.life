@@ -470,9 +470,10 @@ const Reader = () => {
     const container = readingContainerRef.current;
     let hideTimer: number | undefined;
     let lastScrollTop = getCurrentScrollTop();
+    let headerShown = true;
 
     const inactivityDelayMs = 5000;
-    const readingThreshold = 96;
+    const readingThreshold = 24;
 
     const clearHideTimer = () => {
       window.clearTimeout(hideTimer);
@@ -480,9 +481,15 @@ const Reader = () => {
 
     const isInReadingZone = () => getCurrentScrollTop() > readingThreshold;
 
+    const setChromeVisibility = (visible: boolean) => {
+      if (headerShown === visible) return;
+      headerShown = visible;
+      setIsHeaderVisible(visible);
+      setIsFooterVisible(visible);
+    };
+
     const revealHeaderAndFooter = () => {
-      setIsHeaderVisible(true);
-      setIsFooterVisible(true);
+      setChromeVisibility(true);
     };
 
     const scheduleHide = () => {
@@ -494,8 +501,7 @@ const Reader = () => {
 
       hideTimer = window.setTimeout(() => {
         if (isInReadingZone()) {
-          setIsHeaderVisible(false);
-          setIsFooterVisible(false);
+          setChromeVisibility(false);
         }
       }, inactivityDelayMs);
     };
@@ -511,10 +517,7 @@ const Reader = () => {
       lastScrollTop = currentScrollTop;
 
       if (isScrollingUp || currentScrollTop <= readingThreshold) {
-        setIsHeaderVisible(true);
-        setIsFooterVisible(true);
-      } else {
-        revealHeaderAndFooter();
+        setChromeVisibility(true);
       }
 
       scheduleHide();
@@ -535,7 +538,9 @@ const Reader = () => {
       const now = Date.now();
       if (now - lastMouseMoveAt < 160) return;
       lastMouseMoveAt = now;
-      onUserInteraction();
+      if (!headerShown) {
+        onUserInteraction();
+      }
     };
 
     const interactionEvents: Array<keyof WindowEventMap> = ["touchstart", "pointerdown", "keydown", "wheel"];
@@ -1050,7 +1055,7 @@ const Reader = () => {
                               onContextMenu={(e) => handleVerseLongPress(v.verse, e)}
                             >
                               <sup className={cn("verse-number verse-reference-color font-semibold", isActive && "text-[#2F1257]")}>{v.verse}</sup>
-                              <span className={cn("verse-text-lilac", speechClass)}>{v.text}</span>
+                              <span className={cn(!speechClass && "verse-text-lilac", speechClass)}>{v.text}</span>
                               {isActive && showInlineNotes && hasNote && <span className="ml-1 text-[10px] text-accent">✎</span>}
                               {isActive && fav && <span className="ml-1 text-[10px] text-destructive">♥</span>}
                               {isActive && pNote && <span className="ml-1 text-[10px] text-primary">●</span>}
@@ -1095,7 +1100,7 @@ const Reader = () => {
                             tabIndex={0}
                           >
                             <sup className="verse-number verse-reference-color font-semibold">{v.verse}</sup>
-                            <span className={cn("verse-text-lilac", speechClass)}>{v.text}</span>
+                            <span className={cn(!speechClass && "verse-text-lilac", speechClass)}>{v.text}</span>
                           </div>
                         );
                       })}
