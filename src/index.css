@@ -381,6 +381,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   width: 2rem;
   height: 2rem;
   border-radius: 0.5rem;
@@ -670,6 +671,32 @@
 .reader-template-study .verse-number {
   color: hsl(var(--primary));
   opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .reader-main-paper {
+    border-radius: 0.9rem;
+  }
+
+  .browseros-header-shell {
+    border-radius: 0.95rem;
+  }
+
+  .browseros-menu-chip {
+    min-height: 2rem;
+    padding: 0 0.75rem;
+    font-size: 0.72rem;
+  }
+
+  .reader-icon-button {
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 0.7rem;
+  }
+
+  .manus-app-card {
+    padding: 0.8rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

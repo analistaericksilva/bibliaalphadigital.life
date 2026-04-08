@@ -733,7 +733,7 @@ const Reader = () => {
           <div className="flex-1 flex flex-col min-w-0">
             <header className="sticky top-0 z-40 px-3 pt-2 pb-2 bg-background/80 backdrop-blur-xl border-b border-border/60">
               <div className="rounded-2xl border border-border/70 bg-card/85 shadow-sm browseros-header-shell">
-                <div className="flex items-center gap-2 px-3 py-2 border-b border-border/60">
+                <div className="flex flex-wrap md:flex-nowrap items-center gap-2 px-2 md:px-3 py-2 border-b border-border/60">
                   <SidebarTrigger className="h-8 w-8 rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground">
                     <Menu className="w-4 h-4" />
                   </SidebarTrigger>
@@ -750,7 +750,7 @@ const Reader = () => {
                     <select
                       value={selectedTranslation}
                       onChange={(e) => setSelectedTranslation(e.target.value)}
-                      className="h-8 max-w-[210px] rounded-md border border-border bg-background/85 px-2 text-[11px] text-foreground"
+                      className="h-9 w-[152px] sm:w-[190px] rounded-md border border-border bg-background/85 px-2 text-[11px] text-foreground"
                       title="Escolher tradução bíblica"
                     >
                       <option value={BASE_TRANSLATION_KEY}>BASE • Bíblia Alpha</option>
@@ -773,7 +773,7 @@ const Reader = () => {
                   <ReaderSettingsBar />
                 </div>
 
-                <div className="px-3 py-2 border-b border-border/60 flex flex-wrap items-center gap-1.5">
+                <div className="px-2 md:px-3 py-2 border-b border-border/60 flex items-center gap-1.5 overflow-x-auto no-scrollbar md:flex-wrap">
                   {[
                     { label: "Biblioteca", action: () => setShowBooks(true) },
                     { label: "Busca", action: () => setShowSearch(true) },
@@ -783,7 +783,7 @@ const Reader = () => {
                   ].map((item) => (
                     <button
                       key={item.label}
-                      className="browseros-menu-chip"
+                      className="browseros-menu-chip shrink-0"
                       onClick={item.action}
                       type="button"
                     >
@@ -792,7 +792,7 @@ const Reader = () => {
                   ))}
                 </div>
 
-                <div className="px-3 py-2 flex items-center gap-1.5">
+                <div className="px-2 md:px-3 py-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
                   <button onClick={() => navigateChapter(-1)} className="reader-icon-button" aria-label="Capítulo anterior" type="button">
                     <ChevronLeft className="w-4 h-4" />
                   </button>
@@ -837,7 +837,7 @@ const Reader = () => {
             <main ref={readingContainerRef} className="flex-1 overflow-y-auto">
               <div
                 className={cn(
-                  "mx-auto w-full px-4 md:px-8 lg:px-10 pt-8 pb-24 transition-all duration-300",
+                  "mx-auto w-full px-2 sm:px-4 md:px-8 lg:px-10 pt-6 sm:pt-8 pb-24 transition-all duration-300",
                   usageTemplate === "focus"
                     ? "max-w-[1120px]"
                     : usageTemplate === "study"
@@ -861,7 +861,7 @@ const Reader = () => {
                 <p className="text-xs text-muted-foreground mb-1">
                   {book?.testament === "old" ? "Antigo Testamento" : "Novo Testamento"}
                 </p>
-                <h1 className="text-2xl font-semibold text-foreground">
+                <h1 className="text-xl sm:text-2xl font-semibold text-foreground">
                   {book?.name} <span className="text-muted-foreground font-normal">{currentChapter}</span>
                 </h1>
                 <p className="text-[11px] text-muted-foreground mt-1">
@@ -898,7 +898,7 @@ const Reader = () => {
                   )}
 
                   {viewMode === "paragraph" ? (
-                    <article className="reader-main-paper browseros-reader-card p-5 md:p-8" style={{ fontSize: `${fontSize}px` }}>
+                    <article className="reader-main-paper browseros-reader-card p-4 sm:p-5 md:p-8" style={{ fontSize: `${fontSize}px` }}>
                       <div className="reader-content reader-content-flow text-foreground/95 select-text">
                         {verses.map((v) => {
                           const speechClass = jesusSpeechVerses.has(v.verse)

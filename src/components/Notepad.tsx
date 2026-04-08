@@ -179,8 +179,8 @@ const Notepad = ({ open, onClose }: NotepadProps) => {
   return (
     <>
       <div className="fixed inset-0 bg-black/45 backdrop-blur-md z-40" onClick={onClose} />
-      <div className="fixed inset-4 md:inset-8 lg:inset-10 z-50 flex items-center justify-center">
-        <div className="w-full h-full max-w-7xl bg-card/90 backdrop-blur-2xl rounded-3xl border border-border/40 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.55)] flex overflow-hidden relative">
+      <div className="fixed inset-2 sm:inset-4 md:inset-8 lg:inset-10 z-50 flex items-center justify-center">
+        <div className="w-full h-full max-w-7xl bg-card/90 backdrop-blur-2xl rounded-2xl sm:rounded-3xl border border-border/40 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.55)] flex overflow-hidden relative">
 
           <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-r from-primary/20 via-background/20 to-primary/10 border-b border-border/20 flex items-center justify-between px-6 z-10">
             <div className="flex items-center gap-3 min-w-0">

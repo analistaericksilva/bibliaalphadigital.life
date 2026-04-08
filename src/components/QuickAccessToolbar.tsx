@@ -56,7 +56,7 @@ const QuickAccessToolbar = ({
   ];
 
   return (
-    <div className="flex flex-col items-center gap-1 p-2 bg-card border-r border-border min-h-full">
+    <div className="hidden lg:flex flex-col items-center gap-1 p-2 bg-card border-r border-border min-h-full">
       {/* Main navigation icons */}
       <button
         onClick={onToggleBookSelector}

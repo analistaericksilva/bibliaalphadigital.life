@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import { AppWindow, Share2, Sparkles, Smartphone, ExternalLink, BookOpen, WandSparkles } from "lucide-react";
+import { AppWindow, Share2, Sparkles, Smartphone, ExternalLink, BookOpen, WandSparkles, Brain, MonitorUp } from "lucide-react";
 import { SiWhatsapp, SiTelegram, SiGmail, SiNotion, SiGoogledrive, SiYoutube, SiGooglecalendar, SiDiscord } from "react-icons/si";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -72,6 +72,23 @@ export const BibleApplications = () => {
     openExternal(`https://wa.me/?text=${text}`, "WhatsApp");
   };
 
+  const copyAiStudyPrompt = async () => {
+    const prompt = `Faça um resumo prático de ${document.title}. Inclua: tema central, aplicações e uma oração final.`;
+    await navigator.clipboard.writeText(prompt);
+    toast({ title: "Prompt copiado", description: "Prompt de estudo com IA pronto para colar." });
+  };
+
+  const togglePresentationMode = async () => {
+    if (!document.fullscreenElement) {
+      await document.documentElement.requestFullscreen();
+      toast({ title: "Modo apresentação", description: "Tela cheia ativada para leitura." });
+      return;
+    }
+
+    await document.exitFullscreen();
+    toast({ title: "Modo apresentação", description: "Tela cheia desativada." });
+  };
+
   const runButtonChecks = () => {
     const hasShare = !!navigator.share || !!navigator.clipboard;
     const checks = [
@@ -80,6 +97,8 @@ export const BibleApplications = () => {
       { label: "Gmail", ok: true },
       { label: "Notion", ok: true },
       { label: "Google Drive", ok: true },
+      { label: "Prompt IA", ok: !!navigator.clipboard },
+      { label: "Apresentação", ok: !!document.documentElement.requestFullscreen },
       { label: "Compartilhar", ok: hasShare },
     ];
 
@@ -187,6 +206,20 @@ export const BibleApplications = () => {
       onClick: () => openExternal("https://bibliaalpha.com/biblia", "Ferramentas avançadas"),
       color: "bg-amber-500/15 text-amber-400",
     },
+    {
+      icon: Brain,
+      title: "Prompt de estudo com IA",
+      description: "Copie um prompt pronto para gerar resumo e aplicações.",
+      onClick: copyAiStudyPrompt,
+      color: "bg-fuchsia-500/15 text-fuchsia-400",
+    },
+    {
+      icon: MonitorUp,
+      title: "Modo apresentação",
+      description: "Ative tela cheia para leitura em grupo e projeção.",
+      onClick: togglePresentationMode,
+      color: "bg-slate-500/15 text-slate-300",
+    },
   ];
 
   return (
@@ -207,7 +240,7 @@ export const BibleApplications = () => {
 
       <div className="reader-surface p-4 md:p-5 bg-gradient-to-br from-background/80 via-card/70 to-background/70">
         <p className="text-xs font-semibold tracking-[0.18em] text-muted-foreground mb-3">FERRAMENTAS RÁPIDAS</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
           {utilityActions.map((action) => (
             <AppAction key={action.title} {...action} />
           ))}
