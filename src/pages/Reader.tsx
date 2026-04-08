@@ -259,11 +259,11 @@ const Reader = () => {
 
   const getCurrentScrollTop = useCallback(() => {
     const container = readingContainerRef.current;
-    if (container && isContainerScrollable()) {
+    if (container && container.scrollHeight > container.clientHeight) {
       return container.scrollTop;
     }
     return window.scrollY;
-  }, [isContainerScrollable]);
+  }, []);
 
   const getClosestVisibleVerse = useCallback(() => {
     const container = readingContainerRef.current;
@@ -452,19 +452,23 @@ const Reader = () => {
   useEffect(() => {
     const container = readingContainerRef.current;
     let hideTimer: number | undefined;
-    let lastScrollTop = getCurrentScrollTop();
+    let lastScrollTop = 0;
+    let hasScrolledDown = false;
 
     const scheduleHide = () => {
       window.clearTimeout(hideTimer);
-      hideTimer = window.setTimeout(() => {
-        setIsHeaderVisible(false);
-        setIsFooterVisible(false);
-      }, 5000);
+      if (hasScrolledDown) {
+        hideTimer = window.setTimeout(() => {
+          setIsHeaderVisible(false);
+          setIsFooterVisible(false);
+        }, 5000);
+      }
     };
 
     const revealHeaderAndFooter = () => {
       setIsHeaderVisible(true);
       setIsFooterVisible(true);
+      hasScrolledDown = false;
       scheduleHide();
     };
 
@@ -473,8 +477,9 @@ const Reader = () => {
       if (currentScrollTop < lastScrollTop) {
         setIsHeaderVisible(true);
         setIsFooterVisible(true);
-      } else {
-        revealHeaderAndFooter();
+        hasScrolledDown = false;
+      } else if (currentScrollTop > 100) {
+        hasScrolledDown = true;
       }
       lastScrollTop = currentScrollTop;
       scheduleHide();
@@ -1055,12 +1060,7 @@ const Reader = () => {
               
 
               {/* Chapter navigation */}
-              <div className={cn(
-                "mt-12 pt-6 border-t border-border space-y-3 transition-all duration-500 ease-out",
-                showHeaderFooter && isFooterVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-4 pointer-events-none"
-              )}>
+              <div className="mt-12 pt-6 border-t border-border space-y-3">
                 <div className="flex items-center justify-between">
                   <button onClick={() => navigateChapter(-1)} className="reader-nav-button">
                     ← Anterior
