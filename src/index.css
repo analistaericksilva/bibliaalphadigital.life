@@ -56,7 +56,7 @@
 
     --radius: 0.75rem;
 
-    --jesus: 0 72% 50%;
+    --jesus: 0 82% 46%;
     --god: 210 100% 20%;
     --paper: 0 0% 100%;
     
@@ -303,7 +303,7 @@
   }
 
   .verse-text-lilac.text-jesus {
-    color: hsl(var(--jesus));
+    color: hsl(var(--jesus)) !important;
   }
 
   .verse-text-lilac.text-god {

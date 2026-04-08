@@ -188,6 +188,7 @@ const Reader = () => {
   const [loading, setLoading] = useState(true);
   const [noteVerses, setNoteVerses] = useState<Set<number>>(new Set());
   const [crossRefVerses, setCrossRefVerses] = useState<Set<number>>(new Set());
+  const [jesusSpeechTableVerses, setJesusSpeechTableVerses] = useState<Set<number>>(new Set());
   const [actionMenu, setActionMenu] = useState<{ verse: number; x: number; y: number } | null>(null);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [isFooterVisible, setIsFooterVisible] = useState(true);
@@ -214,7 +215,7 @@ const Reader = () => {
   const jesusSpeechVerses = useMemo(() => {
     if (!ntBooks.has(currentBook) || verses.length === 0) return new Set<number>();
 
-    const marked = new Set<number>();
+    const marked = new Set<number>(jesusSpeechTableVerses);
     let jesusContextOpen = false;
 
     for (const v of verses) {
@@ -244,7 +245,7 @@ const Reader = () => {
     }
 
     return marked;
-  }, [currentBook, verses]);
+  }, [currentBook, verses, jesusSpeechTableVerses]);
 
   const {
     highlights, personalNotes, favorites,
@@ -338,6 +339,9 @@ const Reader = () => {
 
     const notesPromise = supabase.from("study_notes").select("verse_start").eq("book_id", bookId).eq("chapter", chapter);
     const crossRefsPromise = supabase.from("bible_cross_references").select("verse").eq("book_id", bookId).eq("chapter", chapter);
+    const jesusSpeechPromise = ntBooks.has(bookId)
+      ? supabase.from("jesus_speech").select("verse").eq("book_id", bookId).eq("chapter", chapter)
+      : Promise.resolve({ data: [] as Array<{ verse: number | null }>, error: null });
 
     let resolvedVerses: Verse[] = [];
 
@@ -375,7 +379,7 @@ const Reader = () => {
       }
     }
 
-    const [notesRes, crossRefsRes] = await Promise.all([notesPromise, crossRefsPromise]);
+    const [notesRes, crossRefsRes, jesusSpeechRes] = await Promise.all([notesPromise, crossRefsPromise, jesusSpeechPromise]);
 
     setVerses(resolvedVerses);
 
@@ -390,6 +394,19 @@ const Reader = () => {
         .map((r) => r.verse)
         .filter((value): value is number => typeof value === "number");
       setCrossRefVerses(new Set(crossRefVerseNumbers));
+    }
+
+    if (jesusSpeechRes.data) {
+      const jesusVerseNumbers = jesusSpeechRes.data
+        .map((r) => r.verse)
+        .filter((value): value is number => typeof value === "number");
+      setJesusSpeechTableVerses(new Set(jesusVerseNumbers));
+    } else {
+      setJesusSpeechTableVerses(new Set());
+    }
+
+    if (jesusSpeechRes.error) {
+      console.warn("Falha ao carregar marcação de falas de Jesus:", jesusSpeechRes.error);
     }
 
     setLoading(false);
@@ -455,7 +472,7 @@ const Reader = () => {
     let lastScrollTop = getCurrentScrollTop();
 
     const inactivityDelayMs = 5000;
-    const readingThreshold = 24;
+    const readingThreshold = 96;
 
     const clearHideTimer = () => {
       window.clearTimeout(hideTimer);
