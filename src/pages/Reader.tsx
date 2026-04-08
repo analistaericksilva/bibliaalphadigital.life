@@ -509,11 +509,11 @@ const Reader = () => {
               <div className="ml-auto flex items-center gap-1.5">
                 <button 
                   onClick={() => setShowRightPanel(!showRightPanel)}
-                  className={`reader-icon-button ${showRightPanel ? "bg-primary/20 text-primary" : ""}`}
-                  aria-label="Painel de insights"
-                  title="Painel de insights"
+                  className={`reader-icon-button ${showRightPanel ? "bg-muted text-foreground" : ""}`}
+                  aria-label="Comentários"
+                  title="Comentários"
                 >
-                  <PanelRightOpen className="w-4 h-4" />
+                  <MessageCircle className="w-4 h-4" />
                 </button>
                 <ReaderSettingsBar />
                 <div className="w-px h-6 bg-border/70 mx-0.5" />
