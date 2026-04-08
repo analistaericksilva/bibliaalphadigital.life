@@ -22,6 +22,7 @@ import OnboardingTour from "@/components/OnboardingTour";
 import Notepad from "@/components/Notepad";
 import { useUserAnnotations } from "@/hooks/useUserAnnotations";
 import ReaderSettingsBar from "@/components/ReaderSettingsBar";
+import QuickAccessToolbar from "@/components/QuickAccessToolbar";
 import { useReaderSettings } from "@/contexts/ReaderSettingsContext";
 import { ChevronLeft, ChevronRight, Loader2, ArrowLeft, Menu, MessageCircle, AlignLeft, List } from "lucide-react";
 
@@ -153,6 +154,7 @@ const Reader = () => {
   const [showMap, setShowMap] = useState(false);
   const [showNotepad, setShowNotepad] = useState(false);
   const [showRightPanel, setShowRightPanel] = useState(false);
+  const [showCompareMode, setShowCompareMode] = useState(false);
 
   const [showLexicon, setShowLexicon] = useState(false);
   const [showPeople, setShowPeople] = useState(false);
@@ -378,6 +380,56 @@ const Reader = () => {
         return;
       }
 
+      // F-keys para novos painéis (estilo TheWord)
+      if (e.key === "F11") {
+        e.preventDefault();
+        setShowBooks(true);
+        return;
+      }
+      if (e.key === "F12") {
+        e.preventDefault();
+        setShowNotes(true);
+        return;
+      }
+      if (e.key === "F10") {
+        e.preventDefault();
+        setShowSearch(true);
+        return;
+      }
+      if (e.key === "F9") {
+        e.preventDefault();
+        setShowDictionary(true);
+        return;
+      }
+      if (e.key === "F8") {
+        e.preventDefault();
+        openUserPanel("goto");
+        return;
+      }
+      if (e.key === "F3") {
+        e.preventDefault();
+        setShowSearch(true);
+        return;
+      }
+
+      // Ctrl combinations
+      if (e.ctrlKey && e.key === "o") {
+        e.preventDefault();
+        // Abrir configurações - já temos o botão na toolbar
+        return;
+      }
+      if (e.ctrlKey && e.key === "t") {
+        e.preventDefault();
+        readerSettings.setShowLeftIcons(!readerSettings.showLeftIcons);
+        return;
+      }
+      if (e.ctrlKey && e.key === "g") {
+        e.preventDefault();
+        openUserPanel("goto");
+        return;
+      }
+
+      // Toggle options (um único caractere - estilo TheWord)
       switch (e.key.toLowerCase()) {
         case "p":
           readerSettings.setViewMode(viewMode === "paragraph" ? "verse" : "paragraph");
@@ -401,14 +453,32 @@ const Reader = () => {
           readerSettings.setWordLookupEnabled();
           break;
         case "q":
-          scrollReaderToTop();
+          readerSettings.setShowHeaderFooter();
+          break;
+        case "u":
+          readerSettings.setShowUserHighlights();
+          break;
+        case "f":
+          readerSettings.setShowFootnotes();
+          break;
+        case "j":
+          // Palavra de Jesus - highlight especial
+          break;
+        case "o":
+          // Citações do AT
+          break;
+        case "c":
+          readerSettings.setCommentaryPosition(readerSettings.commentaryPosition === "below" ? "none" : "below");
+          break;
+        case "t":
+          readerSettings.setCommentaryPosition(readerSettings.commentaryPosition === "right" ? "none" : "right");
           break;
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [readerSettings, viewMode, scrollReaderToTop]);
+  }, [readerSettings, viewMode]);
 
   const goToChapter = useCallback((bookId: string, chapter: number, verse?: number) => {
     if (bookId !== currentBook || chapter !== currentChapter) {
@@ -525,7 +595,7 @@ const Reader = () => {
   return (
     <SidebarProvider>
       <div className="reader-shell min-h-screen flex w-full text-foreground">
-        <ReaderSidebar
+        <QuickAccessToolbar
           onToggleSearch={() => setShowSearch(!showSearch)}
           onToggleBookSelector={() => setShowBooks(!showBooks)}
           onToggleNotes={() => { setSelectedVerse(null); setShowNotes((p) => !p); }}
@@ -540,6 +610,7 @@ const Reader = () => {
           onToggleLexicon={() => setShowLexicon(!showLexicon)}
           onTogglePeople={() => setShowPeople(!showPeople)}
           onToggleNotepad={() => setShowNotepad(!showNotepad)}
+          onToggleCompareMode={() => setShowCompareMode(!showCompareMode)}
         />
 
         <div className="flex-1 flex min-w-0 overflow-hidden">

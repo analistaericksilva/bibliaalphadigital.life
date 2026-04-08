@@ -3,7 +3,6 @@ import { useState, useEffect, createContext, useContext, ReactNode } from "react
 type ThemeMode = "light" | "gray" | "dark";
 type ViewMode = "paragraph" | "verse";
 type CommentaryPosition = "none" | "below" | "right";
-type ParallelViewMode = "none" | "horizontal" | "vertical";
 
 interface ReaderSettingsContextType {
   fontSize: number;
@@ -13,20 +12,28 @@ interface ReaderSettingsContextType {
   toggleTheme: () => void;
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
+  toggleViewMode: () => void;
   showStrongNumbers: boolean;
   setShowStrongNumbers: (show: boolean) => void;
+  toggleShowStrongNumbers: () => void;
   showMorphology: boolean;
   setShowMorphology: (show: boolean) => void;
+  toggleShowMorphology: () => void;
   showCrossRefs: boolean;
   setShowCrossRefs: (show: boolean) => void;
+  toggleShowCrossRefs: () => void;
   showInlineNotes: boolean;
   setShowInlineNotes: (show: boolean) => void;
+  toggleShowInlineNotes: () => void;
   showInlineCommentary: boolean;
   setShowInlineCommentary: (show: boolean) => void;
+  toggleShowInlineCommentary: () => void;
   showCommentaryLinks: boolean;
   setShowCommentaryLinks: (show: boolean) => void;
+  toggleShowCommentaryLinks: () => void;
   wordLookupEnabled: boolean;
   setWordLookupEnabled: (enabled: boolean) => void;
+  toggleWordLookupEnabled: () => void;
   showHeaderFooter: boolean;
   setShowHeaderFooter: (show: boolean) => void;
   showUserHighlights: boolean;
@@ -37,6 +44,10 @@ interface ReaderSettingsContextType {
   setCommentaryPosition: (position: CommentaryPosition) => void;
   selectedFont: string;
   setSelectedFont: (font: string) => void;
+  showLeftIcons: boolean;
+  setShowLeftIcons: (show: boolean) => void;
+  showCompareMode: boolean;
+  setShowCompareMode: (show: boolean) => void;
 }
 
 const ReaderSettingsContext = createContext<ReaderSettingsContextType>({
@@ -47,20 +58,28 @@ const ReaderSettingsContext = createContext<ReaderSettingsContextType>({
   toggleTheme: () => {},
   viewMode: "paragraph",
   setViewMode: () => {},
+  toggleViewMode: () => {},
   showStrongNumbers: false,
   setShowStrongNumbers: () => {},
+  toggleShowStrongNumbers: () => {},
   showMorphology: false,
   setShowMorphology: () => {},
+  toggleShowMorphology: () => {},
   showCrossRefs: true,
   setShowCrossRefs: () => {},
+  toggleShowCrossRefs: () => {},
   showInlineNotes: true,
   setShowInlineNotes: () => {},
+  toggleShowInlineNotes: () => {},
   showInlineCommentary: false,
   setShowInlineCommentary: () => {},
+  toggleShowInlineCommentary: () => {},
   showCommentaryLinks: true,
   setShowCommentaryLinks: () => {},
+  toggleShowCommentaryLinks: () => {},
   wordLookupEnabled: true,
   setWordLookupEnabled: () => {},
+  toggleWordLookupEnabled: () => {},
   showHeaderFooter: true,
   setShowHeaderFooter: () => {},
   showUserHighlights: true,
@@ -71,6 +90,10 @@ const ReaderSettingsContext = createContext<ReaderSettingsContextType>({
   setCommentaryPosition: () => {},
   selectedFont: "EB Garamond",
   setSelectedFont: () => {},
+  showLeftIcons: true,
+  setShowLeftIcons: () => {},
+  showCompareMode: false,
+  setShowCompareMode: () => {},
 });
 
 export const useReaderSettings = () => useContext(ReaderSettingsContext);
@@ -90,8 +113,8 @@ const USER_HIGHLIGHTS_KEY = "biblia-alpha-user-highlights";
 const FOOTNOTES_KEY = "biblia-alpha-footnotes";
 const COMMENTARY_POSITION_KEY = "biblia-alpha-commentary-position";
 const SELECTED_FONT_KEY = "biblia-alpha-selected-font";
-const PARALLEL_MODE_KEY = "biblia-alpha-parallel-mode";
-const SECOND_TRANSLATION_KEY = "biblia-alpha-second-translation";
+const LEFT_ICONS_KEY = "biblia-alpha-left-icons";
+const COMPARE_MODE_KEY = "biblia-alpha-compare-mode";
 
 export function ReaderSettingsProvider({ children }: { children: ReactNode }) {
   const [fontSize, setFontSizeState] = useState(() => {
@@ -171,15 +194,14 @@ export function ReaderSettingsProvider({ children }: { children: ReactNode }) {
     return saved || "EB Garamond";
   });
 
-  const [parallelMode, setParallelModeState] = useState<ParallelViewMode>(() => {
-    const saved = localStorage.getItem(PARALLEL_MODE_KEY);
-    if (saved && ["none", "horizontal", "vertical"].includes(saved)) return saved as ParallelViewMode;
-    return "none";
+  const [showLeftIcons, setShowLeftIconsState] = useState(() => {
+    const saved = localStorage.getItem(LEFT_ICONS_KEY);
+    return saved !== "false";
   });
 
-  const [secondBibleTranslation, setSecondTranslationState] = useState(() => {
-    const saved = localStorage.getItem(SECOND_TRANSLATION_KEY);
-    return saved || "nvi";
+  const [showCompareMode, setShowCompareModeState] = useState(() => {
+    const saved = localStorage.getItem(COMPARE_MODE_KEY);
+    return saved === "true";
   });
 
   useEffect(() => {
@@ -202,9 +224,20 @@ export function ReaderSettingsProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(VIEW_MODE_KEY, mode);
   };
 
+  const toggleViewMode = () => {
+    const newMode = viewMode === "paragraph" ? "verse" : "paragraph";
+    setViewModeState(newMode);
+    localStorage.setItem(VIEW_MODE_KEY, newMode);
+  };
+
   const setShowStrongNumbers = (show: boolean) => {
     setShowStrongNumbersState(show);
     localStorage.setItem(STRONG_NUMBERS_KEY, String(show));
+  };
+
+  const toggleShowStrongNumbers = () => {
+    setShowStrongNumbersState(prev => !prev);
+    localStorage.setItem(STRONG_NUMBERS_KEY, String(!showStrongNumbers));
   };
 
   const setShowMorphology = (show: boolean) => {
@@ -212,9 +245,19 @@ export function ReaderSettingsProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(MORPHOLOGY_KEY, String(show));
   };
 
+  const toggleShowMorphology = () => {
+    setShowMorphologyState(prev => !prev);
+    localStorage.setItem(MORPHOLOGY_KEY, String(!showMorphology));
+  };
+
   const setShowCrossRefs = (show: boolean) => {
     setShowCrossRefsState(show);
     localStorage.setItem(CROSS_REFS_KEY, String(show));
+  };
+
+  const toggleShowCrossRefs = () => {
+    setShowCrossRefsState(prev => !prev);
+    localStorage.setItem(CROSS_REFS_KEY, String(!showCrossRefs));
   };
 
   const setShowInlineNotes = (show: boolean) => {
@@ -222,9 +265,19 @@ export function ReaderSettingsProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(INLINE_NOTES_KEY, String(show));
   };
 
+  const toggleShowInlineNotes = () => {
+    setShowInlineNotesState(prev => !prev);
+    localStorage.setItem(INLINE_NOTES_KEY, String(!showInlineNotes));
+  };
+
   const setShowInlineCommentary = (show: boolean) => {
     setShowInlineCommentaryState(show);
     localStorage.setItem(INLINE_COMMENTARY_KEY, String(show));
+  };
+
+  const toggleShowInlineCommentary = () => {
+    setShowInlineCommentaryState(prev => !prev);
+    localStorage.setItem(INLINE_COMMENTARY_KEY, String(!showInlineCommentary));
   };
 
   const setShowCommentaryLinks = (show: boolean) => {
@@ -232,9 +285,19 @@ export function ReaderSettingsProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(COMMENTARY_LINKS_KEY, String(show));
   };
 
+  const toggleShowCommentaryLinks = () => {
+    setShowCommentaryLinksState(prev => !prev);
+    localStorage.setItem(COMMENTARY_LINKS_KEY, String(!showCommentaryLinks));
+  };
+
   const setWordLookupEnabled = (enabled: boolean) => {
     setWordLookupEnabledState(enabled);
     localStorage.setItem(WORD_LOOKUP_KEY, String(enabled));
+  };
+
+  const toggleWordLookupEnabled = () => {
+    setWordLookupEnabledState(prev => !prev);
+    localStorage.setItem(WORD_LOOKUP_KEY, String(!wordLookupEnabled));
   };
 
   const setShowHeaderFooter = (show: boolean) => {
@@ -262,14 +325,14 @@ export function ReaderSettingsProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(SELECTED_FONT_KEY, font);
   };
 
-  const setParallelMode = (mode: ParallelViewMode) => {
-    setParallelModeState(mode);
-    localStorage.setItem(PARALLEL_MODE_KEY, mode);
+  const setShowLeftIcons = (show: boolean) => {
+    setShowLeftIconsState(show);
+    localStorage.setItem(LEFT_ICONS_KEY, String(show));
   };
 
-  const setSecondBibleTranslation = (translation: string) => {
-    setSecondTranslationState(translation);
-    localStorage.setItem(SECOND_TRANSLATION_KEY, translation);
+  const setShowCompareMode = (show: boolean) => {
+    setShowCompareModeState(show);
+    localStorage.setItem(COMPARE_MODE_KEY, String(show));
   };
 
   const toggleTheme = () => {
@@ -283,21 +346,21 @@ export function ReaderSettingsProvider({ children }: { children: ReactNode }) {
   return (
     <ReaderSettingsContext.Provider value={{
       fontSize, setFontSize, theme, setTheme, toggleTheme,
-      viewMode, setViewMode,
-      showStrongNumbers, setShowStrongNumbers,
-      showMorphology, setShowMorphology,
-      showCrossRefs, setShowCrossRefs,
-      showInlineNotes, setShowInlineNotes,
-      showInlineCommentary, setShowInlineCommentary,
-      showCommentaryLinks, setShowCommentaryLinks,
-      wordLookupEnabled, setWordLookupEnabled,
+      viewMode, setViewMode, toggleViewMode,
+      showStrongNumbers, setShowStrongNumbers, toggleShowStrongNumbers,
+      showMorphology, setShowMorphology, toggleShowMorphology,
+      showCrossRefs, setShowCrossRefs, toggleShowCrossRefs,
+      showInlineNotes, setShowInlineNotes, toggleShowInlineNotes,
+      showInlineCommentary, setShowInlineCommentary, toggleShowInlineCommentary,
+      showCommentaryLinks, setShowCommentaryLinks, toggleShowCommentaryLinks,
+      wordLookupEnabled, setWordLookupEnabled, toggleWordLookupEnabled,
       showHeaderFooter, setShowHeaderFooter,
       showUserHighlights, setShowUserHighlights,
       showFootnotes, setShowFootnotes,
       commentaryPosition, setCommentaryPosition,
       selectedFont, setSelectedFont,
-      parallelMode, setParallelMode,
-      secondBibleTranslation, setSecondBibleTranslation,
+      showLeftIcons, setShowLeftIcons,
+      showCompareMode, setShowCompareMode,
     }}>
       {children}
     </ReaderSettingsContext.Provider>

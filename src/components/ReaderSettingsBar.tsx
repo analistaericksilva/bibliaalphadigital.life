@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sun, Moon, Cloud, Minus, Plus, Type, Sparkles, AlignLeft, List, BookOpen, Link2, MessageSquare, FileText, Search, Languages, Columns, Rows, X, Type as FontIcon, Heading, Highlighter, FileSignature, AlignCenter } from "lucide-react";
+import { Sun, Moon, Cloud, Minus, Plus, Type, Sparkles, AlignLeft, List, BookOpen, Link2, MessageSquare, FileText, Search, Languages, Columns, Rows, X, Type as FontIcon, Heading, Highlighter, FileSignature, AlignCenter, Layers } from "lucide-react";
 import { useReaderSettings } from "@/contexts/ReaderSettingsContext";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
