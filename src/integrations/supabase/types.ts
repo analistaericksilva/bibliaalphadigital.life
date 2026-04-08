@@ -499,6 +499,39 @@ export type Database = {
         }
         Relationships: []
       }
+      sermon_notes: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          content: string
+          tags: string[]
+          verses_refs: string[]
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          title: string
+          content?: string
+          tags?: string[]
+          verses_refs?: string[]
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          content?: string
+          tags?: string[]
+          verses_refs?: string[]
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_plan_progress: {
         Row: {
           completed_at: string

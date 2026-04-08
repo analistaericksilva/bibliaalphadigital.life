@@ -1,16 +1,20 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from "react";
 
+type ThemeMode = "light" | "gray" | "dark";
+
 interface ReaderSettingsContextType {
   fontSize: number;
   setFontSize: (size: number) => void;
-  isDark: boolean;
+  theme: ThemeMode;
+  setTheme: (theme: ThemeMode) => void;
   toggleTheme: () => void;
 }
 
 const ReaderSettingsContext = createContext<ReaderSettingsContextType>({
   fontSize: 20,
   setFontSize: () => {},
-  isDark: false,
+  theme: "light",
+  setTheme: () => {},
   toggleTheme: () => {},
 });
 
@@ -25,16 +29,20 @@ export function ReaderSettingsProvider({ children }: { children: ReactNode }) {
     return saved ? Number(saved) : 20;
   });
 
-  const [isDark, setIsDark] = useState(() => {
+  const [theme, setThemeState] = useState<ThemeMode>(() => {
     const saved = localStorage.getItem(THEME_KEY);
-    if (saved) return saved === "dark";
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if (saved && ["light", "gray", "dark"].includes(saved)) return saved as ThemeMode;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   });
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", isDark);
-    localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
-  }, [isDark]);
+    const root = document.documentElement;
+    root.classList.remove("light", "gray", "dark");
+    root.classList.add(theme);
+    localStorage.setItem(THEME_KEY, theme);
+  }, [theme]);
+
+  const setTheme = (newTheme: ThemeMode) => setThemeState(newTheme);
 
   const setFontSize = (size: number) => {
     const clamped = Math.min(32, Math.max(14, size));
@@ -42,10 +50,16 @@ export function ReaderSettingsProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(FONT_SIZE_KEY, String(clamped));
   };
 
-  const toggleTheme = () => setIsDark((prev) => !prev);
+  const toggleTheme = () => {
+    setThemeState(prev => {
+      if (prev === "light") return "gray";
+      if (prev === "gray") return "dark";
+      return "light";
+    });
+  };
 
   return (
-    <ReaderSettingsContext.Provider value={{ fontSize, setFontSize, isDark, toggleTheme }}>
+    <ReaderSettingsContext.Provider value={{ fontSize, setFontSize, theme, setTheme, toggleTheme }}>
       {children}
     </ReaderSettingsContext.Provider>
   );

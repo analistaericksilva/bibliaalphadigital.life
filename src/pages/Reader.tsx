@@ -19,6 +19,7 @@ import LexiconPanel from "@/components/LexiconPanel";
 import PeoplePanel from "@/components/PeoplePanel";
 import DailyVerse from "@/components/DailyVerse";
 import OnboardingTour from "@/components/OnboardingTour";
+import Notepad from "@/components/Notepad";
 import { useUserAnnotations } from "@/hooks/useUserAnnotations";
 import ReaderSettingsBar from "@/components/ReaderSettingsBar";
 import { useReaderSettings } from "@/contexts/ReaderSettingsContext";
@@ -142,6 +143,7 @@ const Reader = () => {
   const [showDictionary, setShowDictionary] = useState(false);
   const [showUserPanel, setShowUserPanel] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const [showNotepad, setShowNotepad] = useState(false);
 
   const [showLexicon, setShowLexicon] = useState(false);
   const [showPeople, setShowPeople] = useState(false);
@@ -482,6 +484,7 @@ const Reader = () => {
           
           onToggleLexicon={() => setShowLexicon(!showLexicon)}
           onTogglePeople={() => setShowPeople(!showPeople)}
+          onToggleNotepad={() => setShowNotepad(!showNotepad)}
         />
 
         <div className="flex-1 flex flex-col min-w-0">
@@ -686,6 +689,7 @@ const Reader = () => {
       
       <LexiconPanel open={showLexicon} onClose={() => setShowLexicon(false)} />
       <PeoplePanel open={showPeople} onClose={() => setShowPeople(false)} />
+      <Notepad open={showNotepad} onClose={() => setShowNotepad(false)} />
       <OnboardingTour />
     </SidebarProvider>
   );
