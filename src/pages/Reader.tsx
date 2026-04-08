@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, useMemo, lazy, Suspense } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { bibleBooks } from "@/data/bibleBooks";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,18 +23,23 @@ import Notepad from "@/components/Notepad";
 import { useUserAnnotations } from "@/hooks/useUserAnnotations";
 import ReaderSettingsBar from "@/components/ReaderSettingsBar";
 import QuickAccessToolbar from "@/components/QuickAccessToolbar";
-import WordStyleLayout from "@/components/WordStyleLayout";
 import ModuleManager from "@/components/ModuleManager";
-import StrongNumberDisplay from "@/components/StrongNumberDisplay";
 import { useReaderSettings } from "@/contexts/ReaderSettingsContext";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, Loader2, ArrowLeft, Menu, MessageCircle, FileText, Search, BookOpen, Library, Map, Users, Settings2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, ArrowLeft, Menu, MessageCircle, FileText, Search, BookOpen, Library, Map, Users, Settings2, PanelTopClose, Keyboard } from "lucide-react";
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "@/components/ui/command";
 
 import CrossReferenceLink from "@/components/CrossReferenceLink";
 import BibleApplications from "@/components/BibleApplications";
-const MedievalTheologiansPanel = lazy(() => import("@/components/MedievalTheologiansPanel"));
-const NotebookPanel = lazy(() => import("@/components/NotebookPanel"));
-const InterlinearView = lazy(() => import("@/components/InterlinearView"));
 
 interface Verse {
   verse: number;
@@ -150,7 +155,6 @@ const Reader = () => {
 
   const [currentBook, setCurrentBook] = useState(searchParams.get("book") || storedReading?.bookId || "gn");
   const [currentChapter, setCurrentChapter] = useState(Number(searchParams.get("chapter")) || storedReading?.chapter || 1);
-  const [secondVerses, setSecondVerses] = useState<Verse[]>([]);
   const [showBooks, setShowBooks] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
@@ -161,6 +165,7 @@ const Reader = () => {
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [showCompareMode, setShowCompareMode] = useState(false);
   const [showModuleManager, setShowModuleManager] = useState(false);
+  const [commandOpen, setCommandOpen] = useState(false);
 
   const [showLexicon, setShowLexicon] = useState(false);
   const [showPeople, setShowPeople] = useState(false);
@@ -299,8 +304,18 @@ const Reader = () => {
     } else {
       setVerses([]);
     }
-    if (notesRes.data) setNoteVerses(new Set(notesRes.data.map((n: any) => n.verse_start)));
-    if (crossRefsRes.data) setCrossRefVerses(new Set(crossRefsRes.data.map((r: any) => r.verse)));
+    if (notesRes.data) {
+      const verseStarts = notesRes.data
+        .map((n) => n.verse_start)
+        .filter((value): value is number => typeof value === "number");
+      setNoteVerses(new Set(verseStarts));
+    }
+    if (crossRefsRes.data) {
+      const crossRefVerseNumbers = crossRefsRes.data
+        .map((r) => r.verse)
+        .filter((value): value is number => typeof value === "number");
+      setCrossRefVerses(new Set(crossRefVerseNumbers));
+    }
     setLoading(false);
   };
 
@@ -431,6 +446,11 @@ const Reader = () => {
       }
 
       // Ctrl combinations
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setCommandOpen(true);
+        return;
+      }
       if (e.ctrlKey && e.key === "o") {
         e.preventDefault();
         // Abrir configurações - já temos o botão na toolbar
@@ -630,6 +650,20 @@ const Reader = () => {
         />
 
         <div className="flex-1 flex min-w-0 overflow-hidden">
+          <QuickAccessToolbar
+            onToggleSearch={() => setShowSearch((p) => !p)}
+            onToggleBookSelector={() => setShowBooks((p) => !p)}
+            onToggleNotes={() => setShowNotes((p) => !p)}
+            onToggleDictionary={() => setShowDictionary((p) => !p)}
+            onToggleHistory={() => openUserPanel("history")}
+            onToggleFavorites={() => openUserPanel("favorites")}
+            onToggleGoTo={() => openUserPanel("goto")}
+            onToggleMap={() => setShowMap((p) => !p)}
+            onToggleLexicon={() => setShowLexicon((p) => !p)}
+            onTogglePeople={() => setShowPeople((p) => !p)}
+            onToggleNotepad={() => setShowNotepad((p) => !p)}
+            onToggleCompareMode={() => setShowCompareMode((p) => !p)}
+          />
           <div className="flex-1 flex flex-col min-w-0">
             {/* Microsoft Word inspired chrome */}
             <header className="sticky top-0 z-40 border-b border-border/80 bg-background/95 backdrop-blur">
@@ -645,19 +679,17 @@ const Reader = () => {
 
               <div className="h-8 bg-muted/70 border-b border-border/60 px-2 flex items-center gap-1 text-[11px]">
                 {[
-                  { label: "Arquivo", icon: FileText },
-                  { label: "Editar", icon: Settings2 },
-                  { label: "Pesquisar", icon: Search },
-                  { label: "Estudo", icon: BookOpen },
-                  { label: "Módulos", icon: Library },
+                  { label: "Arquivo", icon: FileText, action: () => setShowBooks(true) },
+                  { label: "Editar", icon: Settings2, action: () => setShowDictionary(true) },
+                  { label: "Pesquisar", icon: Search, action: () => setShowSearch(true) },
+                  { label: "Estudo", icon: BookOpen, action: () => setShowNotes(true) },
+                  { label: "Módulos", icon: Library, action: () => setShowModuleManager(true) },
+                  { label: "Comandos", icon: Keyboard, action: () => setCommandOpen(true) },
                 ].map((item) => (
                   <button
                     key={item.label}
                     className="h-6 px-2.5 rounded hover:bg-background text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
-                    onClick={() => {
-                      if (item.label === "Pesquisar") setShowSearch(true);
-                      if (item.label === "Estudo") setShowNotes(true);
-                    }}
+                    onClick={item.action}
                     type="button"
                   >
                     <item.icon className="w-3.5 h-3.5" />
@@ -689,6 +721,9 @@ const Reader = () => {
                 <button onClick={() => setShowPeople(true)} className="reader-icon-button" title="Personagens" type="button">
                   <Users className="w-4 h-4" />
                 </button>
+                <button onClick={() => setShowModuleManager(true)} className="reader-icon-button" title="Gerenciador de módulos" type="button">
+                  <PanelTopClose className="w-4 h-4" />
+                </button>
                 <button
                   onClick={() => setShowRightPanel(!showRightPanel)}
                   className={cn("reader-icon-button", showRightPanel && "bg-muted text-foreground")}
@@ -696,6 +731,9 @@ const Reader = () => {
                   type="button"
                 >
                   <MessageCircle className="w-4 h-4" />
+                </button>
+                <button onClick={() => setCommandOpen(true)} className="reader-icon-button" title="Comandos rápidos (Ctrl+K)" type="button">
+                  <Keyboard className="w-4 h-4" />
                 </button>
                 <div className="ml-auto flex items-center gap-2">
                   <span className="text-[11px] text-muted-foreground hidden md:block">{book?.abbrev?.toUpperCase()} {currentChapter}</span>
@@ -728,6 +766,10 @@ const Reader = () => {
                 </h1>
               </div>
 
+              <div className="mb-6">
+                <DailyVerse />
+              </div>
+
               {/* Chapter Navigation */}
               <ChapterNavigation bookId={currentBook} chapter={currentChapter} onNavigate={goToChapter} />
 
@@ -740,6 +782,11 @@ const Reader = () => {
                 </div>
               ) : (
                 <div className="manus-chat-container font-manus" style={{ fontSize: `${fontSize}px` }}>
+                  {showCompareMode && (
+                    <div className="reader-surface p-3 text-xs text-muted-foreground mb-2">
+                      Modo comparar ativado. Em breve você poderá escolher uma segunda tradução paralela.
+                    </div>
+                  )}
                   {verses.map((v) => {
                     const speechClass = jesusSpeechVerses.has(v.verse)
                       ? "text-jesus"
@@ -866,6 +913,78 @@ const Reader = () => {
       <LexiconPanel open={showLexicon} onClose={() => setShowLexicon(false)} />
       <PeoplePanel open={showPeople} onClose={() => setShowPeople(false)} />
       <Notepad open={showNotepad} onClose={() => setShowNotepad(false)} />
+
+      {showModuleManager && (
+        <div className="fixed inset-0 z-50 bg-black/45 backdrop-blur-sm p-4 md:p-8 overflow-auto">
+          <div className="max-w-5xl mx-auto space-y-3">
+            <div className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-2">
+              <div>
+                <p className="text-sm font-semibold">Gerenciador de Módulos</p>
+                <p className="text-xs text-muted-foreground">Instale recursos para expandir sua biblioteca de estudo</p>
+              </div>
+              <button
+                type="button"
+                className="reader-icon-button"
+                onClick={() => setShowModuleManager(false)}
+                aria-label="Fechar gerenciador de módulos"
+              >
+                <ChevronRight className="w-4 h-4 rotate-180" />
+              </button>
+            </div>
+            <ModuleManager />
+          </div>
+        </div>
+      )}
+
+      <CommandDialog open={commandOpen} onOpenChange={setCommandOpen}>
+        <CommandInput placeholder="Digite um comando ou painel..." />
+        <CommandList>
+          <CommandEmpty>Nenhum comando encontrado.</CommandEmpty>
+          <CommandGroup heading="Navegação">
+            <CommandItem onSelect={() => { setShowBooks(true); setCommandOpen(false); }}>
+              <BookOpen className="mr-2 h-4 w-4" />
+              Escolher livro/capítulo
+              <CommandShortcut>F11</CommandShortcut>
+            </CommandItem>
+            <CommandItem onSelect={() => { navigateChapter(-1); setCommandOpen(false); }}>
+              <ChevronLeft className="mr-2 h-4 w-4" />
+              Capítulo anterior
+            </CommandItem>
+            <CommandItem onSelect={() => { navigateChapter(1); setCommandOpen(false); }}>
+              <ChevronRight className="mr-2 h-4 w-4" />
+              Próximo capítulo
+            </CommandItem>
+          </CommandGroup>
+          <CommandSeparator />
+          <CommandGroup heading="Ferramentas de estudo">
+            <CommandItem onSelect={() => { setShowSearch(true); setCommandOpen(false); }}>
+              <Search className="mr-2 h-4 w-4" />
+              Busca bíblica
+              <CommandShortcut>F3</CommandShortcut>
+            </CommandItem>
+            <CommandItem onSelect={() => { setShowNotes(true); setCommandOpen(false); }}>
+              <FileText className="mr-2 h-4 w-4" />
+              Notas de estudo
+            </CommandItem>
+            <CommandItem onSelect={() => { setShowLexicon(true); setCommandOpen(false); }}>
+              <Library className="mr-2 h-4 w-4" />
+              Léxico Strong
+            </CommandItem>
+            <CommandItem onSelect={() => { setShowMap(true); setCommandOpen(false); }}>
+              <Map className="mr-2 h-4 w-4" />
+              Mapa bíblico
+            </CommandItem>
+            <CommandItem onSelect={() => { setShowPeople(true); setCommandOpen(false); }}>
+              <Users className="mr-2 h-4 w-4" />
+              Personagens bíblicos
+            </CommandItem>
+            <CommandItem onSelect={() => { setShowModuleManager(true); setCommandOpen(false); }}>
+              <PanelTopClose className="mr-2 h-4 w-4" />
+              Gerenciador de módulos
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
       
       <OnboardingTour />
     </SidebarProvider>
