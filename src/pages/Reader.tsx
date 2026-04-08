@@ -672,6 +672,7 @@ const Reader = () => {
               onClose={() => setShowRightPanel(false)}
             />
           </div>
+        </div>
 
       {/* Overlays */}
       {actionMenu && (
@@ -702,16 +703,6 @@ const Reader = () => {
       <LexiconPanel open={showLexicon} onClose={() => setShowLexicon(false)} />
       <PeoplePanel open={showPeople} onClose={() => setShowPeople(false)} />
       <Notepad open={showNotepad} onClose={() => setShowNotepad(false)} />
-      
-      {/* Right Panel - Comments & Notepad */}
-      <RightPanel 
-        open={showRightPanel} 
-        onClose={() => setShowRightPanel(false)} 
-        bookId={currentBook}
-        chapter={currentChapter}
-        selectedVerse={selectedVerse}
-        onNavigate={goToChapter}
-      />
       
       <OnboardingTour />
     </SidebarProvider>
