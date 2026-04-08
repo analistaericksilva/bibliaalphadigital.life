@@ -418,7 +418,13 @@ const Reader = () => {
   const handleVerseClick = (verseNum: number) => {
     // Abre notas manualmente para versos sem referências pré-carregadas
     setLastFocusedVerse(verseNum);
-    setSelectedVerse((prev) => (prev === verseNum ? null : verseNum));
+    const newSelectedVerse = selectedVerse === verseNum ? null : verseNum;
+    setSelectedVerse(newSelectedVerse);
+    
+    // Abre o painel lateral automaticamente ao selecionar um versículo
+    if (newSelectedVerse && !showRightPanel) {
+      setShowRightPanel(true);
+    }
   };
 
   const handleVerseLongPress = (verseNum: number, e: React.MouseEvent | React.TouchEvent) => {
