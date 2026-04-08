@@ -127,7 +127,7 @@ bibleBooks.forEach((b) => {
 
 function parseReference(refStr: string): { bookId: string; chapter: number; verse?: number } | null {
   const s = refStr.trim();
-  const match = s.match(/^(\d?\s?[A-Za-zÀ-ú]+)\s+(\d+)(?:[\.:](\d+))?/);
+  const match = s.match(/^(\d?\s?[A-Za-zÀ-ú]+)\s+(\d+)(?:[.:](\d+))?/);
   if (!match) return null;
   const abbrev = match[1].replace(/\s/g, "").toLowerCase();
   const chapter = parseInt(match[2], 10);

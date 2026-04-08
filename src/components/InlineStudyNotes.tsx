@@ -47,7 +47,7 @@ const SOURCE_LABELS: Record<string, string> = {
 function parseReference(refStr: string) {
   const match = refStr
     .trim()
-    .match(/^(\d?\s?[A-Za-zÀ-ú]+(?:\s+[A-Za-zÀ-ú]+)*)\s+(\d+)(?:[\.:](\d+))?/);
+    .match(/^(\d?\s?[A-Za-zÀ-ú]+(?:\s+[A-Za-zÀ-ú]+)*)\s+(\d+)(?:[.:](\d+))?/);
 
   if (!match) return null;
 
@@ -75,7 +75,7 @@ function renderContentWithRefs(
 ) {
   if (!onNavigate) return <span>{text}</span>;
 
-  const refRegex = /(\d?\s?[A-ZÀ-Ú][a-zà-ú]+(?:\s+[A-ZÀ-Ú]?[a-zà-ú]+)*)\s+(\d+)[\.:](\d+)(?:-(\d+))?/g;
+  const refRegex = /(\d?\s?[A-ZÀ-Ú][a-zà-ú]+(?:\s+[A-ZÀ-Ú]?[a-zà-ú]+)*)\s+(\d+)[.:](\d+)(?:-(\d+))?/g;
   const parts: JSX.Element[] = [];
   let lastIndex = 0;
   let match: RegExpExecArray | null;

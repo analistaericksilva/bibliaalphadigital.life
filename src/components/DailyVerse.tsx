@@ -54,7 +54,7 @@ const DailyVerse = () => {
           setLoading(false);
           return;
         }
-      } catch {}
+      } catch { /* ignore parse errors */ }
     }
     fetchVerse();
   }, []);

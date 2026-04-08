@@ -105,13 +105,10 @@ const Reader = () => {
   const { user } = useAuth();
   const { fontSize } = useReaderSettings();
 
-  const hasQueryBook = Boolean(searchParams.get("book"));
-  const hasQueryChapter = Boolean(searchParams.get("chapter"));
-  const shouldUseQueryLocation = hasQueryBook || hasQueryChapter;
   const lastReadingKey = user ? `biblia-alpha:last-reading:${user.id}` : null;
 
   const getStoredReading = (): LastReadingState | null => {
-    if (!lastReadingKey || shouldUseQueryLocation) return null;
+    if (!lastReadingKey || searchParams.has("book") || searchParams.has("chapter")) return null;
 
     try {
       const raw = localStorage.getItem(lastReadingKey);

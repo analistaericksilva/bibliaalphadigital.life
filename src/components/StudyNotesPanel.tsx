@@ -49,7 +49,7 @@ bibleBooks.forEach((b) => {
 
 function parseReference(refStr: string): { bookId: string; chapter: number; verse?: number } | null {
   const s = refStr.trim();
-  const match = s.match(/^(\d?\s?[A-Za-zÀ-ú]+)\s+(\d+)(?:[\.:](\d+))?/);
+  const match = s.match(/^(\d?\s?[A-Za-zÀ-ú]+)\s+(\d+)(?:[.:](\d+))?/);
   if (!match) return null;
   const abbrev = match[1].replace(/\s/g, "").toLowerCase();
   const chapter = parseInt(match[2], 10);
@@ -65,7 +65,7 @@ function renderContentWithRefs(
 ) {
   if (!onNavigate) return <span className="font-serif">{text}</span>;
 
-  const refRegex = /(\d?\s?[A-ZÀ-Ú][a-zà-ú]+)\s+(\d+)[\.:](\d+)(?:-(\d+))?/g;
+  const refRegex = /(\d?\s?[A-ZÀ-Ú][a-zà-ú]+)\s+(\d+)[.:](\d+)(?:-(\d+))?/g;
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
   let match: RegExpExecArray | null;
