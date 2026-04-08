@@ -15,6 +15,9 @@ const ChapterNavigation = ({ bookId, chapter, onNavigate }: ChapterNavigationPro
   const canGoPrev = chapter > 1;
   const canGoNext = chapter < maxChapters;
 
+  const baseChapterButtonClass = "px-2.5 py-1.5 text-xs rounded-lg transition-all duration-200 font-semibold";
+  const inactiveChapterButtonClass = "text-[#2E1065] hover:text-[#1F0A44] hover:bg-[#EDE7F6]";
+
   // Generate chapter buttons - show current and nearby chapters
   const getChapterButtons = () => {
     const buttons = [];
@@ -26,7 +29,7 @@ const ChapterNavigation = ({ bookId, chapter, onNavigate }: ChapterNavigationPro
         <button
           key="first"
           onClick={() => onNavigate(bookId, 1)}
-          className="px-2.5 py-1.5 text-xs rounded-lg hover:bg-muted/80 transition-colors text-muted-foreground hover:text-foreground"
+          className={`${baseChapterButtonClass} ${inactiveChapterButtonClass}`}
           title="Primeiro capítulo"
         >
           1
@@ -46,10 +49,10 @@ const ChapterNavigation = ({ bookId, chapter, onNavigate }: ChapterNavigationPro
         <button
           key={i}
           onClick={() => onNavigate(bookId, i)}
-          className={`px-2.5 py-1.5 text-xs rounded-lg transition-colors ${
+          className={`${baseChapterButtonClass} ${
             i === chapter
-              ? "bg-primary text-primary-foreground font-bold shadow-sm"
-              : "hover:bg-muted/80 text-muted-foreground hover:text-foreground"
+              ? "bg-[#2E1065] text-white shadow-sm"
+              : inactiveChapterButtonClass
           }`}
         >
           {i}
@@ -69,7 +72,7 @@ const ChapterNavigation = ({ bookId, chapter, onNavigate }: ChapterNavigationPro
         <button
           key="last"
           onClick={() => onNavigate(bookId, maxChapters)}
-          className="px-2.5 py-1.5 text-xs rounded-lg hover:bg-muted/80 transition-colors text-muted-foreground hover:text-foreground"
+          className={`${baseChapterButtonClass} ${inactiveChapterButtonClass}`}
           title="Último capítulo"
         >
           {maxChapters}
@@ -81,28 +84,30 @@ const ChapterNavigation = ({ bookId, chapter, onNavigate }: ChapterNavigationPro
   };
 
   return (
-    <div className="flex items-center justify-center gap-1.5 py-3.5 px-4 border border-border/70 bg-card/60 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.04)] dark:shadow-none">
-      <button
-        onClick={() => onNavigate(bookId, chapter - 1)}
-        disabled={!canGoPrev}
-        className="p-1.5 rounded-lg hover:bg-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        title="Capítulo anterior"
-      >
-        <ChevronLeft className="w-4 h-4 text-muted-foreground" />
-      </button>
+    <div className="sticky top-[6.2rem] z-20 mb-4">
+      <div className="flex items-center justify-center gap-1.5 py-3.5 px-4 border border-border/70 bg-card/95 backdrop-blur-md rounded-xl shadow-[0_8px_28px_rgba(46,16,101,0.12)] dark:shadow-none">
+        <button
+          onClick={() => onNavigate(bookId, chapter - 1)}
+          disabled={!canGoPrev}
+          className="p-1.5 rounded-lg hover:bg-[#EDE7F6] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          title="Capítulo anterior"
+        >
+          <ChevronLeft className="w-4 h-4 text-[#2E1065]" />
+        </button>
 
-      <div className="flex items-center gap-1 overflow-x-auto px-2 no-scrollbar">
-        {getChapterButtons()}
+        <div className="flex items-center gap-1 overflow-x-auto px-2 no-scrollbar">
+          {getChapterButtons()}
+        </div>
+
+        <button
+          onClick={() => onNavigate(bookId, chapter + 1)}
+          disabled={!canGoNext}
+          className="p-1.5 rounded-lg hover:bg-[#EDE7F6] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          title="Próximo capítulo"
+        >
+          <ChevronRight className="w-4 h-4 text-[#2E1065]" />
+        </button>
       </div>
-
-      <button
-        onClick={() => onNavigate(bookId, chapter + 1)}
-        disabled={!canGoNext}
-        className="p-1.5 rounded-lg hover:bg-muted/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        title="Próximo capítulo"
-      >
-        <ChevronRight className="w-4 h-4 text-muted-foreground" />
-      </button>
     </div>
   );
 };
