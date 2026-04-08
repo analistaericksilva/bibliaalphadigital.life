@@ -3,7 +3,7 @@ import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
-type Profile = Tables<"profiles">["Row"] | null;
+type Profile = Tables<"profiles"> | null;
 
 interface AuthContextType {
   session: Session | null;

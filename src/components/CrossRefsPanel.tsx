@@ -87,7 +87,7 @@ function getBookColor(bookId: string): string {
     nm: "#F59E0B",
     dt: "#EF4444",
     js: "#EC4899",
-    jd: "#6366F1",
+    jz: "#6366F1",
     rt: "#14B8A6",
     "1sm": "#F97316",
     "2sm": "#EAB308",

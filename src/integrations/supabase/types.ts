@@ -421,6 +421,39 @@ export type Database = {
         }
         Relationships: []
       }
+      sermon_notes: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          tags: string[]
+          title: string
+          updated_at: string
+          user_id: string
+          verses_refs: string[]
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          id?: string
+          tags?: string[]
+          title: string
+          updated_at?: string
+          user_id: string
+          verses_refs?: string[]
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          tags?: string[]
+          title?: string
+          updated_at?: string
+          user_id?: string
+          verses_refs?: string[]
+        }
+        Relationships: []
+      }
       strongs_lexicon: {
         Row: {
           created_at: string
@@ -454,6 +487,54 @@ export type Database = {
           original_word?: string | null
           strongs_number?: string
           transliteration?: string | null
+        }
+        Relationships: []
+      }
+      study_notebook_entries: {
+        Row: {
+          book_id: string
+          chapter: number
+          content: string
+          created_at: string
+          id: string
+          last_reviewed_at: string | null
+          next_review_date: string | null
+          review_count: number | null
+          tags: string[] | null
+          title: string | null
+          updated_at: string
+          user_id: string
+          word_count: number | null
+        }
+        Insert: {
+          book_id: string
+          chapter: number
+          content?: string
+          created_at?: string
+          id?: string
+          last_reviewed_at?: string | null
+          next_review_date?: string | null
+          review_count?: number | null
+          tags?: string[] | null
+          title?: string | null
+          updated_at?: string
+          user_id: string
+          word_count?: number | null
+        }
+        Update: {
+          book_id?: string
+          chapter?: number
+          content?: string
+          created_at?: string
+          id?: string
+          last_reviewed_at?: string | null
+          next_review_date?: string | null
+          review_count?: number | null
+          tags?: string[] | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+          word_count?: number | null
         }
         Relationships: []
       }
@@ -499,36 +580,51 @@ export type Database = {
         }
         Relationships: []
       }
-      sermon_notes: {
+      user_annotations: {
         Row: {
-          id: string
-          user_id: string
-          title: string
+          book_id: string
+          chapter: number
+          color: string | null
           content: string
-          tags: string[]
-          verses_refs: string[]
           created_at: string
+          id: string
+          is_public: boolean
+          note_type: string
+          tags: string[] | null
           updated_at: string
+          user_id: string
+          verse_end: number | null
+          verse_start: number
         }
         Insert: {
-          id?: string
-          user_id: string
-          title: string
-          content?: string
-          tags?: string[]
-          verses_refs?: string[]
+          book_id: string
+          chapter: number
+          color?: string | null
+          content: string
           created_at?: string
+          id?: string
+          is_public?: boolean
+          note_type?: string
+          tags?: string[] | null
           updated_at?: string
+          user_id: string
+          verse_end?: number | null
+          verse_start: number
         }
         Update: {
-          id?: string
-          user_id?: string
-          title?: string
+          book_id?: string
+          chapter?: number
+          color?: string | null
           content?: string
-          tags?: string[]
-          verses_refs?: string[]
           created_at?: string
+          id?: string
+          is_public?: boolean
+          note_type?: string
+          tags?: string[] | null
           updated_at?: string
+          user_id?: string
+          verse_end?: number | null
+          verse_start?: number
         }
         Relationships: []
       }

@@ -1,14 +1,14 @@
+@import '@fontsource/inter/300.css';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
 @import '@fontsource/eb-garamond/400.css';
 @import '@fontsource/eb-garamond/500.css';
 @import '@fontsource/eb-garamond/600.css';
 @import '@fontsource/eb-garamond/400-italic.css';
 @import '@fontsource/eb-garamond/500-italic.css';
 @import '@fontsource/eb-garamond/600-italic.css';
-@import '@fontsource/inter/300.css';
-@import '@fontsource/inter/400.css';
-@import '@fontsource/inter/500.css';
-@import '@fontsource/inter/600.css';
-@import '@fontsource/inter/700.css';
 @import '@fontsource/playfair-display/400.css';
 @import '@fontsource/playfair-display/500.css';
 @import '@fontsource/playfair-display/600.css';
@@ -26,148 +26,148 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 0 0% 5%;
+    --foreground: 220 13% 18%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 9%;
+    --card-foreground: 220 13% 18%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 9%;
+    --popover-foreground: 220 13% 18%;
 
-    --primary: 38 52% 44%;
+    --primary: 220 14% 28%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 38 60% 92%;
+    --primary-light: 220 20% 95%;
 
-    --secondary: 40 20% 96%;
-    --secondary-foreground: 0 0% 9%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 13% 18%;
 
-    --muted: 40 10% 95%;
-    --muted-foreground: 0 0% 8%;
+    --muted: 220 10% 96%;
+    --muted-foreground: 220 10% 46%;
 
-    --accent: 38 52% 44%;
+    --accent: 220 14% 28%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 38 52% 44%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 220 14% 28%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --jesus: 0 86% 42%;
+    --jesus: 0 72% 50%;
     --god: 210 100% 20%;
-    --paper: 40 30% 98%;
+    --paper: 0 0% 100%;
     
-    --comfort: 45 30% 96%;
-    --comfort-warm: 40 25% 97%;
-    --ink: 0 0% 3%;
-    --ink-light: 0 0% 8%;
+    --comfort: 220 14% 97%;
+    --comfort-warm: 220 10% 98%;
+    --ink: 220 13% 18%;
+    --ink-light: 220 10% 36%;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 0 0% 6%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 0 0% 6%;
+    --sidebar-background: 220 14% 97%;
+    --sidebar-foreground: 220 13% 18%;
+    --sidebar-primary: 220 14% 28%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 94%;
+    --sidebar-accent-foreground: 220 13% 18%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 38 52% 44%;
+    --sidebar-ring: 220 14% 28%;
 
     --font-serif: 'EB Garamond', Georgia, serif;
-    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   }
 
   .dark {
-    --background: 230 15% 8%;
-    --foreground: 40 20% 92%;
+    --background: 220 16% 8%;
+    --foreground: 220 10% 90%;
     
-    --card: 230 12% 10%;
-    --card-foreground: 40 20% 92%;
+    --card: 220 14% 11%;
+    --card-foreground: 220 10% 90%;
     
-    --popover: 230 12% 10%;
-    --popover-foreground: 40 20% 92%;
+    --popover: 220 14% 11%;
+    --popover-foreground: 220 10% 90%;
     
-    --primary: 38 60% 55%;
-    --primary-foreground: 0 0% 100%;
-    --primary-light: 38 50% 20%;
+    --primary: 220 20% 70%;
+    --primary-foreground: 220 16% 8%;
+    --primary-light: 220 20% 16%;
     
-    --secondary: 230 10% 14%;
-    --secondary-foreground: 40 20% 92%;
+    --secondary: 220 12% 14%;
+    --secondary-foreground: 220 10% 90%;
     
-    --muted: 230 8% 15%;
-    --muted-foreground: 40 15% 70%;
+    --muted: 220 10% 15%;
+    --muted-foreground: 220 10% 55%;
     
-    --accent: 38 60% 55%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 220 20% 70%;
+    --accent-foreground: 220 16% 8%;
     
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 62% 40%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 230 10% 20%;
-    --input: 230 10% 20%;
-    --ring: 38 60% 55%;
+    --border: 220 12% 18%;
+    --input: 220 12% 18%;
+    --ring: 220 20% 70%;
     
-    --paper: 230 15% 10%;
-    --comfort: 230 12% 12%;
-    --comfort-warm: 230 10% 14%;
-    --ink: 40 20% 92%;
-    --ink-light: 40 15% 80%;
+    --paper: 220 16% 10%;
+    --comfort: 220 14% 10%;
+    --comfort-warm: 220 12% 12%;
+    --ink: 220 10% 90%;
+    --ink-light: 220 10% 70%;
     
-    --sidebar-background: 230 15% 8%;
-    --sidebar-foreground: 40 20% 92%;
-    --sidebar-primary: 38 60% 55%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 230 10% 14%;
-    --sidebar-accent-foreground: 40 20% 92%;
-    --sidebar-border: 230 10% 20%;
-    --sidebar-ring: 38 60% 55%;
+    --sidebar-background: 220 16% 8%;
+    --sidebar-foreground: 220 10% 90%;
+    --sidebar-primary: 220 20% 70%;
+    --sidebar-primary-foreground: 220 16% 8%;
+    --sidebar-accent: 220 12% 14%;
+    --sidebar-accent-foreground: 220 10% 90%;
+    --sidebar-border: 220 12% 18%;
+    --sidebar-ring: 220 20% 70%;
   }
 
   .gray {
-    --background: 220 15% 12%;
-    --foreground: 220 10% 85%;
+    --background: 220 10% 94%;
+    --foreground: 220 13% 18%;
     
-    --card: 220 12% 10%;
-    --card-foreground: 220 10% 85%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 13% 18%;
     
-    --popover: 220 12% 10%;
-    --popover-foreground: 220 10% 85%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 13% 18%;
     
-    --primary: 38 55% 55%;
+    --primary: 220 14% 28%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 38 50% 25%;
+    --primary-light: 220 20% 90%;
     
-    --secondary: 220 10% 14%;
-    --secondary-foreground: 220 10% 85%;
+    --secondary: 220 10% 90%;
+    --secondary-foreground: 220 13% 18%;
     
-    --muted: 220 8% 16%;
-    --muted-foreground: 220 10% 65%;
+    --muted: 220 10% 90%;
+    --muted-foreground: 220 10% 46%;
     
-    --accent: 38 55% 55%;
+    --accent: 220 14% 28%;
     --accent-foreground: 0 0% 100%;
     
-    --destructive: 0 62% 45%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 220 10% 22%;
-    --input: 220 10% 22%;
-    --ring: 38 55% 55%;
+    --border: 220 10% 86%;
+    --input: 220 10% 86%;
+    --ring: 220 14% 28%;
     
-    --paper: 220 15% 10%;
-    --comfort: 220 12% 11%;
-    --comfort-warm: 220 10% 13%;
-    --ink: 220 10% 85%;
-    --ink-light: 220 10% 75%;
+    --paper: 0 0% 100%;
+    --comfort: 220 10% 95%;
+    --comfort-warm: 220 8% 96%;
+    --ink: 220 13% 18%;
+    --ink-light: 220 10% 36%;
     
-    --sidebar-background: 220 12% 10%;
-    --sidebar-foreground: 220 10% 85%;
-    --sidebar-primary: 38 52% 44%;
+    --sidebar-background: 220 10% 92%;
+    --sidebar-foreground: 220 13% 18%;
+    --sidebar-primary: 220 14% 28%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 10% 90%;
-    --sidebar-accent-foreground: 215 25% 15%;
-    --sidebar-border: 210 10% 80%;
-    --sidebar-ring: 38 52% 44%;
+    --sidebar-accent: 220 10% 88%;
+    --sidebar-accent-foreground: 220 13% 18%;
+    --sidebar-border: 220 10% 86%;
+    --sidebar-ring: 220 14% 28%;
   }
 }
 
@@ -178,6 +178,7 @@
   body {
     @apply bg-background text-foreground font-sans;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
 }
@@ -191,8 +192,7 @@
   }
   .text-jesus {
     color: hsl(var(--jesus));
-    font-weight: 600;
-    letter-spacing: 0.01em;
+    font-weight: 500;
   }
   .text-god {
     color: hsl(var(--god));
@@ -203,92 +203,35 @@
 
   .menu-strong {
     font-family: var(--font-sans);
-    font-weight: 600;
-    letter-spacing: 0.015em;
-    color: hsl(var(--foreground));
-  }
-
-  .title-strong {
-    font-family: 'Playfair Display', var(--font-serif);
-    font-weight: 600;
-    letter-spacing: 0.025em;
-    color: hsl(var(--foreground));
-  }
-
-  .comment-strong {
-    font-family: 'Cormorant Garamond', var(--font-serif);
     font-weight: 500;
     letter-spacing: 0.01em;
     color: hsl(var(--foreground));
   }
 
-  .reader-comfort {
-    font-family: var(--font-serif);
-    color: hsl(var(--ink));
-    background: hsl(var(--comfort));
+  .title-strong {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: hsl(var(--foreground));
   }
 
-  .reading-relaxed {
-    font-family: var(--font-serif);
-    line-height: 2;
-    letter-spacing: 0.01em;
-    word-spacing: 0.02em;
-  }
-
-  .reading-comfortable {
-    font-family: var(--font-serif);
-    line-height: 2.2;
-    letter-spacing: 0.015em;
-  }
-
-  /* Modern AI-style reading font */
-  .reading-ai {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    line-height: 1.85;
-    letter-spacing: 0.01em;
+  .comment-strong {
+    font-family: var(--font-sans);
     font-weight: 400;
-    color: hsl(var(--ink-light));
+    color: hsl(var(--foreground));
+  }
+
+  .reading-ai {
+    font-family: var(--font-sans);
+    line-height: 1.8;
+    letter-spacing: 0.005em;
+    font-weight: 400;
+    color: hsl(var(--ink));
   }
 
   .reading-ai sup {
     font-weight: 600;
     color: hsl(var(--primary));
-  }
-
-  /* Inline reference styling */
-  .verse-ref {
-    color: hsl(var(--primary) / 0.8);
-    font-size: 0.85em;
-    cursor: pointer;
-    text-decoration: none;
-    border-bottom: 1px dashed hsl(var(--primary) / 0.3);
-    transition: all 0.2s ease;
-  }
-
-  .verse-ref:hover {
-    color: hsl(var(--primary));
-    border-bottom-color: hsl(var(--primary) / 0.6);
-  }
-
-  .verse-highlight-subtle {
-    background: linear-gradient(120deg, transparent 0%, transparent 60%, hsl(var(--primary-light) / 0.3) 60%, hsl(var(--primary-light) / 0.3) 100%);
-    background-size: 200% 100%;
-    animation: highlight-flow 3s ease-in-out infinite;
-  }
-
-  @keyframes highlight-flow {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
-
-  .panel-glass {
-    background: hsl(var(--background) / 0.85);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-  }
-
-  .panel-soft {
-    background: linear-gradient(180deg, hsl(var(--comfort)) 0%, hsl(var(--background)) 100%);
   }
 
   .text-ink {
@@ -299,14 +242,6 @@
     color: hsl(var(--ink-light));
   }
 
-  .text-serif-display {
-    font-family: 'Playfair Display', var(--font-serif);
-  }
-  
-  .text-cormorant {
-    font-family: 'Cormorant Garamond', var(--font-serif);
-  }
-
   .bg-comfort {
     background-color: hsl(var(--comfort));
   }
@@ -314,154 +249,139 @@
   .bg-comfort-warm {
     background-color: hsl(var(--comfort-warm));
   }
-
-  .border-ink {
-    border-color: hsl(var(--border));
-  }
 }
 
-/* PDF-like reader styling */
+/* Reader shell */
+.reader-shell {
+  background: hsl(var(--background));
+  min-height: 100vh;
+}
+
+.reader-topbar {
+  background: hsl(var(--background) / 0.85);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.reader-main-paper {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 1rem;
+}
+
+.reader-surface {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.75rem;
+}
+
+.reader-floating-panel {
+  background: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--border));
+}
+
+.reader-panel-header {
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.reader-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--muted));
+  font-weight: 500;
+  font-size: 0.65rem;
+}
+
+.reader-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.5rem;
+  padding: 0 0.6rem;
+  border-radius: 999px;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  font-family: var(--font-sans);
+  font-weight: 500;
+}
+
+.reader-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: hsl(var(--muted-foreground));
+  transition: all 0.15s ease;
+}
+
+.reader-icon-button:hover {
+  color: hsl(var(--foreground));
+  background: hsl(var(--muted));
+}
+
+.reader-nav-button {
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  font-family: var(--font-sans);
+  color: hsl(var(--muted-foreground));
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.reader-nav-button:hover {
+  color: hsl(var(--foreground));
+}
+
+.reader-verse {
+  transition: background-color 0.15s ease;
+  border-radius: 0.15rem;
+}
+
+.reader-verse:hover {
+  background-color: hsl(var(--muted));
+}
+
+/* Reader content */
 .reader-content {
-  font-family: var(--font-serif);
-  font-size: 1.25rem;
-  line-height: 2.1;
-  text-align: justify;
-  text-justify: inter-word;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.85;
   color: hsl(var(--ink));
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
-/* Soft reading mode */
-.reader-content-soft {
-  font-family: var(--font-serif);
-  font-size: 1.125rem;
-  line-height: 2.3;
-  color: hsl(var(--ink-light));
-  letter-spacing: 0.015em;
+.reader-content input,
+.reader-content textarea,
+.reader-content [contenteditable] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  user-select: text;
 }
 
-.reader-content-relaxed {
-  font-family: var(--font-serif);
-  font-size: 1.125rem;
-  line-height: 2.4;
-  color: hsl(var(--ink));
-  letter-spacing: 0.02em;
-  word-spacing: 0.03em;
-}
-
-/* Enhanced verse styling with subtle depth */
+/* Verse number */
 .verse-number {
   vertical-align: super;
-  font-size: 0.6em;
-  margin-right: 3px;
-  color: hsl(var(--foreground) / 0.6);
+  font-size: 0.65em;
+  margin-right: 2px;
+  color: hsl(var(--muted-foreground));
   font-family: var(--font-sans);
   font-weight: 600;
-  opacity: 0.8;
-}
-
-/* Smooth transitions with easing */
-.transition-app {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.transition-comfort {
-  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.transition-gentle {
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Scrollbar styling - softer appearance */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: hsl(var(--muted) / 0.3);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--border));
-  border-radius: 3px;
-  transition: background 0.3s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--foreground) / 0.2);
-}
-
-/* Print-like page shadow - softer */
-.page-shadow {
-  box-shadow: 
-    0 1px 2px rgba(0,0,0,0.02),
-    0 4px 16px rgba(0,0,0,0.04),
-    0 12px 40px rgba(0,0,0,0.06);
-}
-
-/* Soft shadow variants */
-.shadow-soft {
-  box-shadow: 
-    0 1px 3px rgba(0,0,0,0.02),
-    0 4px 12px rgba(0,0,0,0.04),
-    0 8px 24px rgba(0,0,0,0.04);
-}
-
-.shadow-panel {
-  box-shadow: 
-    0 2px 4px rgba(0,0,0,0.02),
-    0 8px 24px rgba(0,0,0,0.06),
-    0 24px 48px rgba(0,0,0,0.08);
-}
-
-.shadow-glow {
-  box-shadow: 
-    0 0 0 1px hsl(var(--primary) / 0.05),
-    0 4px 16px hsl(var(--primary) / 0.1),
-    0 8px 32px hsl(var(--primary) / 0.08);
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY( 0); }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.6s ease forwards;
-}
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fade-in-up {
-  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes gentlePulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.85; }
-}
-
-.animate-gentle-pulse {
-  animation: gentlePulse 4s ease-in-out infinite;
-}
-
-.verse-number {
-  vertical-align: super;
-  font-size: 0.6em;
-  margin-right: 3px;
-  color: hsl(var(--foreground));
-  font-family: var(--font-sans);
-  font-weight: 700;
-}
-
-/* Smooth transitions */
-.transition-app {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Scrollbar styling */
@@ -476,417 +396,80 @@
   border-radius: 2px;
 }
 
-/* Print-like page shadow */
-.page-shadow {
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 10px 40px rgba(0,0,0,0.04);
-}
-
+/* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.6s ease forwards;
+  animation: fadeIn 0.3s ease forwards;
 }
 
-/* Premium reader UI with enhanced comfort */
-.reader-shell {
-  background: 
-    radial-gradient(ellipse at 20% -5%, hsl(var(--primary) / 0.06), transparent 45%),
-    radial-gradient(ellipse at 80% 5%, hsl(var(--primary) / 0.04), transparent 40%),
-    radial-gradient(ellipse at 50% 100%, hsl(var(--comfort) / 0.5), transparent 60%),
-    hsl(var(--background));
-  min-height: 100vh;
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.reader-topbar {
-  background: hsl(var(--background) / 0.8);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border-bottom: 1px solid hsl(var(--border) / 0.6);
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease forwards;
 }
 
-.reader-main-paper {
-  background: 
-    linear-gradient(180deg, hsl(var(--card) / 0.95) 0%, hsl(var(--card) / 0.88) 100%);
-  border: 1px solid hsl(var(--border) / 0.6);
-  border-radius: 1rem;
-  box-shadow: 
-    0 4px 6px rgba(0,0,0,0.02),
-    0 12px 32px rgba(15, 23, 42, 0.06),
-    0 24px 56px rgba(15, 23, 42, 0.04);
+/* Comments sidebar */
+.comments-sidebar {
+  background: hsl(var(--background));
+  border-left: 1px solid hsl(var(--border));
 }
 
-.reader-surface {
-  background: 
-    linear-gradient(180deg, hsl(var(--card) / 0.92) 0%, hsl(var(--card) / 0.85) 100%);
-  border: 1px solid hsl(var(--border) / 0.5);
-  border-radius: 1rem;
-  box-shadow: 
-    0 4px 12px rgba(15, 23, 42, 0.04),
-    0 16px 32px rgba(15, 23, 42, 0.06);
+.comment-author-card {
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.75rem;
+  background: hsl(var(--card));
+  transition: all 0.15s ease;
 }
 
-.reader-floating-panel {
-  background: hsl(var(--background) / 0.92) !important;
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid hsl(var(--border) / 0.5);
+.comment-author-card:hover {
+  border-color: hsl(var(--foreground) / 0.2);
 }
 
-.reader-panel-header {
-  background: linear-gradient(180deg, hsl(var(--muted) / 0.4) 0%, transparent 100%);
-  border-bottom: 1px solid hsl(var(--border) / 0.4);
-}
+/* Highlight colors */
+.bg-yellow-200\/60 { background-color: rgba(254, 240, 138, 0.6); }
+.bg-green-200\/60 { background-color: rgba(187, 247, 208, 0.6); }
+.bg-blue-200\/60 { background-color: rgba(191, 219, 254, 0.6); }
+.bg-pink-200\/60 { background-color: rgba(251, 207, 232, 0.6); }
+.bg-orange-200\/60 { background-color: rgba(254, 215, 170, 0.6); }
 
-.reader-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.3rem 0.55rem;
-  border-radius: 999px;
-  border: 1px solid hsl(var(--border) / 0.8);
-  color: hsl(var(--foreground));
-  background: hsl(var(--card) / 0.75);
-  font-weight: 600;
-}
-
-.reader-chip {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 1.7rem;
-  padding: 0 0.65rem;
-  border-radius: 999px;
-  border: 1px solid hsl(var(--border) / 0.7);
-  background: hsl(var(--card) / 0.65);
-  color: hsl(var(--foreground));
-  font-size: 0.62rem;
-  letter-spacing: 0.2em;
-  font-family: var(--font-sans);
-  text-transform: uppercase;
-  font-weight: 600;
-}
-
-.reader-icon-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.95rem;
-  height: 1.95rem;
-  border-radius: 0.6rem;
-  border: 1px solid hsl(var(--border) / 0.6);
-  background: hsl(var(--card) / 0.7);
-  color: hsl(var(--foreground));
-  transition: all 0.25s ease;
-}
-
-.reader-icon-button:hover {
-  color: hsl(var(--foreground));
-  border-color: hsl(var(--primary) / 0.3);
-  background: hsl(var(--muted) / 0.6);
-}
-
-.reader-nav-button {
-  font-size: 0.62rem;
-  letter-spacing: 0.2em;
-  font-family: var(--font-sans);
-  color: hsl(var(--foreground));
-  font-weight: 600;
-  transition: color 0.25s ease;
-}
-
-.reader-nav-button:hover {
-  color: hsl(var(--primary));
-}
-
-.reader-verse {
-  transition: background-color 0.3s ease, color 0.3s ease;
-  border-radius: 0.2rem;
-}
-
-.reader-verse:hover {
-  background-color: hsl(var(--muted) / 0.5);
-}
-
-.reader-verse-active {
-  background-color: hsl(var(--primary-light) / 0.4);
-  border-radius: 0.25rem;
-}
-
+/* No scrollbar utility */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
-
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
-@media (min-width: 1024px) {
-  .reader-main-paper {
-    border-radius: 1.25rem;
-    box-shadow: 0 18px 56px rgba(15, 23, 42, 0.12);
-  }
-
-  .reader-content {
-    font-size: 1.34rem;
-    line-height: 2.2;
-  }
-
-  .menu-strong {
-    letter-spacing: 0.02em;
-  }
-
-  .title-strong {
-    letter-spacing: 0.03em;
-  }
-
-  .comment-strong {
-    font-size: 1.04em;
-    line-height: 1.85;
-  }
-}
-
-.dark .reader-main-paper,
-.dark .reader-surface {
-  box-shadow: 
-    0 8px 16px rgba(0, 0, 0, 0.2),
-    0 24px 48px rgba(0, 0, 0, 0.25),
-    0 48px 96px rgba(0, 0, 0, 0.15);
-}
-
-.dark .reader-verse-active {
-  background-color: hsl(var(--primary-light) / 0.3);
-}
-
-/* Comfort reading mode controls */
-.reading-mode-relaxed {
-  font-size: 1.15rem;
-  line-height: 2.4;
-  letter-spacing: 0.02em;
-  color: hsl(var(--ink-light));
-  max-width: 65ch;
-}
-
-.reading-mode-comfortable {
-  font-size: 1.2rem;
-  line-height: 2.2;
-  letter-spacing: 0.015em;
-  color: hsl(var(--ink));
-  max-width: 70ch;
-}
-
-.reading-mode-standard {
-  font-size: 1.25rem;
-  line-height: 2.1;
-  letter-spacing: 0.01em;
-  color: hsl(var(--ink));
-  max-width: 75ch;
-}
-
-/* Subtle border and surface enhancements */
-.border-subtle {
-  border-color: hsl(var(--border) / 0.6);
-}
-
-.border-soft {
-  border-color: hsl(var(--border) / 0.4);
-}
-
-.bg-surface {
-  background-color: hsl(var(--card) / 0.9);
-}
-
-.bg-surface-elevated {
-  background-color: hsl(var(--card) / 0.95);
-}
-
-/* Focus states for accessibility */
-.focus-ring {
-  outline: none;
-  box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--primary) / 0.4);
-}
-
-/* Hide scrollbar but keep functionality */
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-/* Reading line guide */
-.reading-guide {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, 
-    transparent 0%, 
-    hsl(var(--primary) / 0.3) 20%, 
-    hsl(var(--primary) / 0.5) 50%, 
-    hsl(var(--primary) / 0.3) 80%, 
-    transparent 100%
-  );
-  pointer-events: none;
-  z-index: 10;
-}
-
-.reading-guide-dots {
-  background-image: linear-gradient(to right, 
-    hsl(var(--border) / 0.3) 1px, 
-    transparent 1px
-  );
-  background-size: 4px 1px;
-  height: 1px;
-}
-
-/* Smooth hover effects for interactive elements */
-.interactive-soft {
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.interactive-soft:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-/* Card styling improvements */
-.card-soft {
-  background: linear-gradient(180deg, hsl(var(--card)) 0%, hsl(var(--card) / 0.95) 100%);
-  border: 1px solid hsl(var(--border) / 0.5);
-  border-radius: 0.75rem;
-  transition: all 0.3s ease;
-}
-
-.card-soft:hover {
-  border-color: hsl(var(--border) / 0.8);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-}
-
-/* Gradient text for headers */
-.text-gradient {
-  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Highlight colors for verses */
-.bg-yellow-200\/60 { background-color: rgba(254, 240, 138, 0.6); }
-.bg-green-200\/60 { background-color: rgba(187, 247, 208, 0.6); }
-.bg-blue-200\/60 { background-color: rgba(191, 219, 254, 0.6); }
-.bg-pink-200\/60 { background-color: rgba(251, 207, 232, 0.6); }
-.bg-orange-200\/60 { background-color: rgba(254, 215, 170, 0.6); }
-.bg-violet-200\/60 { background-color: rgba(221, 214, 254, 0.6); }
-.bg-cyan-200\/60 { background-color: rgba(165, 243, 252, 0.6); }
-
-/* Anti-copy protection for bible content */
-.reader-content {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-}
-
-/* Allow selection on personal notes and search inputs */
-.reader-content input,
-.reader-content textarea,
-.reader-content [contenteditable] {
-  -webkit-user-select: text;
-  -moz-user-select: text;
-  user-select: text;
-}
-
-/* Responsive typography for reading */
+/* Responsive */
 @media (min-width: 768px) {
   .reader-content {
-    font-size: 1.2rem;
-    line-height: 2.2;
-  }
-  
-  .reading-mode-relaxed {
-    font-size: 1.2rem;
-  }
-  
-  .reading-mode-comfortable {
-    font-size: 1.25rem;
+    font-size: 1.05rem;
+    line-height: 1.9;
   }
 }
 
 @media (min-width: 1024px) {
-  .reader-main-paper {
-    border-radius: 1.25rem;
-    box-shadow: 
-      0 6px 8px rgba(0,0,0,0.03),
-      0 20px 56px rgba(15, 23, 42, 0.1);
-  }
-
   .reader-content {
-    font-size: 1.34rem;
-    line-height: 2.3;
-  }
-
-  .menu-strong {
-    letter-spacing: 0.02em;
-  }
-
-  .title-strong {
-    letter-spacing: 0.03em;
-  }
-
-  .comment-strong {
-    font-size: 1.04em;
-    line-height: 1.9;
-  }
-  
-  .reading-mode-relaxed {
-    font-size: 1.25rem;
-  }
-  
-  .reading-mode-comfortable {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
+    line-height: 2;
   }
 }
 
-/* Print styles */
+/* Print */
 @media print {
   .reader-shell {
     background: white;
   }
-  
   .reader-main-paper {
     box-shadow: none;
     border: none;
   }
-}
-
-/* Highlight colors for verses */
-.bg-yellow-200\/60 { background-color: rgba(254, 240, 138, 0.6); }
-.bg-green-200\/60 { background-color: rgba(187, 247, 208, 0.6); }
-.bg-blue-200\/60 { background-color: rgba(191, 219, 254, 0.6); }
-.bg-pink-200\/60 { background-color: rgba(251, 207, 232, 0.6); }
-.bg-orange-200\/60 { background-color: rgba(254, 215, 170, 0.6); }
-
-/* Anti-copy protection for bible content */
-.reader-content {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-}
-
-/* Allow selection on personal notes and search inputs */
-.reader-content input,
-.reader-content textarea,
-.reader-content [contenteditable] {
-  -webkit-user-select: text;
-  -moz-user-select: text;
-  user-select: text;
 }

@@ -70,11 +70,11 @@ interface UserAnnotation {
   book_id: string;
   chapter: number;
   verse_start: number;
-  verse_end?: number;
+  verse_end?: number | null;
   content: string;
-  note_type: "highlight" | "note" | "favorite" | "bookmark" | "study";
-  color?: string;
-  tags?: string[];
+  note_type: string;
+  color?: string | null;
+  tags?: string[] | null;
   is_public: boolean;
   created_at: string;
   updated_at: string;
@@ -214,17 +214,18 @@ const NotebookPanel = ({
         .eq("chapter", chapter)
         .order("verse_start");
 
-      let { data } = await query;
+      const { data: rawData } = await query;
+      let filtered = (rawData as unknown as UserAnnotation[]) || [];
 
       if (selectedVerse) {
-        data = (data as UserAnnotation[])?.filter(
+        filtered = filtered.filter(
           (a) =>
             a.verse_start <= selectedVerse &&
             (a.verse_end ? a.verse_end >= selectedVerse : a.verse_start === selectedVerse)
         );
       }
 
-      setAnnotations(data || []);
+      setAnnotations(filtered);
       setLoading(false);
     };
 
