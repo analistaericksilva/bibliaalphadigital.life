@@ -430,13 +430,15 @@
 }
 
 .reader-inline-verse .verse-number {
-  opacity: 0.45;
-  transition: opacity 0.12s ease;
+  opacity: 1;
+  color: #2E1065;
+  transition: color 0.12s ease, opacity 0.12s ease;
 }
 
 .reader-inline-verse:hover .verse-number,
 .reader-inline-verse.is-active .verse-number {
-  opacity: 0.95;
+  opacity: 1;
+  color: #1F0A44;
 }
 
 .reader-content input,
@@ -647,8 +649,8 @@
 }
 
 .reader-template-study .verse-number {
-  color: hsl(var(--primary));
-  opacity: 0.8;
+  color: #2E1065;
+  opacity: 1;
 }
 
 @media (max-width: 768px) {
