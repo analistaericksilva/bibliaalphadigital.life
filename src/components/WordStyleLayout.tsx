@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { 
   FileText, Edit, View, BookOpen, Search, Settings, HelpCircle, 
-  ChevronDown, ChevronRight, Plus, Save, Print, FolderOpen,
-  Undo, Redo, Cut, Copy, Paste, Bold, Italic, Underline, Highlight,
+  ChevronDown, ChevronRight, Plus, Save, Printer, FolderOpen,
+  Undo, Redo, Scissors, Copy, ClipboardPaste, Bold, Italic, Underline, Highlighter,
   AlignLeft, AlignCenter, AlignRight, List, ListOrdered,
   ArrowLeft, ArrowRight, ArrowUp, ArrowDown,
-  Home, End, PageForward, PageBack,
+  Home, Send, ChevronsRight, ChevronsLeft,
   Book, Bookmark, Star, Clock, History,
   Map, Users, FileSignature, Library, Database,
   MessageSquare, X, Menu, MoreHorizontal

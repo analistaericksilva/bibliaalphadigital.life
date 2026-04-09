@@ -38,20 +38,20 @@ const QuickAccessToolbar = ({
 
   if (!showLeftIcons) return null;
 
-  const quickOptions = [
+  const quickOptions: Array<{ type?: "separator"; icon?: typeof BookOpen; label?: string; active?: boolean; action?: () => void }> = [
     { icon: BookOpen, label: "Modo Parágrafo", active: viewMode === "paragraph", action: toggleViewMode },
-    { type: "separator" as const },
+    { type: "separator" },
     { icon: Star, label: "Números Strong (S)", active: showStrongNumbers, action: toggleShowStrongNumbers },
     { icon: Library, label: "Morfologia (M)", active: showMorphology, action: toggleShowMorphology },
-    { type: "separator" as const },
+    { type: "separator" },
     { icon: Bookmark, label: "Refs. Cruzadas (X)", active: showCrossRefs, action: toggleShowCrossRefs },
     { icon: FileText, label: "Notas de Rodapé (F)", active: showFootnotes, action: () => setShowFootnotes(!showFootnotes) },
-    { type: "separator" as const },
+    { type: "separator" },
     { icon: Bookmark, label: "Busca de Palavras (D)", active: wordLookupEnabled, action: toggleWordLookupEnabled },
-    { type: "separator" as const },
+    { type: "separator" },
     { icon: Home, label: "Cabeçalho/Rodapé (Q)", active: showHeaderFooter, action: () => setShowHeaderFooter(!showHeaderFooter) },
     { icon: Star, label: "Destaques Usuário (U)", active: showUserHighlights, action: () => setShowUserHighlights(!showUserHighlights) },
-    { type: "separator" as const },
+    { type: "separator" },
     { icon: Search, label: "Modo Comparar", active: showCompareMode, action: onToggleCompareMode },
   ];
 
