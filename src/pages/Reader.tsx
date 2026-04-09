@@ -659,31 +659,31 @@ const Reader = () => {
           readerSettings.setViewMode(viewMode === "paragraph" ? "verse" : "paragraph");
           break;
         case "s":
-          readerSettings.setShowStrongNumbers();
+          readerSettings.toggleShowStrongNumbers();
           break;
         case "m":
-          readerSettings.setShowMorphology();
+          readerSettings.toggleShowMorphology();
           break;
         case "x":
-          readerSettings.setShowCrossRefs();
+          readerSettings.toggleShowCrossRefs();
           break;
         case "n":
-          readerSettings.setShowInlineNotes();
+          readerSettings.toggleShowInlineNotes();
           break;
         case "l":
-          readerSettings.setShowCommentaryLinks();
+          readerSettings.setShowCommentaryLinks(!readerSettings.showCommentaryLinks);
           break;
         case "d":
-          readerSettings.setWordLookupEnabled();
+          readerSettings.toggleWordLookupEnabled();
           break;
         case "q":
-          readerSettings.setShowHeaderFooter();
+          readerSettings.setShowHeaderFooter(!readerSettings.showHeaderFooter);
           break;
         case "u":
-          readerSettings.setShowUserHighlights();
+          readerSettings.setShowUserHighlights(!readerSettings.showUserHighlights);
           break;
         case "f":
-          readerSettings.setShowFootnotes();
+          readerSettings.setShowFootnotes(!readerSettings.showFootnotes);
           break;
         case "j":
           // Palavra de Jesus - highlight especial
