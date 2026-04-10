@@ -7,13 +7,13 @@ const corsHeaders = {
 
 const emptyPayload = (bookId: string, chapter: number, verse: number) => ({
   reference: { book_id: bookId, chapter, verse },
-  cross_references: [],
-  legacy_cross_references: [],
-  study_notes: [],
-  external_commentary: [],
-  macula_words: [],
-  macula_relations: [],
-  datasets: [],
+  cross_references: [] as Record<string, unknown>[],
+  legacy_cross_references: [] as string[],
+  study_notes: [] as Record<string, unknown>[],
+  external_commentary: [] as Record<string, unknown>[],
+  macula_words: [] as Record<string, unknown>[],
+  macula_relations: [] as Record<string, unknown>[],
+  datasets: [] as Record<string, unknown>[],
 });
 
 Deno.serve(async (req) => {
