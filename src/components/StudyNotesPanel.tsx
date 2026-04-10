@@ -132,8 +132,8 @@ function renderClickableRefs(
 // --- Rótulos de fonte ---
 
 const SOURCE_LABELS: Record<string, { label: string; subtitle: string }> = {
-  agostinho: { label: "AGOSTINHO", subtitle: "Pai da Igreja" },
-  crisostomo: { label: "JOÃO CRISÓSTOMO", subtitle: "Pai da Igreja" },
+  agostinho: { label: "AGOSTINHO", subtitle: "Pai da Igreja (354–430)" },
+  crisostomo: { label: "JOÃO CRISÓSTOMO", subtitle: "Pai da Igreja (349–407)" },
   calvino: { label: "JOÃO CALVINO", subtitle: "Reformador" },
   lutero: { label: "MARTINHO LUTERO", subtitle: "Reformador" },
   spurgeon: { label: "CHARLES SPURGEON", subtitle: "Puritano" },
@@ -143,10 +143,10 @@ const SOURCE_LABELS: Record<string, { label: string; subtitle: string }> = {
   watson: { label: "THOMAS WATSON", subtitle: "Puritano" },
   flavel: { label: "JOHN FLAVEL", subtitle: "Puritano" },
   sermon: { label: "SERMÕES", subtitle: "Pregações Clássicas" },
-  commentary: { label: "NOTA DE ESTUDO", subtitle: "Comentário" },
+  commentary: { label: "NOTA DE ESTUDO", subtitle: "Comentário Patrístico" },
 };
 
-const TYPE_ORDER = ["agostinho", "crisostomo", "calvino", "lutero", "spurgeon", "edwards", "owen", "baxter", "watson", "flavel", "sermon", "commentary"];
+const TYPE_ORDER = ["agostinho", "crisostomo", "commentary", "calvino", "lutero", "spurgeon", "edwards", "owen", "baxter", "watson", "flavel", "sermon"];
 
 // --- Auxiliar: compara referências do dicionário com o versículo atual ---
 
