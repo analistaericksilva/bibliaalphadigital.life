@@ -3,17 +3,10 @@ BEGIN;
 
 DELETE FROM public.study_notes
 WHERE COALESCE(source, '') = ''
-   OR source NOT IN ('Agostinho de Hipona', 'João Crisóstomo', 'Jerônimo', 'Orígenes', 'Atanásio', 'Gregório de Nissa', 'Basílio de Cesareia', 'Tomás de Aquino', 'Anselmo de Cantuária', 'Bernardo de Claraval', 'Martinho Lutero', 'João Calvino', 'Ulrich Zwingli', 'John Knox', 'Martin Bucer', 'Heinrich Bullinger', 'Theodore Beza', 'Jonathan Edwards', 'John Owen', 'Richard Baxter', 'Thomas Watson', 'John Flavel', 'Stephen Charnock', 'Thomas Goodwin', 'William Perkins', 'William Gurnall', 'Thomas Boston', 'John Brown of Haddington', 'John Wesley', 'George Whitefield', 'Charles Finney', 'Dwight L. Moody', 'R. A. Torrey', 'Charles Hodge', 'A. A. Hodge', 'Charles Spurgeon', 'Andrew Murray', 'E. M. Bounds', 'F. B. Meyer', 'Alexander Maclaren', 'B. B. Warfield', 'Louis Berkhof', 'Herman Bavinck', 'Albert Barnes', 'Adam Clarke', 'John Gill', 'Jamieson-Fausset-Brown', 'Joseph Benson', 'Octavius Winslow');
+   OR source NOT IN ('Tomás de Aquino', 'Anselmo de Cantuária', 'Bernardo de Claraval', 'Martinho Lutero', 'João Calvino', 'Ulrich Zwingli', 'John Knox', 'Martin Bucer', 'Heinrich Bullinger', 'Theodore Beza', 'Jonathan Edwards', 'John Owen', 'Richard Baxter', 'Thomas Watson', 'John Flavel', 'Stephen Charnock', 'Thomas Goodwin', 'William Perkins', 'William Gurnall', 'Thomas Boston', 'John Brown of Haddington', 'John Wesley', 'George Whitefield', 'Charles Finney', 'Dwight L. Moody', 'R. A. Torrey', 'Charles Hodge', 'A. A. Hodge', 'Charles Spurgeon', 'Andrew Murray', 'E. M. Bounds', 'F. B. Meyer', 'Alexander Maclaren', 'B. B. Warfield', 'Louis Berkhof', 'Herman Bavinck', 'Albert Barnes', 'Adam Clarke', 'John Gill', 'Jamieson-Fausset-Brown', 'Joseph Benson', 'Octavius Winslow');
 
 WITH authors(aid, name, school, color) AS (
   VALUES
-  (1, 'Agostinho de Hipona', 'patristic', '#8B4513'),
-  (2, 'João Crisóstomo', 'patristic', '#8B4513'),
-  (3, 'Jerônimo', 'patristic', '#8B4513'),
-  (4, 'Orígenes', 'patristic', '#8B4513'),
-  (5, 'Atanásio', 'patristic', '#8B4513'),
-  (6, 'Gregório de Nissa', 'patristic', '#8B4513'),
-  (7, 'Basílio de Cesareia', 'patristic', '#8B4513'),
   (8, 'Tomás de Aquino', 'medieval', '#6B4F2A'),
   (9, 'Anselmo de Cantuária', 'medieval', '#6B4F2A'),
   (10, 'Bernardo de Claraval', 'medieval', '#6B4F2A'),
