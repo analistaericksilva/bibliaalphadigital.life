@@ -1,4 +1,4 @@
-name: Deploy to Napolion
+name: Deploy
 
 on:
   push:
@@ -9,6 +9,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: false  # Temporarily disabled until FTP is fixed
     
     steps:
       - name: Checkout code
@@ -25,13 +26,3 @@ jobs:
       
       - name: Build project
         run: npm run build
-      
-      - name: Deploy to Napolion via FTP
-        uses: SamMarchand/ftp-action@v1.2.1
-        with:
-          host: ${{ vars.FTP_HOST }}
-          username: ${{ vars.FTP_USER }}
-          password: ${{ vars.FTP_PASS }}
-          localDir: './dist'
-          remoteDir: '/public_html'
-          dryRun: false

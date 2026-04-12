@@ -3,9 +3,6 @@ name: Supabase Sync
 on:
   push:
     branches: [main]
-    paths:
-      - 'supabase/**'
-      - '.github/workflows/supabase-sync.yml'
   workflow_dispatch:
 
 jobs:
