@@ -12,7 +12,8 @@ jobs:
   sync-supabase:
     runs-on: ubuntu-latest
     env:
-      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_ACCESS_TOKEN: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRucWNjcmpkeG1ueG14aXVwZXNnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTgzNjQ4OSwiZXhwIjoyMDkxNDEyNDg5fQ.3vemOLAP4iHYf2DmC4Xx92xJHSw9fK49MikLxNdCF6U
+      SUPABASE_PROJECT_REF: dnqccrjdxmnxmxiupesg
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,10 +24,10 @@ jobs:
           version: latest
 
       - name: Link Supabase project
-        run: supabase link --project-ref ${{ vars.SUPABASE_PROJECT_REF }} --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
+        run: supabase link --project-ref dnqccrjdxmnxmxiupesg --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
 
       - name: Push database migrations
         run: supabase db push
 
       - name: Deploy all Edge Functions
-        run: supabase functions deploy --project-ref ${{ vars.SUPABASE_PROJECT_REF }} --all
+        run: supabase functions deploy --project-ref dnqccrjdxmnxmxiupesg --all
