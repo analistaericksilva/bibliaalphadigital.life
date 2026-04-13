@@ -1,4 +1,4 @@
-name: Supabase Sync
+name: Supabase Sync v2
 
 on:
   push:
