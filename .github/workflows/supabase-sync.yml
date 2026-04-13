@@ -21,10 +21,9 @@ jobs:
           version: latest
 
       - name: Link Supabase project
+        run: npx supabase link --project-ref dnqccrjdxmnxmxiupesg --password "$SUPABASE_DB_PASSWORD"
         env:
-          DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
-        run: |
-          echo "$DB_PASSWORD" | supabase link --project-ref dnqccrjdxmnxmxiupesg --password-stdin
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
 
       - name: Push database migrations
         run: supabase db push
