@@ -24,7 +24,7 @@ jobs:
         env:
           DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
-          echo "$DB_PASSWORD" | sudo supabase link --project-ref dnqccrjdxmnxmxiupesg --password-stdin
+          echo "$DB_PASSWORD" | supabase link --project-ref dnqccrjdxmnxmxiupesg --password-stdin
 
       - name: Push database migrations
         run: supabase db push
