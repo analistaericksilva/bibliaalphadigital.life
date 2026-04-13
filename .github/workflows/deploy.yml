@@ -9,7 +9,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: false  # Temporarily disabled until FTP is fixed
     
     steps:
       - name: Checkout code
